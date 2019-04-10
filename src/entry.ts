@@ -1,4 +1,7 @@
 import { parse } from '@babel/parser';
+import * as React from 'react';
+import { render } from 'react-dom';
+import * as components from './index';
 
 const code = document.getElementById('code') as HTMLTextAreaElement;
 const result = document.getElementById('result');
@@ -8,8 +11,16 @@ if (!code || !result) {
 }
 
 const update = () => {
+  console.time();
   const file = parse(code.value);
-  result.textContent = JSON.stringify(file, null, 2);
+  console.timeEnd();
+  console.log(file);
+  render(
+    React.createElement(components.File, {
+      node: file
+    }),
+    result
+  );
 };
 
 code.oninput = update;
