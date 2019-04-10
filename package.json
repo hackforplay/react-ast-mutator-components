@@ -7,7 +7,8 @@
     "test": "npm run lint && npm run build && ava",
     "build": "tsc",
     "lint": "prettier 'src/**/*' -l",
-    "format": "prettier 'src/**/*' --write"
+    "format": "prettier 'src/**/*' --write",
+    "semantic-release": "semantic-release"
   },
   "author": "teramotodaiki",
   "license": "MIT",
@@ -27,6 +28,7 @@
     "@types/node": "^11.13.2",
     "ava": "^1.4.1",
     "prettier": "^1.16.4",
+    "semantic-release": "^15.13.3",
     "ts-node": "^8.0.3",
     "typescript": "^3.4.3"
   }
