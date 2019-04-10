@@ -1,0 +1,33 @@
+{
+  "name": "@hackforplay/react-ast-mutator-components",
+  "version": "1.0.0",
+  "description": "React components to mutate Babel AST.",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "npm run lint && npm run build && ava",
+    "build": "tsc",
+    "lint": "prettier 'src/**/*' -l",
+    "format": "prettier 'src/**/*' --write"
+  },
+  "author": "teramotodaiki",
+  "license": "MIT",
+  "ava": {
+    "files": [
+      "src/**/*.test.ts"
+    ],
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^11.13.2",
+    "ava": "^1.4.1",
+    "prettier": "^1.16.4",
+    "ts-node": "^8.0.3",
+    "typescript": "^3.4.3"
+  }
+}
