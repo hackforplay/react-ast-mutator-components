@@ -12,13 +12,48 @@ export function File(props: Props<t.File>) {
 export function Program(props: Props<t.Program>) {
   return (
     <div>
-      {props.node.body.map((node, i) =>
-        t.isVariableDeclaration(node) ? (
-          <VariableDeclaration key={i} node={node} />
-        ) : (
-          <div>Unknown</div>
-        )
-      )}
+      {props.node.body.map((node, i) => (
+        <Statement key={i} node={node} />
+      ))}
+    </div>
+  );
+}
+
+function Statement(props: Props<t.Statement>) {
+  const { node } = props;
+  return t.isVariableDeclaration(node) ? (
+    <VariableDeclaration node={node} />
+  ) : t.isFunctionDeclaration(node) ? (
+    <FunctionDeclaration node={node} />
+  ) : (
+    <div>Unknown {node.type}</div>
+  );
+}
+
+export function FunctionDeclaration(props: Props<t.FunctionDeclaration>) {
+  const { id, body } = props.node;
+  return (
+    <div>
+      <div>
+        <span style={{ border: '1px solid #aaaaaa' }}>
+          <span>
+            <ruby>
+              function<rt>かんすう</rt>
+            </ruby>{' '}
+          </span>
+          {id ? <span>{id.name}</span> : null}
+        </span>
+        <span>()</span>
+        <span>{`{`}</span>
+      </div>
+      <div style={{ paddingLeft: 8, border: '1px solid #aaaaaa' }}>
+        {body.body.map((node, i) => (
+          <Statement key={i} node={node} />
+        ))}
+      </div>
+      <div>
+        <span>{`}`}</span>
+      </div>
     </div>
   );
 }

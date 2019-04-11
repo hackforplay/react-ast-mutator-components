@@ -26,8 +26,11 @@ const update = () => {
 code.oninput = update;
 
 code.value = `// これはコメント
-const mozi = 'ここは文字列';
-const suuzi = 123;
+
+function f() {
+  const mozi = 'ここは文字列';
+  const suuzi = 123;
+}
 `;
 
 update();
