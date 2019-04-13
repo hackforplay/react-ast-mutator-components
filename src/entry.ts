@@ -17,7 +17,13 @@ const update = () => {
   console.log(file);
   render(
     React.createElement(components.File, {
-      node: file
+      node: file,
+      onUpdate(prev, next) {
+        code.value =
+          code.value.slice(0, prev.start) +
+          next.value +
+          code.value.slice(prev.end);
+      }
     }),
     result
   );
