@@ -27,9 +27,14 @@
       #result * {
         margin-right: 2px;
       }
+      body.remove-rt-before-copy rt {
+        display: none;
+      }
     </style>
   </head>
-  <body>
+  <body
+    oncopy="!function(e,s,l){l=e.classList;l.add(s);requestAnimationFrame(function(){l.remove(s)})}(this,'remove-rt-before-copy')"
+  >
     <div class="container">
       <textarea name="code" id="code" cols="30" rows="10"></textarea>
       <div id="result"></div>
