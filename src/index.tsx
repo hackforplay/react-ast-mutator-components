@@ -123,31 +123,30 @@ export function Expression(props: Props<t.Expression>) {
 }
 
 export function StringLiteral(props: Props<t.StringLiteral>) {
-  const { value, start, end } = props.node;
+  const { type, value, start, end } = props.node;
   const [editable, setEditable] = React.useState(false);
-  const [tmpValue, setTmpValue] = React.useState(props.node.value);
 
-  const confirm = () => {
-    if (start === null || end === null) return;
-    props.node.value = tmpValue;
-    props.onUpdate(
-      { start, end, value: `'${value}'` },
-      {
-        start,
-        end: end + (tmpValue.length - value.length),
-        value: `'${props.node.value}'`
-      }
-    );
-    setEditable(false);
-  };
+  if (start === null || end === null) {
+    console.log(props.node);
+    throw new Error('start or end is null');
+  }
 
   return editable ? (
-    <input
-      autoFocus
-      value={tmpValue}
-      onChange={e => setTmpValue(e.currentTarget.value)}
-      onKeyDown={e => e.key === 'Enter' && confirm()}
-      onBlur={() => confirm()}
+    <InputMutator
+      type={type}
+      defaultValue={value}
+      onUpdate={newValue => {
+        props.node.value = newValue;
+        props.onUpdate(
+          { start, end, value: `'${value}'` },
+          {
+            start,
+            end: start + newValue.length + 2,
+            value: `'${newValue}'`
+          }
+        );
+        setEditable(false);
+      }}
     />
   ) : (
     <>
@@ -156,7 +155,7 @@ export function StringLiteral(props: Props<t.StringLiteral>) {
         onClick={() => setEditable(true)}
         style={{ backgroundColor: '#ff835d', borderRadius: 2 }}
       >
-        {tmpValue}
+        {value}
       </span>
       <span>'</span>
     </>
@@ -164,32 +163,30 @@ export function StringLiteral(props: Props<t.StringLiteral>) {
 }
 
 export function NumericLiteral(props: Props<t.NumericLiteral>) {
-  const { value, start, end } = props.node;
+  const { type, value, start, end } = props.node;
   const [editable, setEditable] = React.useState(false);
-  const [tmpValue, setTmpValue] = React.useState(value.toString());
 
-  const confirm = () => {
-    if (start === null || end === null) return;
-    // TODO: debounce
-    props.node.value = parseInt(tmpValue);
-    props.onUpdate(
-      { start, end, value: value.toString() },
-      {
-        start,
-        end: end + (tmpValue.length - value.toString().length),
-        value: props.node.value.toString()
-      }
-    );
-    setEditable(false);
-  };
+  if (start === null || end === null) {
+    console.log(props.node);
+    throw new Error('start or end is null');
+  }
 
   return editable ? (
-    <input
-      autoFocus
-      value={tmpValue}
-      onChange={e => setTmpValue(e.currentTarget.value)}
-      onKeyDown={e => e.key === 'Enter' && confirm()}
-      onBlur={() => confirm()}
+    <InputMutator
+      type={type}
+      defaultValue={value.toString()}
+      onUpdate={newValue => {
+        props.node.value = parseFloat(newValue);
+        props.onUpdate(
+          { start, end, value: value.toString() },
+          {
+            start,
+            end: start + newValue.length,
+            value: newValue
+          }
+        );
+        setEditable(false);
+      }}
     />
   ) : (
     <>
@@ -197,8 +194,59 @@ export function NumericLiteral(props: Props<t.NumericLiteral>) {
         onClick={() => setEditable(true)}
         style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
       >
-        {tmpValue}
+        {value}
       </span>
     </>
+  );
+}
+
+const escapeStringLiteral = (str: string) => {
+  let escaped = str.replace(/\\*['"]/g, sub => {
+    return sub.length % 2 === 1 ? '\\' + sub : sub;
+  });
+  return { escaped, invalid: escaped.substr(-1) === '\\' };
+};
+
+const escapeNumericLiteral = (str: string) => {
+  let escaped = str.replace(/[０-９ー]/g, sub =>
+    String.fromCharCode(sub.charCodeAt(0) - 0xfee0)
+  ); // １ to 1
+  escaped = escaped.replace(/。/, '.');
+  escaped = escaped.replace(/^\./, '0.');
+  return { escaped, invalid: !/^-?\d*\.?\d+$/.test(escaped) };
+};
+
+type InputMutatorProps = {
+  type: t.NumericLiteral['type'] | t.StringLiteral['type'];
+  defaultValue: string;
+  onUpdate: (value: string) => void;
+};
+
+export function InputMutator(props: InputMutatorProps) {
+  const [value, setValue] = React.useState(props.defaultValue);
+  const [invalid, setInvalid] = React.useState(false);
+
+  const confirm = () => {
+    if (invalid) return;
+    props.onUpdate(value);
+  };
+
+  return (
+    <input
+      autoFocus
+      value={value}
+      onChange={e => {
+        const { value } = e.currentTarget;
+        const { escaped, invalid } =
+          props.type === 'NumericLiteral'
+            ? escapeNumericLiteral(value)
+            : escapeStringLiteral(value);
+        setInvalid(invalid);
+        setValue(escaped);
+      }}
+      onKeyDown={e => e.key === 'Enter' && confirm()}
+      onBlur={() => confirm()}
+      style={invalid ? { backgroundColor: 'red' } : {}}
+    />
   );
 }
