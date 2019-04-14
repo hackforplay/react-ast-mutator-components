@@ -18,7 +18,7 @@ type Props<NodeType> = {
 export function File(props: Props<t.File>) {
   const onUpdate: OnUpdate = (prev, next) => {
     const increased = next.end - prev.end;
-    if (increased > 0) {
+    if (increased !== 0) {
       // Keep start and end correctly
       traverse(props.node, {
         enter(path) {
