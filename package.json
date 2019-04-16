@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "scripts": {
     "test": "npm run lint && npm run build && ava",
-    "build": "tsc",
+    "build": "tsc --build",
     "lint": "prettier 'src/**/*' -l",
     "format": "prettier 'src/**/*' --write",
     "start": "parcel ./public/index.html",
