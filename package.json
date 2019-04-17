@@ -4,7 +4,7 @@
   "description": "React components to mutate Babel AST.",
   "main": "lib/index.js",
   "scripts": {
-    "test": "npm run lint && npm run build && ava",
+    "test": "npm run lint && npm run build && ava --fail-fast -s",
     "build": "tsc --build",
     "lint": "prettier 'src/**/*' -l",
     "format": "prettier 'src/**/*' --write",
@@ -26,8 +26,12 @@
     ]
   },
   "devDependencies": {
+    "@types/enzyme": "^3.9.1",
+    "@types/enzyme-adapter-react-16": "^1.0.5",
     "@types/node": "^11.13.2",
     "ava": "^1.4.1",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.12.1",
     "parcel-bundler": "^1.12.3",
     "prettier": "^1.16.4",
     "semantic-release": "^15.13.3",

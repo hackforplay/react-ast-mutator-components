@@ -1,4 +1,4 @@
-import traverse, { Visitor } from '@babel/traverse';
+import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import * as React from 'react';
 
@@ -51,7 +51,7 @@ function Statement(props: Props<t.Statement>) {
   ) : t.isFunctionDeclaration(node) ? (
     <FunctionDeclaration node={node} onUpdate={props.onUpdate} />
   ) : (
-    <div>Unknown {node.type}</div>
+    <NotImplemented node={node} onUpdate={props.onUpdate} />
   );
 }
 
@@ -249,4 +249,8 @@ export function InputMutator(props: InputMutatorProps) {
       style={invalid ? { backgroundColor: 'red' } : {}}
     />
   );
+}
+
+export function NotImplemented(props: Props<t.Node>): JSX.Element {
+  throw new Error(`Not Implemented: <${props.node.type} />`);
 }
