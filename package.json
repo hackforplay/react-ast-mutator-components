@@ -9,6 +9,7 @@
     "lint": "prettier 'src/**/*' -l",
     "format": "prettier 'src/**/*' --write",
     "start": "parcel ./public/index.html",
+    "fixtures": "cp -r test/fixtures/ dist/",
     "semantic-release": "semantic-release"
   },
   "author": "teramotodaiki",

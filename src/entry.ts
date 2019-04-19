@@ -31,12 +31,10 @@ const update = () => {
 
 code.oninput = update;
 
-code.value = `// これはコメント
+const testPath = /\/test(\/.*)/i.exec(location.pathname);
 
-function f() {
-  const mozi = 'ここは文字列';
-  const suuzi = 123;
+if (testPath) {
+  fetch(testPath[1])
+    .then(response => response.text())
+    .then(text => ((code.value = text), update()));
 }
-`;
-
-update();
