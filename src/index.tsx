@@ -76,11 +76,7 @@ export function BlockStatement(props: Props<t.BlockStatement>) {
 
 export function ExpressionStatement(props: Props<t.ExpressionStatement>) {
   const { expression } = props.node;
-  return t.isCallExpression(expression) ? (
-    <CallExpression node={expression} onUpdate={props.onUpdate} />
-  ) : (
-    <NotImplemented node={expression} />
-  );
+  return <Expression node={expression} onUpdate={props.onUpdate} />;
 }
 
 export function CallExpression(props: Props<t.CallExpression>) {
@@ -175,6 +171,8 @@ export function Expression(props: Props<t.Expression>) {
     <StringLiteral node={props.node} onUpdate={props.onUpdate} />
   ) : t.isNumericLiteral(props.node) ? (
     <NumericLiteral node={props.node} onUpdate={props.onUpdate} />
+  ) : t.isCallExpression(props.node) ? (
+    <CallExpression node={props.node} onUpdate={props.onUpdate} />
   ) : null;
 }
 
