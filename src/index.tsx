@@ -50,9 +50,65 @@ function Statement(props: Props<t.Statement>) {
     <VariableDeclaration node={node} onUpdate={props.onUpdate} />
   ) : t.isFunctionDeclaration(node) ? (
     <FunctionDeclaration node={node} onUpdate={props.onUpdate} />
+  ) : t.isBlockStatement(node) ? (
+    <BlockStatement node={node} onUpdate={props.onUpdate} />
+  ) : t.isExpressionStatement(node) ? (
+    <ExpressionStatement node={node} onUpdate={props.onUpdate} />
   ) : (
     <NotImplemented node={node} onUpdate={props.onUpdate} />
   );
+}
+
+export function BlockStatement(props: Props<t.BlockStatement>) {
+  const { body } = props.node;
+  return (
+    <div>
+      <span>{`{`}</span>
+      <div style={{ paddingLeft: 8 }}>
+        {body.map((node, i) => (
+          <Statement key={i} node={node} onUpdate={props.onUpdate} />
+        ))}
+      </div>
+      <span>{`}`}</span>
+    </div>
+  );
+}
+
+export function ExpressionStatement(props: Props<t.ExpressionStatement>) {
+  const { expression } = props.node;
+  return t.isCallExpression(expression) ? (
+    <CallExpression node={expression} onUpdate={props.onUpdate} />
+  ) : (
+    <NotImplemented node={expression} onUpdate={props.onUpdate} />
+  );
+}
+
+export function CallExpression(props: Props<t.CallExpression>) {
+  const { callee, arguments: args } = props.node;
+  return (
+    <span>
+      {t.isIdentifier(callee) ? (
+        <span>{callee.name}</span>
+      ) : (
+        <NotImplemented node={callee} onUpdate={props.onUpdate} />
+      )}
+      <span>{`(`}</span>
+      {args.map((argument, i) =>
+        t.isExpression(argument) ? (
+          <Expression key={i} node={argument} onUpdate={props.onUpdate} />
+        ) : t.isSpreadElement(argument) ? (
+          <SpreadElement key={i} node={argument} onUpdate={props.onUpdate} />
+        ) : (
+          <NotImplemented key={i} node={argument} onUpdate={props.onUpdate} />
+        )
+      )}
+      <span>{`)`}</span>
+    </span>
+  );
+}
+
+export function SpreadElement(props: Props<t.SpreadElement>) {
+  return <NotImplemented node={props.node} onUpdate={props.onUpdate} />;
 }
 
 export function FunctionDeclaration(props: Props<t.FunctionDeclaration>) {
