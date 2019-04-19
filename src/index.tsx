@@ -55,7 +55,7 @@ function Statement(props: Props<t.Statement>) {
   ) : t.isExpressionStatement(node) ? (
     <ExpressionStatement node={node} onUpdate={props.onUpdate} />
   ) : (
-    <NotImplemented node={node} onUpdate={props.onUpdate} />
+    <NotImplemented node={node} />
   );
 }
 
@@ -79,7 +79,7 @@ export function ExpressionStatement(props: Props<t.ExpressionStatement>) {
   return t.isCallExpression(expression) ? (
     <CallExpression node={expression} onUpdate={props.onUpdate} />
   ) : (
-    <NotImplemented node={expression} onUpdate={props.onUpdate} />
+    <NotImplemented node={expression} />
   );
 }
 
@@ -90,7 +90,7 @@ export function CallExpression(props: Props<t.CallExpression>) {
       {t.isIdentifier(callee) ? (
         <span>{callee.name}</span>
       ) : (
-        <NotImplemented node={callee} onUpdate={props.onUpdate} />
+        <NotImplemented node={callee} />
       )}
       <span>{`(`}</span>
       {args.map((argument, i) =>
@@ -99,7 +99,7 @@ export function CallExpression(props: Props<t.CallExpression>) {
         ) : t.isSpreadElement(argument) ? (
           <SpreadElement key={i} node={argument} onUpdate={props.onUpdate} />
         ) : (
-          <NotImplemented key={i} node={argument} onUpdate={props.onUpdate} />
+          <NotImplemented key={i} node={argument} />
         )
       )}
       <span>{`)`}</span>
@@ -108,7 +108,7 @@ export function CallExpression(props: Props<t.CallExpression>) {
 }
 
 export function SpreadElement(props: Props<t.SpreadElement>) {
-  return <NotImplemented node={props.node} onUpdate={props.onUpdate} />;
+  return <NotImplemented node={props.node} />;
 }
 
 export function FunctionDeclaration(props: Props<t.FunctionDeclaration>) {
@@ -307,6 +307,6 @@ export function InputMutator(props: InputMutatorProps) {
   );
 }
 
-export function NotImplemented(props: Props<t.Node>): JSX.Element {
+export function NotImplemented(props: { node: t.Node }): JSX.Element {
   throw new Error(`Not Implemented: <${props.node.type} />`);
 }
