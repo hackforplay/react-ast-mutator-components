@@ -1,7 +1,7 @@
-import * as React from 'react';
 import * as t from '@babel/types';
-import { NodeProps as P } from './types';
+import * as React from 'react';
 import * as AnyNodes from './AnyNodes';
+import { NodeProps as P } from './types';
 
 export function Expression<T extends t.Expression>(props: P<T>) {
   const Component = AnyNodes[props.node.type] as React.ComponentType<P<T>>;

@@ -1,7 +1,7 @@
 import { parse } from '@babel/parser';
 import * as React from 'react';
 import { render } from 'react-dom';
-import * as components from './index';
+import { Root } from './index';
 
 const code = document.getElementById('code') as HTMLTextAreaElement;
 const result = document.getElementById('result');
@@ -16,7 +16,7 @@ const update = () => {
   console.timeEnd();
   console.log(file);
   render(
-    React.createElement(components.File, {
+    React.createElement(Root, {
       node: file,
       onUpdate(prev, next) {
         code.value =

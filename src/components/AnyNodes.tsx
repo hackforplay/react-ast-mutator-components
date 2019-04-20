@@ -1,5 +1,7 @@
 import * as t from '@babel/types';
 import * as React from 'react';
+import { Expression, Statement } from './Aliases';
+import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
 import { NodeProps as P } from './types';
 
@@ -36,7 +38,18 @@ export function DirectiveLiteral(props: P<t.DirectiveLiteral>) {
 }
 
 export function BlockStatement(props: P<t.BlockStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { body } = props.node;
+  return (
+    <div>
+      <span>{`{`}</span>
+      <div style={{ paddingLeft: 8 }}>
+        {body.map((node, i) => (
+          <Statement key={i} node={node} onUpdate={props.onUpdate} />
+        ))}
+      </div>
+      <span>{`}`}</span>
+    </div>
+  );
 }
 
 export function BreakStatement(props: P<t.BreakStatement>) {
@@ -44,7 +57,27 @@ export function BreakStatement(props: P<t.BreakStatement>) {
 }
 
 export function CallExpression(props: P<t.CallExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { callee, arguments: args } = props.node;
+  return (
+    <span>
+      {t.isIdentifier(callee) ? (
+        <span>{callee.name}</span>
+      ) : (
+        <NotImplemented node={callee} />
+      )}
+      <span>{`(`}</span>
+      {args.map((argument, i) =>
+        t.isExpression(argument) ? (
+          <Expression key={i} node={argument} onUpdate={props.onUpdate} />
+        ) : t.isSpreadElement(argument) ? (
+          <SpreadElement key={i} node={argument} onUpdate={props.onUpdate} />
+        ) : (
+          <NotImplemented key={i} node={argument} />
+        )
+      )}
+      <span>{`)`}</span>
+    </span>
+  );
 }
 
 export function CatchClause(props: P<t.CatchClause>) {
@@ -72,11 +105,13 @@ export function EmptyStatement(props: P<t.EmptyStatement>) {
 }
 
 export function ExpressionStatement(props: P<t.ExpressionStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { expression } = props.node;
+  return <Expression node={expression} onUpdate={props.onUpdate} />;
 }
 
 export function File(props: P<t.File>) {
-  return <NotImplemented node={props.node} />;
+  const { program } = props.node;
+  return <Program node={program} onUpdate={props.onUpdate} />;
 }
 
 export function ForInStatement(props: P<t.ForInStatement>) {
@@ -88,7 +123,31 @@ export function ForStatement(props: P<t.ForStatement>) {
 }
 
 export function FunctionDeclaration(props: P<t.FunctionDeclaration>) {
-  return <NotImplemented node={props.node} />;
+  const { id, body } = props.node;
+  return (
+    <div>
+      <div>
+        <span style={{ border: '1px solid #aaaaaa' }}>
+          <span>
+            <ruby>
+              function<rt>かんすう</rt>
+            </ruby>{' '}
+          </span>
+          {id ? <span>{id.name}</span> : null}
+        </span>
+        <span>()</span>
+        <span>{`{`}</span>
+      </div>
+      <div style={{ paddingLeft: 8, border: '1px solid #aaaaaa' }}>
+        {body.body.map((node, i) => (
+          <Statement key={i} node={node} onUpdate={props.onUpdate} />
+        ))}
+      </div>
+      <div>
+        <span>{`}`}</span>
+      </div>
+    </div>
+  );
 }
 
 export function FunctionExpression(props: P<t.FunctionExpression>) {
@@ -108,11 +167,81 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
 }
 
 export function StringLiteral(props: P<t.StringLiteral>) {
-  return <NotImplemented node={props.node} />;
+  const { type, value, start, end } = props.node;
+  const [editable, setEditable] = React.useState(false);
+
+  if (start === null || end === null) {
+    console.log(props.node);
+    throw new Error('start or end is null');
+  }
+
+  return editable ? (
+    <InputMutator
+      type={type}
+      defaultValue={value}
+      onUpdate={newValue => {
+        props.node.value = newValue;
+        props.onUpdate(
+          { start, end, value: `'${value}'` },
+          {
+            start,
+            end: start + newValue.length + 2,
+            value: `'${newValue}'`
+          }
+        );
+        setEditable(false);
+      }}
+    />
+  ) : (
+    <>
+      <span>'</span>
+      <span
+        onClick={() => setEditable(true)}
+        style={{ backgroundColor: '#ff835d', borderRadius: 2 }}
+      >
+        {value}
+      </span>
+      <span>'</span>
+    </>
+  );
 }
 
 export function NumericLiteral(props: P<t.NumericLiteral>) {
-  return <NotImplemented node={props.node} />;
+  const { type, value, start, end } = props.node;
+  const [editable, setEditable] = React.useState(false);
+
+  if (start === null || end === null) {
+    console.log(props.node);
+    throw new Error('start or end is null');
+  }
+
+  return editable ? (
+    <InputMutator
+      type={type}
+      defaultValue={value.toString()}
+      onUpdate={newValue => {
+        props.node.value = parseFloat(newValue);
+        props.onUpdate(
+          { start, end, value: value.toString() },
+          {
+            start,
+            end: start + newValue.length,
+            value: newValue
+          }
+        );
+        setEditable(false);
+      }}
+    />
+  ) : (
+    <>
+      <span
+        onClick={() => setEditable(true)}
+        style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
+      >
+        {value}
+      </span>
+    </>
+  );
 }
 
 export function NullLiteral(props: P<t.NullLiteral>) {
@@ -140,7 +269,13 @@ export function NewExpression(props: P<t.NewExpression>) {
 }
 
 export function Program(props: P<t.Program>) {
-  return <NotImplemented node={props.node} />;
+  return (
+    <div>
+      {props.node.body.map((node, i) => (
+        <Statement key={i} node={node} onUpdate={props.onUpdate} />
+      ))}
+    </div>
+  );
 }
 
 export function ObjectExpression(props: P<t.ObjectExpression>) {
@@ -200,11 +335,34 @@ export function UpdateExpression(props: P<t.UpdateExpression>) {
 }
 
 export function VariableDeclaration(props: P<t.VariableDeclaration>) {
-  return <NotImplemented node={props.node} />;
+  return (
+    <div>
+      <ruby>
+        {props.node.kind}
+        <rt>へんすう</rt>
+      </ruby>
+      <span />
+      {props.node.declarations.map((node, i) => (
+        <VariableDeclarator key={i} node={node} onUpdate={props.onUpdate} />
+      ))}
+      <span>;</span>
+    </div>
+  );
 }
 
 export function VariableDeclarator(props: P<t.VariableDeclarator>) {
-  return <NotImplemented node={props.node} />;
+  const { id, init } = props.node;
+  return (
+    <>
+      <span>{t.isIdentifier(id) ? id.name : '?'}</span>
+      <span>
+        <ruby>
+          =<rt>←</rt>
+        </ruby>
+      </span>
+      {init ? <Expression node={init} onUpdate={props.onUpdate} /> : '?'}
+    </>
+  );
 }
 
 export function WhileStatement(props: P<t.WhileStatement>) {

@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as React from 'react';
 import { fixtures } from '../test/';
-import { File } from './index';
+import { Root } from './index';
 
 configure({ adapter: new Adapter() });
 
@@ -21,7 +21,7 @@ for (const fixturePath of fixtures) {
         React.createElement(
           ErrorBoundary,
           {},
-          React.createElement(File, {
+          React.createElement(Root, {
             node,
             onUpdate() {}
           })
