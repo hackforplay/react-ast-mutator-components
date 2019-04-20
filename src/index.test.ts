@@ -27,7 +27,7 @@ for (const fixturePath of fixtures) {
           })
         )
       );
-    });
+    }, `http://localhost:1234/test/${fixturePath.replace(/[^\/]+$/, 'input.js')}`);
   });
 }
 
