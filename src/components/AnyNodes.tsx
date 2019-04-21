@@ -76,6 +76,7 @@ export function CallExpression(props: P<t.CallExpression>) {
         )
       )}
       <span>{`)`}</span>
+      <span>;</span>
     </span>
   );
 }
@@ -123,17 +124,19 @@ export function ForStatement(props: P<t.ForStatement>) {
 }
 
 export function FunctionDeclaration(props: P<t.FunctionDeclaration>) {
-  const { id, body } = props.node;
+  const { async, body, generator, id } = props.node;
   return (
-    <div>
+    <div style={{ paddingLeft: 8 }}>
       <div>
         <span style={{ border: '1px solid #aaaaaa' }}>
+          {async ? <span>async </span> : null}
+          {generator ? <span>generator </span> : null}
           <span>
             <ruby>
               function<rt>かんすう</rt>
-            </ruby>{' '}
+            </ruby>
           </span>
-          {id ? <span>{id.name}</span> : null}
+          {id ? <span>{` ${id.name}`}</span> : null}
         </span>
         <span>()</span>
         <span>{`{`}</span>
@@ -151,7 +154,33 @@ export function FunctionDeclaration(props: P<t.FunctionDeclaration>) {
 }
 
 export function FunctionExpression(props: P<t.FunctionExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { async, body, generator, id } = props.node;
+  return (
+    <div style={{ paddingLeft: 8 }}>
+      <div>
+        <span style={{ border: '1px solid #aaaaaa' }}>
+          {async ? <span>async </span> : null}
+          {generator ? <span>generator </span> : null}
+          <span>
+            <ruby>
+              function<rt>かんすう</rt>
+            </ruby>
+          </span>
+          {id ? <span>{` ${id.name}`}</span> : null}
+        </span>
+        <span>()</span>
+        <span>{`{`}</span>
+      </div>
+      <div style={{ paddingLeft: 8, border: '1px solid #aaaaaa' }}>
+        {body.body.map((node, i) => (
+          <Statement key={i} node={node} onUpdate={props.onUpdate} />
+        ))}
+      </div>
+      <div>
+        <span>{`}`}</span>
+      </div>
+    </div>
+  );
 }
 
 export function Identifier(props: P<t.Identifier>) {
