@@ -425,7 +425,14 @@ export function ThisExpression(props: P<t.ThisExpression>) {
 }
 
 export function ThrowStatement(props: P<t.ThrowStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { argument } = props.node;
+  return (
+    <div>
+      <span>throw{argument ? ' ' : ''}</span>
+      {argument && <Expression node={argument} onUpdate={props.onUpdate} />}
+      <span>;</span>
+    </div>
+  );
 }
 
 export function TryStatement(props: P<t.TryStatement>) {
