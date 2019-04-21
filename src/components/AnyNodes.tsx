@@ -184,11 +184,30 @@ export function FunctionExpression(props: P<t.FunctionExpression>) {
 }
 
 export function Identifier(props: P<t.Identifier>) {
-  return <NotImplemented node={props.node} />;
+  const { name, decorators, typeAnnotation } = props.node;
+  if (typeAnnotation) {
+    return <NotImplemented node={typeAnnotation} />;
+  }
+  if (decorators) {
+    return <NotImplemented node={decorators[0]} />;
+  }
+  return <span>{name}</span>;
 }
 
 export function IfStatement(props: P<t.IfStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { alternate, consequent, test } = props.node;
+  if (alternate) {
+    return <NotImplemented node={alternate} />;
+  }
+  return (
+    <div>
+      <span>if </span>
+      <span>{`(`}</span>
+      <Expression node={test} onUpdate={props.onUpdate} />
+      <span>{`)`}</span>
+      <Statement node={consequent} onUpdate={props.onUpdate} />
+    </div>
+  );
 }
 
 export function LabeledStatement(props: P<t.LabeledStatement>) {
