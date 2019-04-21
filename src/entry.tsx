@@ -51,7 +51,9 @@ class Entry extends React.Component {
     console.time();
     let file: t.File;
     try {
-      file = parse(code);
+      file = parse(code, {
+        sourceType: 'module'
+      });
       console.log(file);
     } catch (error) {
       return <div style={{ color: 'gray' }}>{error.message}</div>;
