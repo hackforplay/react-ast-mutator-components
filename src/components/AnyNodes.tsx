@@ -9,6 +9,7 @@ import {
   Property,
   Statement
 } from './Aliases';
+import { Comments } from './Comments';
 import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
 import { NodeProps as P } from './types';
@@ -102,7 +103,14 @@ export function ContinueStatement(props: P<t.ContinueStatement>) {
 }
 
 export function DebuggerStatement(props: P<t.DebuggerStatement>) {
-  return <div>debugger;</div>;
+  const { leadingComments, trailingComments } = props.node;
+  return (
+    <div>
+      <Comments comments={leadingComments} />
+      <span>debugger;</span>
+      <Comments comments={trailingComments} />
+    </div>
+  );
 }
 
 export function DoWhileStatement(props: P<t.DoWhileStatement>) {
@@ -425,12 +433,14 @@ export function ThisExpression(props: P<t.ThisExpression>) {
 }
 
 export function ThrowStatement(props: P<t.ThrowStatement>) {
-  const { argument } = props.node;
+  const { argument, leadingComments, trailingComments } = props.node;
   return (
     <div>
+      <Comments comments={leadingComments} />
       <span>throw{argument ? ' ' : ''}</span>
       {argument && <Expression node={argument} onUpdate={props.onUpdate} />}
       <span>;</span>
+      <Comments comments={trailingComments} />
     </div>
   );
 }
