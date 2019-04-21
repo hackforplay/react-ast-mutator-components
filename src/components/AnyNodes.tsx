@@ -387,7 +387,14 @@ export function RestElement(props: P<t.RestElement>) {
 }
 
 export function ReturnStatement(props: P<t.ReturnStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { argument } = props.node;
+  return (
+    <div>
+      <span>return{argument ? ' ' : ''}</span>
+      {argument && <Expression node={argument} onUpdate={props.onUpdate} />}
+      <span>;</span>
+    </div>
+  );
 }
 
 export function SequenceExpression(props: P<t.SequenceExpression>) {
