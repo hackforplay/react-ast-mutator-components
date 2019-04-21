@@ -1,6 +1,13 @@
 import * as t from '@babel/types';
 import * as React from 'react';
-import { Expression, Statement } from './Aliases';
+import {
+  Declaration,
+  Expression,
+  Method,
+  PatternLike,
+  Property,
+  Statement
+} from './Aliases';
 import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
 import { NodeProps as P } from './types';
@@ -355,7 +362,14 @@ export function SequenceExpression(props: P<t.SequenceExpression>) {
 }
 
 export function ParenthesizedExpression(props: P<t.ParenthesizedExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { expression } = props.node;
+  return (
+    <>
+      <span>{`(`}</span>
+      <Expression node={expression} onUpdate={props.onUpdate} />
+      <span>{`)`}</span>
+    </>
+  );
 }
 
 export function SwitchCase(props: P<t.SwitchCase>) {
@@ -438,11 +452,48 @@ export function ArrowFunctionExpression(props: P<t.ArrowFunctionExpression>) {
 }
 
 export function ClassBody(props: P<t.ClassBody>) {
+  const { body } = props.node;
+  return (
+    <>
+      {body.map((member, i) =>
+        t.isMethod(member) ? (
+          <Method key={i} node={member} onUpdate={props.onUpdate} />
+        ) : t.isProperty(member) ? (
+          <Property key={i} node={member} onUpdate={props.onUpdate} />
+        ) : (
+          <NotImplemented node={member} />
+        )
+      )}
+    </>
+  );
   return <NotImplemented node={props.node} />;
 }
 
 export function ClassDeclaration(props: P<t.ClassDeclaration>) {
-  return <NotImplemented node={props.node} />;
+  const { id, superClass, body, decorators } = props.node;
+  if (superClass) {
+    return <NotImplemented node={superClass} />;
+  }
+  if (decorators) {
+    return <NotImplemented node={decorators[0]} />;
+  }
+  return (
+    <div>
+      <span>
+        <ruby>
+          class <rt>クラス</rt>
+        </ruby>
+      </span>
+      {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
+      <div>
+        <span>{`{`}</span>
+        <div style={{ paddingLeft: 8 }}>
+          <ClassBody node={body} onUpdate={props.onUpdate} />
+        </div>
+        <span>{`}`}</span>
+      </div>
+    </div>
+  );
 }
 
 export function ClassExpression(props: P<t.ClassExpression>) {
@@ -454,7 +505,17 @@ export function ExportAllDeclaration(props: P<t.ExportAllDeclaration>) {
 }
 
 export function ExportDefaultDeclaration(props: P<t.ExportDefaultDeclaration>) {
-  return <NotImplemented node={props.node} />;
+  const { declaration } = props.node;
+  return (
+    <div>
+      <span>export default </span>
+      {t.isDeclaration(declaration) ? (
+        <Declaration node={declaration} onUpdate={props.onUpdate} />
+      ) : t.isExpression(declaration) ? (
+        <Expression node={declaration} onUpdate={props.onUpdate} />
+      ) : null}
+    </div>
+  );
 }
 
 export function ExportNamedDeclaration(props: P<t.ExportNamedDeclaration>) {
@@ -490,7 +551,26 @@ export function MetaProperty(props: P<t.MetaProperty>) {
 }
 
 export function ClassMethod(props: P<t.ClassMethod>) {
-  return <NotImplemented node={props.node} />;
+  const { kind, key, params, body, computed, static: static_ } = props.node;
+  return (
+    <div>
+      {static_ ? <span>static </span> : null}
+      {kind === 'method' ? null : <span>{kind} </span>}
+      {computed ? <span>{`[`}</span> : null}
+      <Expression node={key} onUpdate={props.onUpdate} />
+      {computed ? <span>{`]`}</span> : null}
+      <span>{`(`}</span>
+      {params.map((param, i) =>
+        t.isTSParameterProperty(param) ? (
+          <NotImplemented key={i} node={param} />
+        ) : (
+          <PatternLike key={i} node={param} onUpdate={props.onUpdate} />
+        )
+      )}
+      <span>{`)`}</span>
+      <BlockStatement node={body} onUpdate={props.onUpdate} />
+    </div>
+  );
 }
 
 export function ObjectPattern(props: P<t.ObjectPattern>) {
