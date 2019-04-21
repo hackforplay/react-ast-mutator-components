@@ -102,7 +102,7 @@ export function ContinueStatement(props: P<t.ContinueStatement>) {
 }
 
 export function DebuggerStatement(props: P<t.DebuggerStatement>) {
-  return <NotImplemented node={props.node} />;
+  return <div>debugger;</div>;
 }
 
 export function DoWhileStatement(props: P<t.DoWhileStatement>) {
