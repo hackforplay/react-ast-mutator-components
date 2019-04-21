@@ -4,6 +4,7 @@ import {
   Declaration,
   Expression,
   Method,
+  ObjectMember,
   PatternLike,
   Property,
   Statement
@@ -338,7 +339,20 @@ export function Program(props: P<t.Program>) {
 }
 
 export function ObjectExpression(props: P<t.ObjectExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { properties } = props.node;
+  return (
+    <span>
+      <span>{`{ `}</span>
+      {properties.map((property, i) =>
+        t.isObjectMember(property) ? (
+          <ObjectMember key={i} node={property} onUpdate={props.onUpdate} />
+        ) : (
+          <SpreadElement key={i} node={property} onUpdate={props.onUpdate} />
+        )
+      )}
+      <span>{` }`}</span>
+    </span>
+  );
 }
 
 export function ObjectMethod(props: P<t.ObjectMethod>) {
@@ -346,7 +360,26 @@ export function ObjectMethod(props: P<t.ObjectMethod>) {
 }
 
 export function ObjectProperty(props: P<t.ObjectProperty>) {
-  return <NotImplemented node={props.node} />;
+  const { key, value, computed, shorthand } = props.node;
+  return (
+    <span>
+      {computed ? <span>{`[`}</span> : null}
+      {t.isExpression(key) ? (
+        <Expression node={key} onUpdate={props.onUpdate} />
+      ) : (
+        <NotImplemented node={key} />
+      )}
+      {computed ? <span>{`]`}</span> : null}
+      <span style={shorthand ? { opacity: 0.1 } : {}}>
+        <span>: </span>
+        {t.isPatternLike(value) ? (
+          <PatternLike node={value} onUpdate={props.onUpdate} />
+        ) : (
+          <Expression node={value} onUpdate={props.onUpdate} />
+        )}
+      </span>
+    </span>
+  );
 }
 
 export function RestElement(props: P<t.RestElement>) {
