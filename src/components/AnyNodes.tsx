@@ -515,7 +515,20 @@ export function VariableDeclarator(props: P<t.VariableDeclarator>) {
 }
 
 export function WhileStatement(props: P<t.WhileStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { test, body, leadingComments, trailingComments } = props.node;
+  return (
+    <div>
+      <Comments comments={leadingComments} />
+      <div>
+        <span>while </span>
+        <span>(</span>
+        <Expression node={test} onUpdate={props.onUpdate} />
+        <span>)</span>
+        <Statement node={body} onUpdate={props.onUpdate} />
+      </div>
+      <Comments comments={trailingComments} />
+    </div>
+  );
 }
 
 export function WithStatement(props: P<t.WithStatement>) {
