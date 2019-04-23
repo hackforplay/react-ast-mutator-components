@@ -502,15 +502,19 @@ export function VariableDeclaration(props: P<t.VariableDeclaration>) {
 export function VariableDeclarator(props: P<t.VariableDeclarator>) {
   const { id, init } = props.node;
   return (
-    <>
+    <span>
       <span>{t.isIdentifier(id) ? id.name : '?'}</span>
-      <span>
-        <ruby>
-          =<rt>←</rt>
-        </ruby>
-      </span>
-      {init ? <Expression node={init} onUpdate={props.onUpdate} /> : '?'}
-    </>
+      {init ? (
+        <>
+          <span>
+            <ruby>
+              =<rt>←</rt>
+            </ruby>
+          </span>
+          <Expression node={init} onUpdate={props.onUpdate} />
+        </>
+      ) : null}
+    </span>
   );
 }
 
