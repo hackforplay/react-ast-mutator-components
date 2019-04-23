@@ -309,7 +309,41 @@ export function NullLiteral(props: P<t.NullLiteral>) {
 }
 
 export function BooleanLiteral(props: P<t.BooleanLiteral>) {
-  return <NotImplemented node={props.node} />;
+  const { type, value, start, end } = props.node;
+  const [editable, setEditable] = React.useState(false);
+
+  if (start === null || end === null) {
+    console.log(props.node);
+    throw new Error('start or end is null');
+  }
+
+  return editable ? (
+    <InputMutator
+      type={type}
+      defaultValue={value.toString()}
+      onUpdate={newValue => {
+        props.node.value = newValue === 'true';
+        props.onUpdate(
+          { start, end, value: value.toString() },
+          {
+            start,
+            end: start + newValue.length,
+            value: newValue
+          }
+        );
+        setEditable(false);
+      }}
+    />
+  ) : (
+    <>
+      <span
+        onClick={() => setEditable(true)}
+        style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
+      >
+        {value.toString()}
+      </span>
+    </>
+  );
 }
 
 export function RegExpLiteral(props: P<t.RegExpLiteral>) {

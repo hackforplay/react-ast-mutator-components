@@ -17,8 +17,16 @@ const escapeNumericLiteral = (str: string) => {
   return { escaped, invalid: !/^-?\d*\.?\d+$/.test(escaped) };
 };
 
+const escapeBooleanLiteral = (str: string) => {
+  const invalid = str !== 'true' && str !== 'false';
+  return { escaped: str, invalid };
+};
+
 type InputMutatorProps = {
-  type: t.NumericLiteral['type'] | t.StringLiteral['type'];
+  type:
+    | t.NumericLiteral['type']
+    | t.StringLiteral['type']
+    | t.BooleanLiteral['type'];
   defaultValue: string;
   onUpdate: (value: string) => void;
 };
@@ -41,6 +49,8 @@ export function InputMutator(props: InputMutatorProps) {
         const { escaped, invalid } =
           props.type === 'NumericLiteral'
             ? escapeNumericLiteral(value)
+            : props.type === 'BooleanLiteral'
+            ? escapeBooleanLiteral(value)
             : escapeStringLiteral(value);
         setInvalid(invalid);
         setValue(escaped);
