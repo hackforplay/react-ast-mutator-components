@@ -3,6 +3,7 @@ import * as React from 'react';
 import {
   Declaration,
   Expression,
+  LVal,
   Method,
   ObjectMember,
   PatternLike,
@@ -503,7 +504,7 @@ export function VariableDeclarator(props: P<t.VariableDeclarator>) {
   const { id, init } = props.node;
   return (
     <span>
-      <span>{t.isIdentifier(id) ? id.name : '?'}</span>
+      <LVal node={id} onUpdate={props.onUpdate} />
       {init ? (
         <>
           <span>
