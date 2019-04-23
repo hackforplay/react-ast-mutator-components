@@ -14,14 +14,6 @@ import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
 import { NodeProps as P } from './types';
 
-export function CommentBlock() {
-  return <span />;
-}
-
-export function CommentLine() {
-  return <span />;
-}
-
 export function ArrayExpression(props: P<t.ArrayExpression>) {
   return <NotImplemented node={props.node} />;
 }
