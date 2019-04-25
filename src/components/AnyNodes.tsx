@@ -448,11 +448,47 @@ export function ParenthesizedExpression(props: P<t.ParenthesizedExpression>) {
 }
 
 export function SwitchCase(props: P<t.SwitchCase>) {
-  return <NotImplemented node={props.node} />;
+  const { test, consequent, leadingComments, trailingComments } = props.node;
+  return (
+    <div>
+      {test ? (
+        <>
+          <span>case </span>
+          <Expression node={test} onUpdate={props.onUpdate} />
+          <span>:</span>
+        </>
+      ) : (
+        <span>default:</span>
+      )}
+      <div style={{ paddingLeft: 8 }}>
+        {consequent.map((statement, i) => (
+          <Statement key={i} node={statement} onUpdate={props.onUpdate} />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 export function SwitchStatement(props: P<t.SwitchStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { cases, discriminant, leadingComments, trailingComments } = props.node;
+
+  return (
+    <div>
+      <span>switch </span>
+      <span>(</span>
+      <Expression node={discriminant} onUpdate={props.onUpdate} />
+      <span>)</span>
+      <div>
+        <span>{`{`}</span>
+        <div style={{ paddingLeft: 8 }}>
+          {cases.map((case_, i) => (
+            <SwitchCase key={i} node={case_} onUpdate={props.onUpdate} />
+          ))}
+        </div>
+        <span>{`}`}</span>
+      </div>
+    </div>
+  );
 }
 
 export function ThisExpression(props: P<t.ThisExpression>) {
