@@ -66,11 +66,7 @@ export function CallExpression(props: P<t.CallExpression>) {
   const { callee, arguments: args } = props.node;
   return (
     <span>
-      {t.isIdentifier(callee) ? (
-        <span>{callee.name}</span>
-      ) : (
-        <NotImplemented node={callee} />
-      )}
+      <Expression node={callee} onUpdate={props.onUpdate} />
       <span>{`(`}</span>
       {args.map((argument, i) =>
         t.isExpression(argument) ? (
