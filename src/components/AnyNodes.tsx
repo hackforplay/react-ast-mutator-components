@@ -345,8 +345,8 @@ export function MemberExpression(props: P<t.MemberExpression>) {
     <>
       <Expression node={object} onUpdate={props.onUpdate} />
       <span>.</span>
-      {t.isIdentifier(property) ? (
-        <Identifier node={property} onUpdate={props.onUpdate} />
+      {t.isExpression(property) ? (
+        <Expression node={property} onUpdate={props.onUpdate} />
       ) : (
         <NotImplemented node={props.node} />
       )}
