@@ -55,7 +55,11 @@ export function BlockStatement(props: P<t.BlockStatement>) {
 }
 
 export function BreakStatement(props: P<t.BreakStatement>) {
-  return <NotImplemented node={props.node} />;
+  return (
+    <div>
+      <span>break;</span>
+    </div>
+  );
 }
 
 export function CallExpression(props: P<t.CallExpression>) {
