@@ -24,6 +24,14 @@ export function AssignmentExpression(props: P<t.AssignmentExpression>) {
 }
 
 export function BinaryExpression(props: P<t.BinaryExpression>) {
+  const { operator, left, right } = props.node;
+  return (
+    <span>
+      <Expression node={left} onUpdate={props.onUpdate} />
+      <span>{operator}</span>
+      <Expression node={right} onUpdate={props.onUpdate} />
+    </span>
+  );
   return <NotImplemented node={props.node} />;
 }
 
