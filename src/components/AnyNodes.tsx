@@ -149,7 +149,7 @@ export function FunctionDeclaration(props: P<t.FunctionDeclaration>) {
               function<rt>かんすう</rt>
             </ruby>
           </span>
-          {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
+          {id ? <span>{` ${id.name}`}</span> : null}
         </span>
         <span>()</span>
       </div>
@@ -171,7 +171,7 @@ export function FunctionExpression(props: P<t.FunctionExpression>) {
               function<rt>かんすう</rt>
             </ruby>
           </span>
-          {id ? <span>{` ${id.name}`}</span> : null}
+          {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
         </span>
         <span>()</span>
       </div>
