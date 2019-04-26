@@ -678,19 +678,88 @@ export function ForOfStatement(props: P<t.ForOfStatement>) {
 }
 
 export function ImportDeclaration(props: P<t.ImportDeclaration>) {
+  const { specifiers, source } = props.node;
+  const [first, second] = specifiers;
+  const defaultSpecifier = t.isImportDefaultSpecifier(first) ? first : null;
+  const target = defaultSpecifier ? second : first;
+  const namespaceSpecifier = t.isImportNamespaceSpecifier(target)
+    ? target
+    : null;
+  const rest = specifiers.filter(
+    s => s !== defaultSpecifier && s !== namespaceSpecifier
+  );
+
+  return (
+    <div>
+      <span>import </span>
+      {defaultSpecifier ? (
+        <ImportDefaultSpecifier
+          node={defaultSpecifier}
+          onUpdate={props.onUpdate}
+        />
+      ) : null}
+      {namespaceSpecifier ? (
+        <>
+          {defaultSpecifier ? <span>, </span> : null}
+          <ImportNamespaceSpecifier
+            node={namespaceSpecifier}
+            onUpdate={props.onUpdate}
+          />
+        </>
+      ) : null}
+      {rest.length > 0 ? (
+        <>
+          {defaultSpecifier ? <span>, </span> : null}
+          <span>{`{ `}</span>
+          {rest.map((specifier, i) =>
+            t.isImportSpecifier(specifier) ? (
+              <React.Fragment key={i}>
+                {i > 0 ? <span>, </span> : null}
+                <ImportSpecifier node={specifier} onUpdate={props.onUpdate} />
+              </React.Fragment>
+            ) : (
+              <NotImplemented key={i} node={specifier} />
+            )
+          )}
+          <span>{` }`}</span>
+        </>
+      ) : null}
+      <span> from </span>
+      <StringLiteral node={source} onUpdate={props.onUpdate} />
+    </div>
+  );
   return <NotImplemented node={props.node} />;
 }
 
 export function ImportDefaultSpecifier(props: P<t.ImportDefaultSpecifier>) {
-  return <NotImplemented node={props.node} />;
+  const { local } = props.node;
+  return (
+    <span>
+      <Identifier node={local} onUpdate={props.onUpdate} />
+    </span>
+  );
 }
 
 export function ImportNamespaceSpecifier(props: P<t.ImportNamespaceSpecifier>) {
-  return <NotImplemented node={props.node} />;
+  const { local } = props.node;
+  return (
+    <span>
+      <span>* as </span>
+      <Identifier node={local} onUpdate={props.onUpdate} />
+    </span>
+  );
 }
 
 export function ImportSpecifier(props: P<t.ImportSpecifier>) {
-  return <NotImplemented node={props.node} />;
+  const { local, imported } = props.node;
+  const shorthand = local.name === imported.name;
+  return (
+    <span>
+      <Identifier node={imported} onUpdate={props.onUpdate} />
+      {shorthand ? null : <span> as </span>}
+      {shorthand ? null : <Identifier node={local} onUpdate={props.onUpdate} />}
+    </span>
+  );
 }
 
 export function MetaProperty(props: P<t.MetaProperty>) {
