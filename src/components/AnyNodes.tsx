@@ -20,7 +20,14 @@ export function ArrayExpression(props: P<t.ArrayExpression>) {
 }
 
 export function AssignmentExpression(props: P<t.AssignmentExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { operator, left, right } = props.node;
+  return (
+    <>
+      <LVal node={left} onUpdate={props.onUpdate} />
+      <span>{operator}</span>
+      <Expression node={right} onUpdate={props.onUpdate} />
+    </>
+  );
 }
 
 export function BinaryExpression(props: P<t.BinaryExpression>) {
