@@ -356,7 +356,18 @@ export function LogicalExpression(props: P<t.LogicalExpression>) {
 }
 
 export function MemberExpression(props: P<t.MemberExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { object, property } = props.node;
+  return (
+    <>
+      <Expression node={object} onUpdate={props.onUpdate} />
+      <span>.</span>
+      {t.isIdentifier(property) ? (
+        <Identifier node={property} onUpdate={props.onUpdate} />
+      ) : (
+        <NotImplemented node={props.node} />
+      )}
+    </>
+  );
 }
 
 export function NewExpression(props: P<t.NewExpression>) {
