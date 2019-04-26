@@ -42,7 +42,7 @@ export function DirectiveLiteral(props: P<t.DirectiveLiteral>) {
 export function BlockStatement(props: P<t.BlockStatement>) {
   const { body } = props.node;
   return (
-    <div>
+    <div style={{ border: '1px solid #aaaaaa' }}>
       <span>{`{`}</span>
       <div style={{ paddingLeft: 8 }}>
         {body.map((node, i) => (
@@ -139,9 +139,9 @@ export function ForStatement(props: P<t.ForStatement>) {
 export function FunctionDeclaration(props: P<t.FunctionDeclaration>) {
   const { async, body, generator, id } = props.node;
   return (
-    <div style={{ paddingLeft: 8 }}>
+    <div>
       <div>
-        <span style={{ border: '1px solid #aaaaaa' }}>
+        <span>
           {async ? <span>async </span> : null}
           {generator ? <span>generator </span> : null}
           <span>
@@ -149,19 +149,11 @@ export function FunctionDeclaration(props: P<t.FunctionDeclaration>) {
               function<rt>かんすう</rt>
             </ruby>
           </span>
-          {id ? <span>{` ${id.name}`}</span> : null}
+          {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
         </span>
         <span>()</span>
-        <span>{`{`}</span>
       </div>
-      <div style={{ paddingLeft: 8, border: '1px solid #aaaaaa' }}>
-        {body.body.map((node, i) => (
-          <Statement key={i} node={node} onUpdate={props.onUpdate} />
-        ))}
-      </div>
-      <div>
-        <span>{`}`}</span>
-      </div>
+      <BlockStatement node={body} onUpdate={props.onUpdate} />
     </div>
   );
 }
@@ -169,9 +161,9 @@ export function FunctionDeclaration(props: P<t.FunctionDeclaration>) {
 export function FunctionExpression(props: P<t.FunctionExpression>) {
   const { async, body, generator, id } = props.node;
   return (
-    <div style={{ paddingLeft: 8 }}>
+    <div>
       <div>
-        <span style={{ border: '1px solid #aaaaaa' }}>
+        <span>
           {async ? <span>async </span> : null}
           {generator ? <span>generator </span> : null}
           <span>
@@ -182,16 +174,8 @@ export function FunctionExpression(props: P<t.FunctionExpression>) {
           {id ? <span>{` ${id.name}`}</span> : null}
         </span>
         <span>()</span>
-        <span>{`{`}</span>
       </div>
-      <div style={{ paddingLeft: 8, border: '1px solid #aaaaaa' }}>
-        {body.body.map((node, i) => (
-          <Statement key={i} node={node} onUpdate={props.onUpdate} />
-        ))}
-      </div>
-      <div>
-        <span>{`}`}</span>
-      </div>
+      <BlockStatement node={body} onUpdate={props.onUpdate} />
     </div>
   );
 }
