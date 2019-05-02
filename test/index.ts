@@ -44,7 +44,7 @@ export const fixtures = [
   'babel/core/regression/9374/output.json',
   'babel/core/regression/non-octal-float/output.json',
   'babel/core/regression/use-strict-with-pre-semi/output.json',
-  'babel/core/scope/dupl-bind-catch-hang-func/output.json',
+  // 'babel/core/scope/dupl-bind-catch-hang-func/output.json',
   'babel/core/scope/dupl-bind-catch-let-outside/output.json',
   'babel/core/scope/dupl-bind-catch-var/output.json',
   'babel/core/scope/dupl-bind-catch-var-nested/output.json',
