@@ -546,7 +546,7 @@ export function UpdateExpression(props: P<t.UpdateExpression>) {
 
 export function VariableDeclaration(props: P<t.VariableDeclaration>) {
   return (
-    <div>
+    <span>
       <ruby>
         {props.node.kind}
         <rt>へんすう</rt>
@@ -555,8 +555,7 @@ export function VariableDeclaration(props: P<t.VariableDeclaration>) {
       {props.node.declarations.map((node, i) => (
         <VariableDeclarator key={i} node={node} onUpdate={props.onUpdate} />
       ))}
-      <span>;</span>
-    </div>
+    </span>
   );
 }
 
