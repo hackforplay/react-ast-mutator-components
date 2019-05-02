@@ -347,7 +347,15 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
 }
 
 export function RegExpLiteral(props: P<t.RegExpLiteral>) {
-  return <NotImplemented node={props.node} />;
+  const { pattern, flags } = props.node;
+  return (
+    <span>
+      <span>/</span>
+      <span>{pattern}</span>
+      <span>/</span>
+      <span>{flags}</span>
+    </span>
+  );
 }
 
 export function LogicalExpression(props: P<t.LogicalExpression>) {
