@@ -864,7 +864,6 @@ export function ImportDeclaration(props: P<t.ImportDeclaration>) {
       <StringLiteral node={source} onUpdate={props.onUpdate} />
     </div>
   );
-  return <NotImplemented node={props.node} />;
 }
 
 export function ImportDefaultSpecifier(props: P<t.ImportDefaultSpecifier>) {
