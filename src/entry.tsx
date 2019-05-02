@@ -52,7 +52,8 @@ class Entry extends React.Component {
     let file: t.File;
     try {
       file = parse(code, {
-        sourceType: 'module'
+        sourceType: 'module',
+        allowAwaitOutsideFunction: true
       });
       console.log(file);
     } catch (error) {
