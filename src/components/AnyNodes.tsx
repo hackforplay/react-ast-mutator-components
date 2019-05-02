@@ -152,28 +152,14 @@ export function ForStatement(props: P<t.ForStatement>) {
 }
 
 export function FunctionDeclaration(props: P<t.FunctionDeclaration>) {
-  const { async, body, generator, id } = props.node;
-  return (
-    <div>
-      <div>
-        <span>
-          {async ? <span>async </span> : null}
-          {generator ? <span>generator </span> : null}
-          <span>
-            <ruby>
-              function<rt>かんすう</rt>
-            </ruby>
-          </span>
-          {id ? <span>{` ${id.name}`}</span> : null}
-        </span>
-        <span>()</span>
-      </div>
-      <BlockStatement node={body} onUpdate={props.onUpdate} />
-    </div>
-  );
+  return <FunctionImpl {...props} />;
 }
 
 export function FunctionExpression(props: P<t.FunctionExpression>) {
+  return <FunctionImpl {...props} />;
+}
+
+function FunctionImpl(props: P<t.FunctionExpression | t.FunctionDeclaration>) {
   const { async, body, generator, id } = props.node;
   return (
     <div>
