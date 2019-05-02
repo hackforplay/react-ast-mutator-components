@@ -790,7 +790,23 @@ export function ClassMethod(props: P<t.ClassMethod>) {
 }
 
 export function ObjectPattern(props: P<t.ObjectPattern>) {
-  return <NotImplemented node={props.node} />;
+  const { properties } = props.node;
+  return (
+    <>
+      <span>{`{ `}</span>
+      {properties.map((property, i) => (
+        <React.Fragment key={i}>
+          {i > 0 ? <span>, </span> : null}
+          {t.isObjectProperty(property) ? (
+            <ObjectProperty key={i} node={property} onUpdate={props.onUpdate} />
+          ) : (
+            <RestElement key={i} node={property} onUpdate={props.onUpdate} />
+          )}
+        </React.Fragment>
+      ))}
+      <span>{` }`}</span>
+    </>
+  );
 }
 
 export function SpreadElement(props: P<t.SpreadElement>) {
