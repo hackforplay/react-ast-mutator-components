@@ -174,9 +174,7 @@ function FunctionImpl(props: P<t.FunctionExpression | t.FunctionDeclaration>) {
       </span>
       {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
       <span>()</span>
-      <button onClick={() => setCollapsed(!collapsed)}>
-        {collapsed ? '◀︎' : '▼'}
-      </button>
+      <CollapseButton collapsed={collapsed} setter={setCollapsed} />
     </div>
   );
 
@@ -1471,4 +1469,16 @@ export function TSTypeParameterDeclaration(
 
 export function TSTypeParameter(props: P<t.TSTypeParameter>) {
   return <NotImplemented node={props.node} />;
+}
+
+function CollapseButton(props: {
+  collapsed: boolean;
+  setter: (value: boolean) => void;
+}) {
+  const { collapsed, setter: onClick } = props;
+  return (
+    <button onClick={() => onClick(!collapsed)}>
+      {collapsed ? '◀︎' : '▼'}
+    </button>
+  );
 }
