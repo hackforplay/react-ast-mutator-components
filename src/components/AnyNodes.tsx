@@ -687,7 +687,34 @@ export function ExportSpecifier(props: P<t.ExportSpecifier>) {
 }
 
 export function ForOfStatement(props: P<t.ForOfStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { left, right, body, await: await_ } = props.node;
+  const [collapsed, setCollapsed] = React.useState(true);
+
+  const header = (
+    <div>
+      <span>for </span>
+      {await_ ? <span>await </span> : null}
+      <span>(</span>
+      {t.isVariableDeclaration(left) ? (
+        <VariableDeclaration node={left} onUpdate={props.onUpdate} />
+      ) : (
+        <LVal node={left} onUpdate={props.onUpdate} />
+      )}
+      <span> of </span>
+      <Expression node={right} onUpdate={props.onUpdate} />
+      <span>)</span>
+      <CollapseButton collapsed={collapsed} setter={setCollapsed} />
+    </div>
+  );
+
+  return collapsed ? (
+    header
+  ) : (
+    <div>
+      {header}
+      <Statement node={body} onUpdate={props.onUpdate} />
+    </div>
+  );
 }
 
 export function ImportDeclaration(props: P<t.ImportDeclaration>) {
