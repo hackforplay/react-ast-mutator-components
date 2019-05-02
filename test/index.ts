@@ -52,7 +52,7 @@ export const fixtures = [
   'babel/core/scope/dupl-bind-func-script/output.json',
   'babel/core/scope/dupl-bind-func-script-sloppy/output.json',
   'babel/core/scope/dupl-bind-func-var/output.json',
-  'babel/core/scope/dupl-bind-gen-gen-script/output.json',
+  // 'babel/core/scope/dupl-bind-gen-gen-script/output.json',
   'babel/core/scope/dupl-bind-nested-var-let/output.json',
   'babel/core/scope/dupl-bind-var-var/output.json',
   'babel/core/scope/for-let/output.json',
