@@ -157,7 +157,35 @@ export function ForInStatement(props: P<t.ForInStatement>) {
 }
 
 export function ForStatement(props: P<t.ForStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { init, test, update, body } = props.node;
+  const [collapsed, setCollapsed] = React.useState(true);
+
+  const header = (
+    <div>
+      <span>for </span>
+      <span>{`(`}</span>
+      {t.isVariableDeclaration(init) ? (
+        <VariableDeclaration node={init} onUpdate={props.onUpdate} />
+      ) : t.isExpression(init) ? (
+        <Expression node={init} onUpdate={props.onUpdate} />
+      ) : null}
+      <span>; </span>
+      {test ? <Expression node={test} onUpdate={props.onUpdate} /> : null}
+      <span>; </span>
+      {update ? <Expression node={update} onUpdate={props.onUpdate} /> : null}
+      <span>{`)`}</span>
+      <CollapseButton collapsed={collapsed} setter={setCollapsed} />
+    </div>
+  );
+
+  return collapsed ? (
+    header
+  ) : (
+    <div>
+      {header}
+      <Statement node={body} onUpdate={props.onUpdate} />
+    </div>
+  );
 }
 
 export function FunctionDeclaration(props: P<t.FunctionDeclaration>) {
