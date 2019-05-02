@@ -531,7 +531,13 @@ export function TryStatement(props: P<t.TryStatement>) {
 }
 
 export function UnaryExpression(props: P<t.UnaryExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { operator, argument } = props.node;
+  return (
+    <span>
+      <span>{operator + ' '}</span>
+      <Expression node={argument} onUpdate={props.onUpdate} />
+    </span>
+  );
 }
 
 export function UpdateExpression(props: P<t.UpdateExpression>) {
