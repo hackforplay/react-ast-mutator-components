@@ -161,21 +161,30 @@ export function FunctionExpression(props: P<t.FunctionExpression>) {
 
 function FunctionImpl(props: P<t.FunctionExpression | t.FunctionDeclaration>) {
   const { async, body, generator, id } = props.node;
-  return (
+  const [collapsed, setCollapsed] = React.useState(true);
+
+  const header = (
     <div>
-      <div>
-        <span>
-          {async ? <span>async </span> : null}
-          {generator ? <span>generator </span> : null}
-          <span>
-            <ruby>
-              function<rt>かんすう</rt>
-            </ruby>
-          </span>
-          {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
-        </span>
-        <span>()</span>
-      </div>
+      {async ? <span>async </span> : null}
+      {generator ? <span>generator </span> : null}
+      <span>
+        <ruby>
+          function<rt>かんすう</rt>
+        </ruby>
+      </span>
+      {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
+      <span>()</span>
+      <button onClick={() => setCollapsed(!collapsed)}>
+        {collapsed ? '◀︎' : '▼'}
+      </button>
+    </div>
+  );
+
+  return collapsed ? (
+    header
+  ) : (
+    <div>
+      {header}
       <BlockStatement node={body} onUpdate={props.onUpdate} />
     </div>
   );
