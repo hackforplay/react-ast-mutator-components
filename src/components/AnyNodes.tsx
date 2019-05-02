@@ -731,11 +731,55 @@ export function ExportDefaultDeclaration(props: P<t.ExportDefaultDeclaration>) {
 }
 
 export function ExportNamedDeclaration(props: P<t.ExportNamedDeclaration>) {
-  return <NotImplemented node={props.node} />;
+  const { declaration, specifiers, source } = props.node;
+
+  return (
+    <div>
+      <span>export </span>
+      {declaration ? (
+        <Declaration node={declaration} onUpdate={props.onUpdate} />
+      ) : null}
+      <span>{`{ `}</span>
+      {specifiers.map((specifier, i) => (
+        <React.Fragment key={i}>
+          {i > 0 ? <span>, </span> : null}
+          {t.isExportSpecifier(specifier) ? (
+            <ExportSpecifier node={specifier} onUpdate={props.onUpdate} />
+          ) : t.isExportDefaultSpecifier(specifier) ? (
+            <ExportDefaultSpecifier
+              node={specifier}
+              onUpdate={props.onUpdate}
+            />
+          ) : (
+            <ExportNamespaceSpecifier
+              node={specifier}
+              onUpdate={props.onUpdate}
+            />
+          )}
+        </React.Fragment>
+      ))}
+      <span>{` }`}</span>
+    </div>
+  );
 }
 
 export function ExportSpecifier(props: P<t.ExportSpecifier>) {
-  return <NotImplemented node={props.node} />;
+  const { local, exported } = props.node;
+  const shorthand = local.name === exported.name;
+  return (
+    <span>
+      <Identifier node={local} onUpdate={props.onUpdate} />
+      {shorthand ? null : (
+        <ruby>
+          {' '}
+          as <rt>→</rt>
+        </ruby>
+      )}
+      {shorthand ? null : (
+        <Identifier node={exported} onUpdate={props.onUpdate} />
+      )}
+    </span>
+  );
 }
 
 export function ForOfStatement(props: P<t.ForOfStatement>) {
