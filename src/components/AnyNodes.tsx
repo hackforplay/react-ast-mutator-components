@@ -223,7 +223,14 @@ export function IfStatement(props: P<t.IfStatement>) {
 }
 
 export function LabeledStatement(props: P<t.LabeledStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { label, body } = props.node;
+  return (
+    <div>
+      <Identifier node={label} onUpdate={props.onUpdate} />
+      <span>: </span>
+      <Statement node={body} onUpdate={props.onUpdate} />
+    </div>
+  );
 }
 
 export function StringLiteral(props: P<t.StringLiteral>) {
