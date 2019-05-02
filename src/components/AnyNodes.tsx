@@ -99,7 +99,16 @@ export function CallExpression(props: P<t.CallExpression>) {
 }
 
 export function CatchClause(props: P<t.CatchClause>) {
-  return <NotImplemented node={props.node} />;
+  const { param, body } = props.node;
+  return (
+    <>
+      <span>catch </span>
+      <span>{`(`}</span>
+      {param ? <Identifier node={param} onUpdate={props.onUpdate} /> : null}
+      <span>{`)`}</span>
+      <BlockStatement node={body} onUpdate={props.onUpdate} />
+    </>
+  );
 }
 
 export function ConditionalExpression(props: P<t.ConditionalExpression>) {
@@ -527,7 +536,22 @@ export function ThrowStatement(props: P<t.ThrowStatement>) {
 }
 
 export function TryStatement(props: P<t.TryStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { block, handler, finalizer } = props.node;
+  return (
+    <div>
+      <span>try </span>
+      <BlockStatement node={block} onUpdate={props.onUpdate} />
+      {handler ? (
+        <CatchClause node={handler} onUpdate={props.onUpdate} />
+      ) : null}
+      {finalizer ? (
+        <>
+          <span>finalize</span>
+          <BlockStatement node={finalizer} onUpdate={props.onUpdate} />
+        </>
+      ) : null}
+    </div>
+  );
 }
 
 export function UnaryExpression(props: P<t.UnaryExpression>) {

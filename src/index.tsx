@@ -32,5 +32,9 @@ export function Root(props: Props<t.File>) {
     }
     props.onUpdate(prev, next);
   };
-  return <File node={props.node} onUpdate={onUpdate} />;
+  return (
+    <div style={{ overflow: 'scroll' }}>
+      <File node={props.node} onUpdate={onUpdate} />
+    </div>
+  );
 }
