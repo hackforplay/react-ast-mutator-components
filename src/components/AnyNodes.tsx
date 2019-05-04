@@ -214,11 +214,7 @@ export function EmptyStatement(props: P<t.EmptyStatement>) {
 
 export function ExpressionStatement(props: P<t.ExpressionStatement>) {
   const { expression } = props.node;
-  return (
-    <Block>
-      <Expression node={expression} onUpdate={props.onUpdate} />
-    </Block>
-  );
+  return <Expression node={expression} onUpdate={props.onUpdate} />;
 }
 
 export function File(props: P<t.File>) {
@@ -333,11 +329,23 @@ export function IfStatement(props: P<t.IfStatement>) {
       <span>{`(`}</span>
       <Expression node={test} onUpdate={props.onUpdate} />
       <span>{`)`}</span>
-      <Statement node={consequent} onUpdate={props.onUpdate} />
+      {t.isExpressionStatement(consequent) ? (
+        <Block>
+          <Statement node={consequent} onUpdate={props.onUpdate} />
+        </Block>
+      ) : (
+        <Statement node={consequent} onUpdate={props.onUpdate} />
+      )}
       {alternate ? (
         <>
           <span>else </span>
-          <Statement node={alternate} onUpdate={props.onUpdate} />
+          {t.isExpressionStatement(alternate) ? (
+            <Block>
+              <Statement node={alternate} onUpdate={props.onUpdate} />
+            </Block>
+          ) : (
+            <Statement node={alternate} onUpdate={props.onUpdate} />
+          )}
         </>
       ) : null}
     </div>
