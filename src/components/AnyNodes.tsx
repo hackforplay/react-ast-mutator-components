@@ -16,7 +16,26 @@ import { NotImplemented } from './NotImplemented';
 import { NodeProps as P } from './types';
 
 export function ArrayExpression(props: P<t.ArrayExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { elements } = props.node;
+  const border = '1px solid #aaaaaa';
+  return (
+    <span style={{ border }}>
+      <span>{`[`}</span>
+      {elements.map((element, i) => (
+        <React.Fragment key={i}>
+          {i > 0 ? <span style={{ borderRight: border }}>, </span> : null}
+          {!element ? (
+            <span style={{ color: '#aaaaaa' }}>undefined</span>
+          ) : t.isSpreadElement(element) ? (
+            <SpreadElement node={element} onUpdate={props.onUpdate} />
+          ) : (
+            <Expression node={element} onUpdate={props.onUpdate} />
+          )}
+        </React.Fragment>
+      ))}
+      <span>{`]`}</span>
+    </span>
+  );
 }
 
 export function AssignmentExpression(props: P<t.AssignmentExpression>) {
