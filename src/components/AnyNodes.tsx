@@ -387,7 +387,13 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
 }
 
 export function NullLiteral(props: P<t.NullLiteral>) {
-  return <NotImplemented node={props.node} />;
+  return (
+    <span>
+      <ruby>
+        null<rt>ヌル</rt>
+      </ruby>
+    </span>
+  );
 }
 
 export function BooleanLiteral(props: P<t.BooleanLiteral>) {
