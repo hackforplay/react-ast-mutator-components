@@ -97,9 +97,17 @@ export function BreakStatement(props: P<t.BreakStatement>) {
 }
 
 export function CallExpression(props: P<t.CallExpression>) {
-  const { callee, arguments: args } = props.node;
   return (
     <span>
+      <Call {...props} />
+    </span>
+  );
+}
+
+function Call(props: P<t.CallExpression | t.NewExpression>) {
+  const { callee, arguments: args } = props.node;
+  return (
+    <>
       <Expression node={callee} onUpdate={props.onUpdate} />
       <span>{`(`}</span>
       {args.map((argument, i) =>
@@ -112,8 +120,7 @@ export function CallExpression(props: P<t.CallExpression>) {
         )
       )}
       <span>{`)`}</span>
-      <span>;</span>
-    </span>
+    </>
   );
 }
 
@@ -434,7 +441,12 @@ export function MemberExpression(props: P<t.MemberExpression>) {
 }
 
 export function NewExpression(props: P<t.NewExpression>) {
-  return <NotImplemented node={props.node} />;
+  return (
+    <span>
+      <span>new </span>
+      <Call {...props} />
+    </span>
+  )
 }
 
 export function Program(props: P<t.Program>) {
