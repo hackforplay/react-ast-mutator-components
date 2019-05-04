@@ -180,7 +180,7 @@ export function DoWhileStatement(props: P<t.DoWhileStatement>) {
 }
 
 export function EmptyStatement(props: P<t.EmptyStatement>) {
-  return <NotImplemented node={props.node} />;
+  return null;
 }
 
 export function ExpressionStatement(props: P<t.ExpressionStatement>) {
