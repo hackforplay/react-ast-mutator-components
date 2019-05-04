@@ -447,7 +447,7 @@ export function NewExpression(props: P<t.NewExpression>) {
       <span>new </span>
       <Call {...props} />
     </span>
-  )
+  );
 }
 
 export function Program(props: P<t.Program>) {
