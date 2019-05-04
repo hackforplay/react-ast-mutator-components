@@ -426,16 +426,17 @@ export function LogicalExpression(props: P<t.LogicalExpression>) {
 }
 
 export function MemberExpression(props: P<t.MemberExpression>) {
-  const { object, property } = props.node;
+  const { object, property, computed } = props.node;
   return (
     <>
       <Expression node={object} onUpdate={props.onUpdate} />
-      <span>.</span>
+      {computed ? <span>{`[`}</span> : <span>.</span>}
       {t.isExpression(property) ? (
         <Expression node={property} onUpdate={props.onUpdate} />
       ) : (
         <NotImplemented node={props.node} />
       )}
+      {computed ? <span>{`]`}</span> : null}
     </>
   );
 }
