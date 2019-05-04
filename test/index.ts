@@ -61,7 +61,7 @@ export const fixtures = [
   'babel/core/scope/undecl-export-var/output.json',
   'babel/core/sourcetype-unambiguous/commonjs/output.json',
   // 'babel/core/sourcetype-unambiguous/flow/output.json',
-  'babel/core/sourcetype-unambiguous/import-meta/output.json',
+  // 'babel/core/sourcetype-unambiguous/import-meta/output.json',
   'babel/core/sourcetype-unambiguous/module-export-all/output.json',
   'babel/core/sourcetype-unambiguous/module-export-default/output.json',
   'babel/core/sourcetype-unambiguous/module-export-named/output.json',
