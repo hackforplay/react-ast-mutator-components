@@ -291,9 +291,6 @@ export function Identifier(props: P<t.Identifier>) {
 
 export function IfStatement(props: P<t.IfStatement>) {
   const { alternate, consequent, test } = props.node;
-  if (alternate) {
-    return <NotImplemented node={alternate} />;
-  }
   return (
     <div>
       <span>if </span>
@@ -301,6 +298,12 @@ export function IfStatement(props: P<t.IfStatement>) {
       <Expression node={test} onUpdate={props.onUpdate} />
       <span>{`)`}</span>
       <Statement node={consequent} onUpdate={props.onUpdate} />
+      {alternate ? (
+        <>
+          <span>else </span>
+          <Statement node={alternate} onUpdate={props.onUpdate} />
+        </>
+      ) : null}
     </div>
   );
 }
