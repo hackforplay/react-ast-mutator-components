@@ -184,7 +184,22 @@ export function DebuggerStatement(props: P<t.DebuggerStatement>) {
 }
 
 export function DoWhileStatement(props: P<t.DoWhileStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { test, body } = props.node;
+  return (
+    <div>
+      <span>do</span>
+      <Statement node={body} onUpdate={props.onUpdate} />
+      <span>
+        <ruby>
+          <span>while </span>
+          <span>{`(`}</span>
+          <Expression node={test} onUpdate={props.onUpdate} />
+          <span>{`)`}</span>
+          <rt>真ならもう一度</rt>
+        </ruby>
+      </span>
+    </div>
+  );
 }
 
 export function EmptyStatement(props: P<t.EmptyStatement>) {
