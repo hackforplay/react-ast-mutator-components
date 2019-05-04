@@ -713,7 +713,13 @@ export function ClassExpression(props: P<t.ClassExpression>) {
 }
 
 export function ExportAllDeclaration(props: P<t.ExportAllDeclaration>) {
-  return <NotImplemented node={props.node} />;
+  const { source } = props.node;
+  return (
+    <div>
+      <span>export * from </span>
+      <StringLiteral node={source} onUpdate={props.onUpdate} />
+    </div>
+  );
 }
 
 export function ExportDefaultDeclaration(props: P<t.ExportDefaultDeclaration>) {
