@@ -439,7 +439,7 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
         onClick={() => setEditable(true)}
         style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
       >
-        {value.toString()}
+        <ruby>{value.toString()}<rt>{value ? '真' : '偽'}</rt></ruby>
       </span>
     </>
   );
