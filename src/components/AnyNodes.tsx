@@ -138,7 +138,26 @@ export function CatchClause(props: P<t.CatchClause>) {
 }
 
 export function ConditionalExpression(props: P<t.ConditionalExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { test, consequent, alternate } = props.node;
+  return (
+    <span>
+      <Expression node={test} onUpdate={props.onUpdate} />
+      <span>
+        <ruby>
+          {' '}
+          ? <rt>が真なら</rt>
+        </ruby>
+      </span>
+      <Expression node={consequent} onUpdate={props.onUpdate} />
+      <span>
+        <ruby>
+          {' '}
+          : <rt>偽なら</rt>
+        </ruby>
+      </span>
+      <Expression node={alternate} onUpdate={props.onUpdate} />
+    </span>
+  );
 }
 
 export function ContinueStatement(props: P<t.ContinueStatement>) {
