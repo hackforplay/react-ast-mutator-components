@@ -221,7 +221,22 @@ export function File(props: P<t.File>) {
 }
 
 export function ForInStatement(props: P<t.ForInStatement>) {
-  return <NotImplemented node={props.node} />;
+  const { left, right, body } = props.node;
+  return (
+    <div>
+      <span>for </span>
+      <span>{`(`}</span>
+      {t.isVariableDeclaration(left) ? (
+        <VariableDeclaration node={left} onUpdate={props.onUpdate} />
+      ) : (
+        <LVal node={left} onUpdate={props.onUpdate} />
+      )}
+      <span> in </span>
+      <Expression node={right} onUpdate={props.onUpdate} />
+      <span>{`)`}</span>
+      <Statement node={body} onUpdate={props.onUpdate} />
+    </div>
+  );
 }
 
 export function ForStatement(props: P<t.ForStatement>) {
@@ -454,7 +469,10 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
         onClick={() => setEditable(true)}
         style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
       >
-        <ruby>{value.toString()}<rt>{value ? '真' : '偽'}</rt></ruby>
+        <ruby>
+          {value.toString()}
+          <rt>{value ? '真' : '偽'}</rt>
+        </ruby>
       </span>
     </>
   );
