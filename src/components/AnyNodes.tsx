@@ -637,7 +637,14 @@ export function UnaryExpression(props: P<t.UnaryExpression>) {
 }
 
 export function UpdateExpression(props: P<t.UpdateExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { operator, argument, prefix } = props.node;
+  return (
+    <span>
+      {prefix ? <span>{operator}</span> : null}
+      <Expression node={argument} onUpdate={props.onUpdate} />
+      {prefix ? null : <span>{operator}</span>}
+    </span>
+  );
 }
 
 export function VariableDeclaration(props: P<t.VariableDeclaration>) {
