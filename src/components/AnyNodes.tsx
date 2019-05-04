@@ -547,7 +547,7 @@ export function SwitchStatement(props: P<t.SwitchStatement>) {
 }
 
 export function ThisExpression(props: P<t.ThisExpression>) {
-  return <NotImplemented node={props.node} />;
+  return <span>this</span>;
 }
 
 export function ThrowStatement(props: P<t.ThrowStatement>) {
