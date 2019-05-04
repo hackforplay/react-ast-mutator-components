@@ -88,15 +88,22 @@ export function BlockStatement(props: P<t.BlockStatement>) {
 
 interface IBlockProps {
   children?: React.ReactNode;
+  inline?: boolean;
 }
 
 function Block(props: IBlockProps) {
-  return (
-    <div style={{ border: '1px solid #aaaaaa' }}>
-      <span>{`{`}</span>
-      <div style={{ paddingLeft: 16 }}>{props.children}</div>
-      <span>{`}`}</span>
-    </div>
+  const children = [
+    <span key="{">{`{`}</span>,
+    <div key="children" style={{ paddingLeft: 16 }}>
+      {props.children}
+    </div>,
+    <span key="}">{`}`}</span>
+  ];
+
+  return props.inline ? (
+    <>{children}</>
+  ) : (
+    <div style={{ border: '1px solid #aaaaaa' }}>{children}</div>
   );
 }
 
@@ -557,8 +564,7 @@ export function Program(props: P<t.Program>) {
 export function ObjectExpression(props: P<t.ObjectExpression>) {
   const { properties } = props.node;
   return (
-    <span>
-      <span>{`{ `}</span>
+    <Block inline>
       {properties.map((property, i) =>
         t.isObjectMember(property) ? (
           <ObjectMember key={i} node={property} onUpdate={props.onUpdate} />
@@ -566,8 +572,7 @@ export function ObjectExpression(props: P<t.ObjectExpression>) {
           <SpreadElement key={i} node={property} onUpdate={props.onUpdate} />
         )
       )}
-      <span>{` }`}</span>
-    </span>
+    </Block>
   );
 }
 
