@@ -86,7 +86,11 @@ export function BlockStatement(props: P<t.BlockStatement>) {
   );
 }
 
-function Block(props: { children?: React.ReactNode }) {
+interface IBlockProps {
+  children?: React.ReactNode;
+}
+
+function Block(props: IBlockProps) {
   return (
     <div style={{ border: '1px solid #aaaaaa' }}>
       <span>{`{`}</span>
