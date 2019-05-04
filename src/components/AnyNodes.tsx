@@ -422,7 +422,14 @@ export function RegExpLiteral(props: P<t.RegExpLiteral>) {
 }
 
 export function LogicalExpression(props: P<t.LogicalExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { operator, left, right } = props.node;
+  return (
+    <span>
+      <Expression node={left} onUpdate={props.onUpdate} />
+      <span> {operator} </span>
+      <Expression node={right} onUpdate={props.onUpdate} />
+    </span>
+  );
 }
 
 export function MemberExpression(props: P<t.MemberExpression>) {
