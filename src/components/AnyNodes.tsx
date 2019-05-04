@@ -577,7 +577,50 @@ export function ObjectExpression(props: P<t.ObjectExpression>) {
 }
 
 export function ObjectMethod(props: P<t.ObjectMethod>) {
-  return <NotImplemented node={props.node} />;
+  const {
+    kind,
+    key,
+    params,
+    body,
+    computed,
+    async,
+    decorators,
+    generator
+  } = props.node;
+
+  if (decorators) {
+    return <NotImplemented node={props.node} />;
+  }
+
+  return (
+    <div>
+      {kind === 'method' ? null : <span>{kind} </span>}
+      <span>
+        {async ? <span>async </span> : null}
+        {generator ? <span>* </span> : null}
+        {computed ? <span>{`[`}</span> : null}
+        {t.isExpression(key) ? (
+          <Expression node={key} onUpdate={props.onUpdate} />
+        ) : (
+          <NotImplemented node={props.node} />
+        )}
+        {computed ? <span>{`]`}</span> : null}
+      </span>
+      <span>{`(`}</span>
+      {params.map((param, i) => (
+        <React.Fragment key={i}>
+          {i > 0 ? <span>, </span> : null}
+          {t.isIdentifier(param) ? (
+            <Identifier node={param} onUpdate={props.onUpdate} />
+          ) : (
+            <NotImplemented node={props.node} />
+          )}
+        </React.Fragment>
+      ))}
+      <span>{`)`}</span>
+      <BlockStatement node={body} onUpdate={props.onUpdate} />
+    </div>
+  );
 }
 
 export function ObjectProperty(props: P<t.ObjectProperty>) {
