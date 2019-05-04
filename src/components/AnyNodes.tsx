@@ -169,7 +169,13 @@ export function ConditionalExpression(props: P<t.ConditionalExpression>) {
 }
 
 export function ContinueStatement(props: P<t.ContinueStatement>) {
-  return <NotImplemented node={props.node} />;
+  return (
+    <div>
+      <ruby>
+        continue<rt>くり返しをやめる</rt>
+      </ruby>
+    </div>
+  );
 }
 
 export function DebuggerStatement(props: P<t.DebuggerStatement>) {
