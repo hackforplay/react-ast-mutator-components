@@ -76,13 +76,21 @@ export function DirectiveLiteral(props: P<t.DirectiveLiteral>) {
 export function BlockStatement(props: P<t.BlockStatement>) {
   const { body } = props.node;
   return (
-    <div style={{ border: '1px solid #aaaaaa' }}>
-      <span>{`{`}</span>
-      <div style={{ paddingLeft: 8 }}>
+    <Block>
+      <>
         {body.map((node, i) => (
           <Statement key={i} node={node} onUpdate={props.onUpdate} />
         ))}
-      </div>
+      </>
+    </Block>
+  );
+}
+
+function Block(props: { children?: React.ReactNode }) {
+  return (
+    <div style={{ border: '1px solid #aaaaaa' }}>
+      <span>{`{`}</span>
+      <div style={{ paddingLeft: 16 }}>{props.children}</div>
       <span>{`}`}</span>
     </div>
   );
@@ -186,9 +194,9 @@ export function EmptyStatement(props: P<t.EmptyStatement>) {
 export function ExpressionStatement(props: P<t.ExpressionStatement>) {
   const { expression } = props.node;
   return (
-    <div>
+    <Block>
       <Expression node={expression} onUpdate={props.onUpdate} />
-    </div>
+    </Block>
   );
 }
 
@@ -591,7 +599,7 @@ export function SwitchCase(props: P<t.SwitchCase>) {
       ) : (
         <span>default:</span>
       )}
-      <div style={{ paddingLeft: 8 }}>
+      <div style={{ paddingLeft: 16 }}>
         {consequent.map((statement, i) => (
           <Statement key={i} node={statement} onUpdate={props.onUpdate} />
         ))}
@@ -610,13 +618,13 @@ export function SwitchStatement(props: P<t.SwitchStatement>) {
       <Expression node={discriminant} onUpdate={props.onUpdate} />
       <span>)</span>
       <div>
-        <span>{`{`}</span>
-        <div style={{ paddingLeft: 8 }}>
-          {cases.map((case_, i) => (
-            <SwitchCase key={i} node={case_} onUpdate={props.onUpdate} />
-          ))}
-        </div>
-        <span>{`}`}</span>
+        <Block>
+          <>
+            {cases.map((case_, i) => (
+              <SwitchCase key={i} node={case_} onUpdate={props.onUpdate} />
+            ))}
+          </>
+        </Block>
       </div>
     </div>
   );
@@ -781,11 +789,9 @@ export function ClassDeclaration(props: P<t.ClassDeclaration>) {
       </span>
       {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
       <div>
-        <span>{`{`}</span>
-        <div style={{ paddingLeft: 8 }}>
+        <Block>
           <ClassBody node={body} onUpdate={props.onUpdate} />
-        </div>
-        <span>{`}`}</span>
+        </Block>
       </div>
     </div>
   );
