@@ -520,7 +520,19 @@ export function ReturnStatement(props: P<t.ReturnStatement>) {
 }
 
 export function SequenceExpression(props: P<t.SequenceExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { expressions } = props.node;
+  return (
+    <span>
+      <span>{`(`}</span>
+      {expressions.map((expression, i) => (
+        <React.Fragment key={i}>
+          {i > 0 ? <span>, </span> : null}
+          <Expression node={expression} onUpdate={props.onUpdate} />
+        </React.Fragment>
+      ))}
+      <span>{`)`}</span>
+    </span>
+  );
 }
 
 export function ParenthesizedExpression(props: P<t.ParenthesizedExpression>) {
