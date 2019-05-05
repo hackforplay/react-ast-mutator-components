@@ -930,7 +930,33 @@ export function ArrayPattern(props: P<t.ArrayPattern>) {
 }
 
 export function ArrowFunctionExpression(props: P<t.ArrowFunctionExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { body, async } = props.node;
+  const [collapsed, setCollapsed] = React.useState(true);
+
+  return (
+    <>
+      <CollapseButton collapsed={collapsed} setter={setCollapsed} />
+      {async ? <span>async </span> : null}
+      {collapsed ? (
+        <span>
+          <ruby>
+            {`( ) => { }`}
+            <rt>アロー関数</rt>
+          </ruby>
+        </span>
+      ) : (
+        <>
+          <ParamsImpl {...props} />
+          <span> => </span>
+          {t.isBlockStatement(body) ? (
+            <BlockStatement node={body} onUpdate={props.onUpdate} />
+          ) : (
+            <Expression node={body} onUpdate={props.onUpdate} />
+          )}
+        </>
+      )}
+    </>
+  );
 }
 
 export function ClassBody(props: P<t.ClassBody>) {
