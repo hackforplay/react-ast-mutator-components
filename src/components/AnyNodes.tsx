@@ -315,39 +315,48 @@ export function ForStatement(props: P<t.ForStatement>) {
 }
 
 export function FunctionDeclaration(props: P<t.FunctionDeclaration>) {
-  return <FunctionImpl {...props} />;
+  return (
+    <div>
+      <FunctionImpl {...props} />
+    </div>
+  );
 }
 
 export function FunctionExpression(props: P<t.FunctionExpression>) {
-  return <FunctionImpl {...props} />;
+  return (
+    <span>
+      <FunctionImpl {...props} />
+    </span>
+  );
 }
 
 function FunctionImpl(props: P<t.FunctionExpression | t.FunctionDeclaration>) {
   const { async, body, generator, id } = props.node;
   const [collapsed, setCollapsed] = React.useState(true);
 
-  const header = (
-    <div>
-      {async ? <span>async </span> : null}
-      {generator ? <span>generator </span> : null}
-      <span>
-        <ruby>
-          function<rt>かんすう</rt>
-        </ruby>
-      </span>
-      {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
-      <span>()</span>
-      <CollapseButton collapsed={collapsed} setter={setCollapsed} />
-    </div>
-  );
+  const keyword = 'function' + (generator ? '* ' : ' ');
 
-  return collapsed ? (
-    header
-  ) : (
-    <div>
-      {header}
-      <BlockStatement node={body} onUpdate={props.onUpdate} />
-    </div>
+  return (
+    <>
+      <CollapseButton collapsed={collapsed} setter={setCollapsed} />
+      {async ? <span>async </span> : null}
+      {collapsed ? (
+        <span>
+          <ruby>
+            {`${keyword}${id ? id.name : ''} ( ) { }`}
+            <rt>かんすうを作る</rt>
+          </ruby>
+        </span>
+      ) : (
+        <span>
+          <span>{keyword}</span>
+          {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
+          <span> </span>
+          <ParamsImpl {...props} />
+          <BlockStatement node={body} onUpdate={props.onUpdate} />
+        </span>
+      )}
+    </>
   );
 }
 
@@ -1868,6 +1877,30 @@ export function TSTypeParameterDeclaration(
 
 export function TSTypeParameter(props: P<t.TSTypeParameter>) {
   return <NotImplemented node={props.node} />;
+}
+
+function ParamsImpl(
+  props: P<
+    | t.FunctionDeclaration
+    | t.FunctionExpression
+    | t.ArrowFunctionExpression
+    | t.ObjectMethod
+    | t.ClassMethod
+    | t.ClassPrivateMethod
+  >
+) {
+  const { params } = props.node;
+  return (
+    <>
+      <span>{`(`}</span>
+      <Join>
+        {params.map((param, i) => (
+          <LVal key={i} node={param} onUpdate={props.onUpdate} />
+        ))}
+      </Join>
+      <span>{`)`}</span>
+    </>
+  );
 }
 
 function CollapseButton(props: {
