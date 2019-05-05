@@ -592,16 +592,30 @@ export function Program(props: P<t.Program>) {
 
 export function ObjectExpression(props: P<t.ObjectExpression>) {
   const { properties } = props.node;
-  return (
-    <Block inline>
-      {properties.map((property, i) =>
-        t.isObjectMember(property) ? (
-          <ObjectMember key={i} node={property} onUpdate={props.onUpdate} />
-        ) : (
-          <SpreadElement key={i} node={property} onUpdate={props.onUpdate} />
-        )
-      )}
-    </Block>
+  const [collapsed, setCollapsed] = React.useState(true);
+  return collapsed ? (
+    <span>
+      <button onClick={() => setCollapsed(false)}>▶︎</button>
+      <span>
+        <ruby>
+          {`{ }`}
+          <rt>オブジェクト</rt>
+        </ruby>
+      </span>
+    </span>
+  ) : (
+    <>
+      <button onClick={() => setCollapsed(true)}>▼</button>
+      <Block inline>
+        {properties.map((property, i) =>
+          t.isObjectMember(property) ? (
+            <ObjectMember key={i} node={property} onUpdate={props.onUpdate} />
+          ) : (
+            <SpreadElement key={i} node={property} onUpdate={props.onUpdate} />
+          )
+        )}
+      </Block>
+    </>
   );
 }
 
