@@ -990,9 +990,6 @@ function ClassImpl(props: P<t.ClassDeclaration | t.ClassExpression>) {
   const { id, superClass, body, decorators } = props.node;
   const [collapsed, setCollapsed] = React.useState(true);
 
-  if (superClass) {
-    return <NotImplemented node={props.node} />;
-  }
   if (decorators) {
     return <NotImplemented node={props.node} />;
   }
@@ -1009,6 +1006,12 @@ function ClassImpl(props: P<t.ClassDeclaration | t.ClassExpression>) {
       ) : (
         <>
           <span>class </span>
+          {superClass ? (
+            <>
+              <span>extends </span>
+              <Expression node={superClass} onUpdate={props.onUpdate} />
+            </>
+          ) : null}
           {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
           <Block>
             <ClassBody node={body} onUpdate={props.onUpdate} />
