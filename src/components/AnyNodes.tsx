@@ -84,7 +84,7 @@ export function BinaryExpression(props: P<t.BinaryExpression>) {
   return (
     <span>
       <Expression node={left} onUpdate={props.onUpdate} />
-      <span>{operator}</span>
+      <span>{` ${operator} `}</span>
       <Expression node={right} onUpdate={props.onUpdate} />
     </span>
   );
