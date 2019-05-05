@@ -910,9 +910,13 @@ export function ArrayPattern(props: P<t.ArrayPattern>) {
     <span>
       <span>{`[`}</span>
       <Join>
-        {elements.map((element, i) => (
-          <PatternLike key={i} node={element} onUpdate={props.onUpdate} />
-        ))}
+        {elements.map((element, i) =>
+          element ? (
+            <PatternLike key={i} node={element} onUpdate={props.onUpdate} />
+          ) : (
+            <small key={i}>スキップ</small>
+          )
+        )}
       </Join>
       <span>{`]`}</span>
     </span>
