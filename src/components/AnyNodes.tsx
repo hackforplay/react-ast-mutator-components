@@ -968,32 +968,43 @@ export function ClassBody(props: P<t.ClassBody>) {
 }
 
 export function ClassDeclaration(props: P<t.ClassDeclaration>) {
-  const { id, superClass, body, decorators } = props.node;
-  if (superClass) {
-    return <NotImplemented node={superClass} />;
-  }
-  if (decorators) {
-    return <NotImplemented node={decorators[0]} />;
-  }
   return (
     <div>
+      <ClassImpl {...props} />
+    </div>
+  );
+}
+
+export function ClassExpression(props: P<t.ClassExpression>) {
+  return (
+    <span>
+      <ClassImpl {...props} />
+    </span>
+  );
+}
+
+function ClassImpl(props: P<t.ClassDeclaration | t.ClassExpression>) {
+  const { id, superClass, body, decorators } = props.node;
+  if (superClass) {
+    return <NotImplemented node={props.node} />;
+  }
+  if (decorators) {
+    return <NotImplemented node={props.node} />;
+  }
+
+  return (
+    <>
       <span>
         <ruby>
           class <rt>クラス</rt>
         </ruby>
       </span>
       {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
-      <div>
-        <Block>
+      <Block>
           <ClassBody node={body} onUpdate={props.onUpdate} />
         </Block>
-      </div>
-    </div>
+    </>
   );
-}
-
-export function ClassExpression(props: P<t.ClassExpression>) {
-  return <NotImplemented node={props.node} />;
 }
 
 export function ExportAllDeclaration(props: P<t.ExportAllDeclaration>) {
