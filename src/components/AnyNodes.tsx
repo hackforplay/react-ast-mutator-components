@@ -1185,7 +1185,13 @@ export function ObjectPattern(props: P<t.ObjectPattern>) {
 }
 
 export function SpreadElement(props: P<t.SpreadElement>) {
-  return <NotImplemented node={props.node} />;
+  const { argument } = props.node;
+  return (
+    <span>
+      <span>...</span>
+      <Expression node={argument} onUpdate={props.onUpdate} />
+    </span>
+  );
 }
 
 export function Super(props: P<t.Super>) {
