@@ -21,18 +21,19 @@ export function ArrayExpression(props: P<t.ArrayExpression>) {
   return (
     <span style={{ border }}>
       <span>{`[`}</span>
-      {elements.map((element, i) => (
-        <React.Fragment key={i}>
-          {i > 0 ? <span style={{ borderRight: border }}>, </span> : null}
-          {!element ? (
-            <span style={{ color: '#aaaaaa' }}>undefined</span>
+      <Join delimiterStyle={{ borderRight: border }}>
+        {elements.map((element, i) =>
+          !element ? (
+            <span key={i} style={{ color: '#aaaaaa' }}>
+              undefined
+            </span>
           ) : t.isSpreadElement(element) ? (
-            <SpreadElement node={element} onUpdate={props.onUpdate} />
+            <SpreadElement key={i} node={element} onUpdate={props.onUpdate} />
           ) : (
-            <Expression node={element} onUpdate={props.onUpdate} />
-          )}
-        </React.Fragment>
-      ))}
+            <Expression key={i} node={element} onUpdate={props.onUpdate} />
+          )
+        )}
+      </Join>
       <span>{`]`}</span>
     </span>
   );
@@ -653,16 +654,15 @@ export function ObjectMethod(props: P<t.ObjectMethod>) {
         {computed ? <span>{`]`}</span> : null}
       </span>
       <span>{`(`}</span>
-      {params.map((param, i) => (
-        <React.Fragment key={i}>
-          {i > 0 ? <span>, </span> : null}
-          {t.isIdentifier(param) ? (
-            <Identifier node={param} onUpdate={props.onUpdate} />
+      <Join>
+        {params.map((param, i) =>
+          t.isIdentifier(param) ? (
+            <Identifier key={i} node={param} onUpdate={props.onUpdate} />
           ) : (
-            <NotImplemented node={props.node} />
-          )}
-        </React.Fragment>
-      ))}
+            <NotImplemented key={i} node={props.node} />
+          )
+        )}
+      </Join>
       <span>{`)`}</span>
       <BlockStatement node={body} onUpdate={props.onUpdate} />
     </div>
@@ -721,12 +721,11 @@ export function SequenceExpression(props: P<t.SequenceExpression>) {
   return (
     <span>
       <span>{`(`}</span>
-      {expressions.map((expression, i) => (
-        <React.Fragment key={i}>
-          {i > 0 ? <span>, </span> : null}
-          <Expression node={expression} onUpdate={props.onUpdate} />
-        </React.Fragment>
-      ))}
+      <Join>
+        {expressions.map((expression, i) => (
+          <Expression key={i} node={expression} onUpdate={props.onUpdate} />
+        ))}
+      </Join>
       <span>{`)`}</span>
     </span>
   );
@@ -911,12 +910,11 @@ export function ArrayPattern(props: P<t.ArrayPattern>) {
   return (
     <span>
       <span>{`[`}</span>
-      {elements.map((element, i) => (
-        <React.Fragment key={i}>
-          {i > 0 ? <span>, </span> : null}
-          <PatternLike node={element} onUpdate={props.onUpdate} />
-        </React.Fragment>
-      ))}
+      <Join>
+        {elements.map((element, i) => (
+          <PatternLike key={i} node={element} onUpdate={props.onUpdate} />
+        ))}
+      </Join>
       <span>{`]`}</span>
     </span>
   );
@@ -1007,24 +1005,29 @@ export function ExportNamedDeclaration(props: P<t.ExportNamedDeclaration>) {
         <Declaration node={declaration} onUpdate={props.onUpdate} />
       ) : null}
       <span>{`{ `}</span>
-      {specifiers.map((specifier, i) => (
-        <React.Fragment key={i}>
-          {i > 0 ? <span>, </span> : null}
-          {t.isExportSpecifier(specifier) ? (
-            <ExportSpecifier node={specifier} onUpdate={props.onUpdate} />
+      <Join>
+        {specifiers.map((specifier, i) =>
+          t.isExportSpecifier(specifier) ? (
+            <ExportSpecifier
+              key={i}
+              node={specifier}
+              onUpdate={props.onUpdate}
+            />
           ) : t.isExportDefaultSpecifier(specifier) ? (
             <ExportDefaultSpecifier
+              key={i}
               node={specifier}
               onUpdate={props.onUpdate}
             />
           ) : (
             <ExportNamespaceSpecifier
+              key={i}
               node={specifier}
               onUpdate={props.onUpdate}
             />
-          )}
-        </React.Fragment>
-      ))}
+          )
+        )}
+      </Join>
       <span>{` }`}</span>
     </div>
   );
@@ -1114,16 +1117,19 @@ export function ImportDeclaration(props: P<t.ImportDeclaration>) {
         <>
           {defaultSpecifier ? <span>, </span> : null}
           <span>{`{ `}</span>
-          {rest.map((specifier, i) =>
-            t.isImportSpecifier(specifier) ? (
-              <React.Fragment key={i}>
-                {i > 0 ? <span>, </span> : null}
-                <ImportSpecifier node={specifier} onUpdate={props.onUpdate} />
-              </React.Fragment>
-            ) : (
-              <NotImplemented key={i} node={specifier} />
-            )
-          )}
+          <Join>
+            {rest.map((specifier, i) =>
+              t.isImportSpecifier(specifier) ? (
+                <ImportSpecifier
+                  key={i}
+                  node={specifier}
+                  onUpdate={props.onUpdate}
+                />
+              ) : (
+                <NotImplemented key={i} node={specifier} />
+              )
+            )}
+          </Join>
           <span>{` }`}</span>
         </>
       ) : null}
@@ -1196,16 +1202,15 @@ export function ObjectPattern(props: P<t.ObjectPattern>) {
   return (
     <>
       <span>{`{ `}</span>
-      {properties.map((property, i) => (
-        <React.Fragment key={i}>
-          {i > 0 ? <span>, </span> : null}
-          {t.isObjectProperty(property) ? (
+      <Join>
+        {properties.map((property, i) =>
+          t.isObjectProperty(property) ? (
             <ObjectProperty key={i} node={property} onUpdate={props.onUpdate} />
           ) : (
             <RestElement key={i} node={property} onUpdate={props.onUpdate} />
-          )}
-        </React.Fragment>
-      ))}
+          )
+        )}
+      </Join>
       <span>{` }`}</span>
     </>
   );
@@ -1874,5 +1879,21 @@ function CollapseButton(props: {
     <button onClick={() => onClick(!collapsed)}>
       {collapsed ? '◀︎' : '▼'}
     </button>
+  );
+}
+
+function Join(props: {
+  children: React.ReactNode[];
+  delimiterStyle?: React.CSSProperties;
+}) {
+  return (
+    <>
+      {props.children.map((item, i) => (
+        <React.Fragment key={i}>
+          {i > 0 ? <span style={props.delimiterStyle}>, </span> : null}
+          {item}
+        </React.Fragment>
+      ))}
+    </>
   );
 }
