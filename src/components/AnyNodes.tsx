@@ -690,7 +690,16 @@ export function ObjectProperty(props: P<t.ObjectProperty>) {
 }
 
 export function RestElement(props: P<t.RestElement>) {
-  return <NotImplemented node={props.node} />;
+  const { argument, decorators } = props.node;
+  if (decorators) {
+    return <NotImplemented node={props.node} />;
+  }
+  return (
+    <span>
+      <span>...</span>
+      <LVal node={argument} onUpdate={props.onUpdate} />
+    </span>
+  );
 }
 
 export function ReturnStatement(props: P<t.ReturnStatement>) {
@@ -892,7 +901,22 @@ export function AssignmentPattern(props: P<t.AssignmentPattern>) {
 }
 
 export function ArrayPattern(props: P<t.ArrayPattern>) {
-  return <NotImplemented node={props.node} />;
+  const { elements, decorators } = props.node;
+  if (decorators) {
+    return <NotImplemented node={props.node} />;
+  }
+  return (
+    <span>
+      <span>{`[`}</span>
+      {elements.map((element, i) => (
+        <React.Fragment key={i}>
+          {i > 0 ? <span>, </span> : null}
+          <PatternLike node={element} onUpdate={props.onUpdate} />
+        </React.Fragment>
+      ))}
+      <span>{`]`}</span>
+    </span>
+  );
 }
 
 export function ArrowFunctionExpression(props: P<t.ArrowFunctionExpression>) {
