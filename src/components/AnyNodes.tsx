@@ -985,6 +985,8 @@ export function ClassExpression(props: P<t.ClassExpression>) {
 
 function ClassImpl(props: P<t.ClassDeclaration | t.ClassExpression>) {
   const { id, superClass, body, decorators } = props.node;
+  const [collapsed, setCollapsed] = React.useState(true);
+
   if (superClass) {
     return <NotImplemented node={props.node} />;
   }
@@ -994,15 +996,22 @@ function ClassImpl(props: P<t.ClassDeclaration | t.ClassExpression>) {
 
   return (
     <>
-      <span>
-        <ruby>
-          class <rt>クラス</rt>
-        </ruby>
-      </span>
-      {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
-      <Block>
-          <ClassBody node={body} onUpdate={props.onUpdate} />
-        </Block>
+      <CollapseButton collapsed={collapsed} setter={setCollapsed} />
+      {collapsed ? (
+        <span>
+          <ruby>
+            {`class ${id ? id.name : ''} { }`} <rt>クラスを作る</rt>
+          </ruby>
+        </span>
+      ) : (
+        <>
+          <span>class </span>
+          {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
+          <Block>
+            <ClassBody node={body} onUpdate={props.onUpdate} />
+          </Block>
+        </>
+      )}
     </>
   );
 }
