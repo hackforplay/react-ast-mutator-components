@@ -1938,7 +1938,7 @@ function CollapseButton(props: {
   const { collapsed, setter: onClick } = props;
   return (
     <button onClick={() => onClick(!collapsed)}>
-      {collapsed ? '◀︎' : '▼'}
+      {collapsed ? '▶︎' : '▼'}
     </button>
   );
 }
