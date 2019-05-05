@@ -88,7 +88,6 @@ export function BinaryExpression(props: P<t.BinaryExpression>) {
       <Expression node={right} onUpdate={props.onUpdate} />
     </span>
   );
-  return <NotImplemented node={props.node} />;
 }
 
 export function InterpreterDirective(props: P<t.InterpreterDirective>) {
