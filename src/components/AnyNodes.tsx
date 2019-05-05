@@ -662,17 +662,7 @@ export function ObjectMethod(props: P<t.ObjectMethod>) {
         )}
         {computed ? <span>{`]`}</span> : null}
       </span>
-      <span>{`(`}</span>
-      <Join>
-        {params.map((param, i) =>
-          t.isIdentifier(param) ? (
-            <Identifier key={i} node={param} onUpdate={props.onUpdate} />
-          ) : (
-            <NotImplemented key={i} node={props.node} />
-          )
-        )}
-      </Join>
-      <span>{`)`}</span>
+      <ParamsImpl {...props} />
       <BlockStatement node={body} onUpdate={props.onUpdate} />
     </div>
   );
@@ -1218,15 +1208,7 @@ export function ClassMethod(props: P<t.ClassMethod>) {
       {computed ? <span>{`[`}</span> : null}
       <Expression node={key} onUpdate={props.onUpdate} />
       {computed ? <span>{`]`}</span> : null}
-      <span>{`(`}</span>
-      {params.map((param, i) =>
-        t.isTSParameterProperty(param) ? (
-          <NotImplemented key={i} node={param} />
-        ) : (
-          <PatternLike key={i} node={param} onUpdate={props.onUpdate} />
-        )
-      )}
-      <span>{`)`}</span>
+      <ParamsImpl {...props} />
       <BlockStatement node={body} onUpdate={props.onUpdate} />
     </div>
   );
