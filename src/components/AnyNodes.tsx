@@ -14,6 +14,7 @@ import { Comments } from './Comments';
 import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
 import { NodeProps as P } from './types';
+import { ja as lang } from '../lang';
 
 export function ArrayExpression(props: P<t.ArrayExpression>) {
   const { elements } = props.node;
@@ -40,20 +41,10 @@ export function ArrayExpression(props: P<t.ArrayExpression>) {
 }
 
 export function AssignmentExpression(props: P<t.AssignmentExpression>) {
-  const { operator: op, left, right } = props.node;
-  const hurigana =
-    op === '='
-      ? 'に入れる'
-      : op === '+='
-      ? 'に足す'
-      : op === '-='
-      ? 'から引く'
-      : op === '*='
-      ? 'にかける'
-      : op === '/='
-      ? 'をわる'
-      : '';
-  if (!hurigana) {
+  const { operator, left, right } = props.node;
+  const hurigana = (lang as any)[operator];
+
+  if (typeof hurigana !== 'string') {
     return <NotImplemented node={props.node} />;
   }
 
@@ -62,7 +53,7 @@ export function AssignmentExpression(props: P<t.AssignmentExpression>) {
       <LVal {...props} node={left} />
       <span>
         <Ruby kana={hurigana} noKana={props.noKana}>
-          {op}
+          {operator}
         </Ruby>
       </span>
       <Expression {...props} node={right} />
@@ -184,13 +175,13 @@ export function ConditionalExpression(props: P<t.ConditionalExpression>) {
     <span>
       <Expression {...props} node={test} />
       <span>
-        <Ruby kana="が真なら" noKana={props.noKana}>
+        <Ruby kana={lang['?']} noKana={props.noKana}>
           {' ?'}
         </Ruby>
       </span>
       <Expression {...props} node={consequent} />
       <span>
-        <Ruby kana="偽なら" noKana={props.noKana}>
+        <Ruby kana={lang[':']} noKana={props.noKana}>
           {' :'}
         </Ruby>
       </span>
@@ -202,7 +193,7 @@ export function ConditionalExpression(props: P<t.ConditionalExpression>) {
 export function ContinueStatement(props: P<t.ContinueStatement>) {
   return (
     <div>
-      <Ruby kana="くり返しをやめる" noKana={props.noKana}>
+      <Ruby kana={lang.continue} noKana={props.noKana}>
         continue
       </Ruby>
     </div>
@@ -214,7 +205,7 @@ export function DebuggerStatement(props: P<t.DebuggerStatement>) {
   return (
     <div>
       <Comments comments={leadingComments} />
-      <span>debugger;</span>
+      <Ruby kana={lang.debugger}>debugger</Ruby>
       <Comments comments={trailingComments} />
     </div>
   );
@@ -227,7 +218,7 @@ export function DoWhileStatement(props: P<t.DoWhileStatement>) {
       <span>do</span>
       <Statement {...props} node={body} />
       <span>
-        <Ruby kana="真ならもう一度" noKana={props.noKana}>
+        <Ruby kana={lang['do while']} noKana={props.noKana}>
           <span>while </span>
           <span>{`(`}</span>
           <Expression {...props} noKana node={test} />
@@ -335,7 +326,7 @@ function FunctionImpl(props: P<t.FunctionExpression | t.FunctionDeclaration>) {
       {async ? <span>async </span> : null}
       {collapsed ? (
         <span>
-          <Ruby kana="かんすうを作る" noKana={props.noKana}>
+          <Ruby kana={lang['function(){}']} noKana={props.noKana}>
             {`${keyword}${id ? id.name : ''} ( ) { }`}
           </Ruby>
         </span>
@@ -360,7 +351,17 @@ export function Identifier(props: P<t.Identifier>) {
   if (decorators) {
     return <NotImplemented node={decorators[0]} />;
   }
-  return <span>{name}</span>;
+  return (
+    <span>
+      {name === 'undefined' ? (
+        <Ruby kana={lang.undefined} noKana={props.noKana}>
+          undefined
+        </Ruby>
+      ) : (
+        name
+      )}
+    </span>
+  );
 }
 
 export function IfStatement(props: P<t.IfStatement>) {
@@ -486,7 +487,7 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
 export function NullLiteral(props: P<t.NullLiteral>) {
   return (
     <span>
-      <Ruby kana="ヌル" noKana={props.noKana}>
+      <Ruby kana={lang.null} noKana={props.noKana}>
         null
       </Ruby>
     </span>
@@ -525,7 +526,7 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
         onClick={() => setEditable(true)}
         style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
       >
-        <Ruby kana={value ? '真' : '偽'} noKana={props.noKana}>
+        <Ruby kana={value ? lang.true : lang.false} noKana={props.noKana}>
           {value.toString()}
         </Ruby>
       </span>
@@ -599,7 +600,7 @@ export function ObjectExpression(props: P<t.ObjectExpression>) {
       <CollapseButton collapsed={collapsed} setter={setCollapsed} />
       {collapsed ? (
         <span>
-          <Ruby kana="オブジェクト" noKana={props.noKana}>
+          <Ruby kana={lang.object} noKana={props.noKana}>
             {`{ }`}
           </Ruby>
         </span>
@@ -831,14 +832,18 @@ export function UpdateExpression(props: P<t.UpdateExpression>) {
 
 export function VariableDeclaration(props: P<t.VariableDeclaration>) {
   const { kind, declarations } = props.node;
+  const hurigana = (lang as any)[kind];
+  if (typeof hurigana !== 'string') {
+    return <NotImplemented node={props.node} />;
+  }
   return (
     <>
       {declarations.map((declarator, i) => (
         <div key={i}>
-          <Ruby key={i} kana={'せんげんする'} noKana={props.noKana}>
+          <Ruby kana={hurigana} noKana={props.noKana}>
             {kind + ' '}
           </Ruby>
-          <VariableDeclarator key={i} {...props} node={declarator} />
+          <VariableDeclarator {...props} node={declarator} />
         </div>
       ))}
     </>
@@ -853,7 +858,7 @@ export function VariableDeclarator(props: P<t.VariableDeclarator>) {
       {init ? (
         <>
           <span>
-            <Ruby kana="は" noKana={props.noKana}>
+            <Ruby kana={lang.init} noKana={props.noKana}>
               =
             </Ruby>
           </span>
@@ -869,13 +874,13 @@ export function WhileStatement(props: P<t.WhileStatement>) {
   return (
     <div>
       <Comments comments={leadingComments} />
-      <div>
+      <Ruby kana={lang.while}>
         <span>while </span>
         <span>(</span>
         <Expression {...props} node={test} />
         <span>)</span>
-        <Statement {...props} node={body} />
-      </div>
+      </Ruby>
+      <Statement {...props} node={body} />
       <Comments comments={trailingComments} />
     </div>
   );
@@ -894,7 +899,7 @@ export function AssignmentPattern(props: P<t.AssignmentPattern>) {
     <span>
       <LVal {...props} node={left} />
       <span>
-        <Ruby kana="デフォルトは" noKana={props.noKana}>
+        <Ruby kana={lang.assignmentPattern} noKana={props.noKana}>
           {` = `}
         </Ruby>
       </span>
@@ -935,7 +940,7 @@ export function ArrowFunctionExpression(props: P<t.ArrowFunctionExpression>) {
       {async ? <span>async </span> : null}
       {collapsed ? (
         <span>
-          <Ruby kana="アロー関数" noKana={props.noKana}>
+          <Ruby kana={lang['()=>{}']} noKana={props.noKana}>
             {`( ) => { }`}
           </Ruby>
         </span>
@@ -1001,20 +1006,22 @@ function ClassImpl(props: P<t.ClassDeclaration | t.ClassExpression>) {
       <CollapseButton collapsed={collapsed} setter={setCollapsed} />
       {collapsed ? (
         <span>
-          <Ruby kana="クラスを作る" noKana={props.noKana}>
+          <Ruby kana={lang['class{}']} noKana={props.noKana}>
             {`class ${id ? id.name : ''} { }`}
           </Ruby>
         </span>
       ) : (
         <>
           <span>class </span>
+          {id ? <Identifier {...props} node={id} /> : null}
           {superClass ? (
             <>
-              <span>extends </span>
+              <span>
+                <Ruby kana={lang.extends}>extends </Ruby>
+              </span>
               <Expression {...props} node={superClass} />
             </>
           ) : null}
-          {id ? <Identifier {...props} node={id} /> : null}
           <Block>
             <ClassBody {...props} node={body} />
           </Block>
@@ -1092,7 +1099,7 @@ export function ExportSpecifier(props: P<t.ExportSpecifier>) {
       <Identifier {...props} node={local} />
       {shorthand ? null : (
         <>
-          <Ruby kana={`「${exported.name}」と名づける`}>
+          <Ruby kana={lang.idStart + exported.name + lang.idEnd + lang.as}>
             <span> as </span>
             <Identifier {...props} noKana node={exported} />
           </Ruby>
