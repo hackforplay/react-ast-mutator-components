@@ -40,26 +40,21 @@ export function ArrayExpression(props: P<t.ArrayExpression>) {
 }
 
 export function AssignmentExpression(props: P<t.AssignmentExpression>) {
-  const { operator, left, right } = props.node;
-  let hurigana = ['', ''];
-  switch (operator) {
-    case '=':
-      hurigana = ['を', 'にする'];
-      break;
-    case '+=':
-      hurigana = ['に', 'を足す'];
-      break;
-    case '-=':
-      hurigana = ['から', 'を引く'];
-      break;
-    case '*=':
-      hurigana = ['に', 'をかける'];
-      break;
-    case '/=':
-      hurigana = ['を', 'で割る'];
-      break;
-    default:
-      break;
+  const { operator: op, left, right } = props.node;
+  const hurigana =
+    op === '='
+      ? 'に入れる'
+      : op === '+='
+      ? 'に足す'
+      : op === '-='
+      ? 'から引く'
+      : op === '*='
+      ? 'にかける'
+      : op === '/='
+      ? 'をわる'
+      : '';
+  if (!hurigana) {
+    return <NotImplemented node={props.node} />;
   }
 
   return (
@@ -67,14 +62,11 @@ export function AssignmentExpression(props: P<t.AssignmentExpression>) {
       <LVal node={left} onUpdate={props.onUpdate} />
       <span>
         <ruby>
-          {operator}
-          <rt>{hurigana[0]}</rt>
+          {op}
+          <rt>{hurigana}</rt>
         </ruby>
       </span>
       <Expression node={right} onUpdate={props.onUpdate} />
-      <ruby>
-        <rt>{hurigana[1]}</rt>
-      </ruby>
     </>
   );
 }
