@@ -1274,15 +1274,52 @@ export function Super(props: P<t.Super>) {
 }
 
 export function TaggedTemplateExpression(props: P<t.TaggedTemplateExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { tag, quasi } = props.node;
+  return (
+    <span>
+      <Expression node={tag} onUpdate={props.onUpdate} />
+      <TemplateLiteral node={quasi} onUpdate={props.onUpdate} />
+    </span>
+  );
 }
 
 export function TemplateElement(props: P<t.TemplateElement>) {
-  return <NotImplemented node={props.node} />;
+  const { value } = props.node;
+  const str = value.raw || value.cooked;
+  if (typeof str !== 'string') {
+    return <NotImplemented node={props.node} />;
+  }
+  return <span>{str}</span>;
 }
 
 export function TemplateLiteral(props: P<t.TemplateLiteral>) {
-  return <NotImplemented node={props.node} />;
+  const { quasis, expressions } = props.node;
+  const slots = Array.from({ length: quasis.length + expressions.length });
+
+  return (
+    <span>
+      <span>`</span>
+      {slots.map((_, i) =>
+        i % 2 === 0 ? (
+          <TemplateElement
+            key={i}
+            node={quasis[i / 2]}
+            onUpdate={props.onUpdate}
+          />
+        ) : (
+          <span key={i}>
+            <span>{'${'}</span>
+            <Expression
+              node={expressions[(i / 2) >> 0]}
+              onUpdate={props.onUpdate}
+            />
+            <span>{'}'}</span>
+          </span>
+        )
+      )}
+      <span>`</span>
+    </span>
+  );
 }
 
 export function YieldExpression(props: P<t.YieldExpression>) {
