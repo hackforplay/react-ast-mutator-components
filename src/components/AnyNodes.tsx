@@ -256,7 +256,11 @@ export function EmptyStatement(props: P<t.EmptyStatement>) {
 
 export function ExpressionStatement(props: P<t.ExpressionStatement>) {
   const { expression } = props.node;
-  return <Expression node={expression} onUpdate={props.onUpdate} />;
+  return (
+    <div>
+      <Expression node={expression} onUpdate={props.onUpdate} />
+    </div>
+  );
 }
 
 export function File(props: P<t.File>) {
