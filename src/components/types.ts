@@ -3,6 +3,7 @@ import { BaseNode } from '@babel/types';
 export interface NodeProps<NodeType extends BaseNode> {
   node: NodeType;
   onUpdate: OnUpdate;
+  noKana?: boolean;
 }
 
 export interface OnUpdate {

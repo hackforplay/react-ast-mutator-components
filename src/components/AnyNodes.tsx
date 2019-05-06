@@ -61,10 +61,9 @@ export function AssignmentExpression(props: P<t.AssignmentExpression>) {
     <>
       <LVal {...props} node={left} />
       <span>
-        <ruby>
+        <Ruby kana={hurigana} noKana={props.noKana}>
           {op}
-          <rt>{hurigana}</rt>
-        </ruby>
+        </Ruby>
       </span>
       <Expression {...props} node={right} />
     </>
@@ -185,17 +184,15 @@ export function ConditionalExpression(props: P<t.ConditionalExpression>) {
     <span>
       <Expression {...props} node={test} />
       <span>
-        <ruby>
-          {' '}
-          ? <rt>が真なら</rt>
-        </ruby>
+        <Ruby kana="が真なら" noKana={props.noKana}>
+          {' ?'}
+        </Ruby>
       </span>
       <Expression {...props} node={consequent} />
       <span>
-        <ruby>
-          {' '}
-          : <rt>偽なら</rt>
-        </ruby>
+        <Ruby kana="偽なら" noKana={props.noKana}>
+          {' :'}
+        </Ruby>
       </span>
       <Expression {...props} node={alternate} />
     </span>
@@ -205,9 +202,9 @@ export function ConditionalExpression(props: P<t.ConditionalExpression>) {
 export function ContinueStatement(props: P<t.ContinueStatement>) {
   return (
     <div>
-      <ruby>
-        continue<rt>くり返しをやめる</rt>
-      </ruby>
+      <Ruby kana="くり返しをやめる" noKana={props.noKana}>
+        continue
+      </Ruby>
     </div>
   );
 }
@@ -230,13 +227,12 @@ export function DoWhileStatement(props: P<t.DoWhileStatement>) {
       <span>do</span>
       <Statement {...props} node={body} />
       <span>
-        <ruby>
+        <Ruby kana="真ならもう一度" noKana={props.noKana}>
           <span>while </span>
           <span>{`(`}</span>
-          <Expression {...props} node={test} />
+          <Expression {...props} noKana node={test} />
           <span>{`)`}</span>
-          <rt>真ならもう一度</rt>
-        </ruby>
+        </Ruby>
       </span>
     </div>
   );
@@ -339,10 +335,9 @@ function FunctionImpl(props: P<t.FunctionExpression | t.FunctionDeclaration>) {
       {async ? <span>async </span> : null}
       {collapsed ? (
         <span>
-          <ruby>
+          <Ruby kana="かんすうを作る" noKana={props.noKana}>
             {`${keyword}${id ? id.name : ''} ( ) { }`}
-            <rt>かんすうを作る</rt>
-          </ruby>
+          </Ruby>
         </span>
       ) : (
         <span>
@@ -491,9 +486,9 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
 export function NullLiteral(props: P<t.NullLiteral>) {
   return (
     <span>
-      <ruby>
-        null<rt>ヌル</rt>
-      </ruby>
+      <Ruby kana="ヌル" noKana={props.noKana}>
+        null
+      </Ruby>
     </span>
   );
 }
@@ -530,10 +525,9 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
         onClick={() => setEditable(true)}
         style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
       >
-        <ruby>
+        <Ruby kana={value ? '真' : '偽'} noKana={props.noKana}>
           {value.toString()}
-          <rt>{value ? '真' : '偽'}</rt>
-        </ruby>
+        </Ruby>
       </span>
     </>
   );
@@ -605,10 +599,9 @@ export function ObjectExpression(props: P<t.ObjectExpression>) {
       <CollapseButton collapsed={collapsed} setter={setCollapsed} />
       {collapsed ? (
         <span>
-          <ruby>
+          <Ruby kana="オブジェクト" noKana={props.noKana}>
             {`{ }`}
-            <rt>オブジェクト</rt>
-          </ruby>
+          </Ruby>
         </span>
       ) : (
         <Block inline>
@@ -633,7 +626,6 @@ export function ObjectMethod(props: P<t.ObjectMethod>) {
   const {
     kind,
     key,
-    params,
     body,
     computed,
     async,
@@ -840,10 +832,9 @@ export function UpdateExpression(props: P<t.UpdateExpression>) {
 export function VariableDeclaration(props: P<t.VariableDeclaration>) {
   return (
     <span>
-      <ruby>
+      <Ruby kana="へんすう" noKana={props.noKana}>
         {props.node.kind}
-        <rt>へんすう</rt>
-      </ruby>
+      </Ruby>
       <span />
       {props.node.declarations.map((node, i) => (
         <VariableDeclarator key={i} {...props} node={node} />
@@ -860,9 +851,9 @@ export function VariableDeclarator(props: P<t.VariableDeclarator>) {
       {init ? (
         <>
           <span>
-            <ruby>
-              =<rt>は</rt>
-            </ruby>
+            <Ruby kana="は" noKana={props.noKana}>
+              =
+            </Ruby>
           </span>
           <Expression {...props} node={init} />
         </>
@@ -901,10 +892,9 @@ export function AssignmentPattern(props: P<t.AssignmentPattern>) {
     <span>
       <LVal {...props} node={left} />
       <span>
-        <ruby>
+        <Ruby kana="デフォルトは" noKana={props.noKana}>
           {` = `}
-          <rt>デフォルトは</rt>
-        </ruby>
+        </Ruby>
       </span>
       <Expression {...props} node={right} />
     </span>
@@ -943,10 +933,9 @@ export function ArrowFunctionExpression(props: P<t.ArrowFunctionExpression>) {
       {async ? <span>async </span> : null}
       {collapsed ? (
         <span>
-          <ruby>
+          <Ruby kana="アロー関数" noKana={props.noKana}>
             {`( ) => { }`}
-            <rt>アロー関数</rt>
-          </ruby>
+          </Ruby>
         </span>
       ) : (
         <>
@@ -1010,9 +999,9 @@ function ClassImpl(props: P<t.ClassDeclaration | t.ClassExpression>) {
       <CollapseButton collapsed={collapsed} setter={setCollapsed} />
       {collapsed ? (
         <span>
-          <ruby>
-            {`class ${id ? id.name : ''} { }`} <rt>クラスを作る</rt>
-          </ruby>
+          <Ruby kana="クラスを作る" noKana={props.noKana}>
+            {`class ${id ? id.name : ''} { }`}
+          </Ruby>
         </span>
       ) : (
         <>
@@ -1101,11 +1090,10 @@ export function ExportSpecifier(props: P<t.ExportSpecifier>) {
       <Identifier {...props} node={local} />
       {shorthand ? null : (
         <>
-          <ruby>
+          <Ruby kana={`「${exported.name}」と名づける`}>
             <span> as </span>
-            <Identifier {...props} node={exported} />
-            <rt>「{exported.name}」と名づける</rt>
-          </ruby>
+            <Identifier {...props} noKana node={exported} />
+          </Ruby>
         </>
       )}
     </span>
@@ -2014,5 +2002,22 @@ function Join(props: {
         </React.Fragment>
       ))}
     </>
+  );
+}
+
+interface IRubyProps {
+  kana: string;
+  noKana?: boolean;
+  children: React.ReactNode | React.ReactNode[];
+}
+
+function Ruby(props: IRubyProps) {
+  return props.noKana ? (
+    <>{props.children}</>
+  ) : (
+    <ruby>
+      {props.children}
+      <rt>{props.kana}</rt>
+    </ruby>
   );
 }
