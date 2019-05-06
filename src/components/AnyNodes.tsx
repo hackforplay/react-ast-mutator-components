@@ -1100,12 +1100,14 @@ export function ExportSpecifier(props: P<t.ExportSpecifier>) {
     <span>
       <Identifier {...props} node={local} />
       {shorthand ? null : (
-        <ruby>
-          {' '}
-          as <rt>→</rt>
-        </ruby>
+        <>
+          <ruby>
+            <span> as </span>
+            <Identifier {...props} node={exported} />
+            <rt>「{exported.name}」と名づける</rt>
+          </ruby>
+        </>
       )}
-      {shorthand ? null : <Identifier {...props} node={exported} />}
     </span>
   );
 }
