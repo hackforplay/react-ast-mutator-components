@@ -147,26 +147,28 @@ export function BreakStatement(props: P<t.BreakStatement>) {
 export function CallExpression(props: P<t.CallExpression>) {
   return (
     <span>
-      <Call {...props} />
+      <CallImpl {...props} />
     </span>
   );
 }
 
-function Call(props: P<t.CallExpression | t.NewExpression>) {
+function CallImpl(props: P<t.CallExpression | t.NewExpression>) {
   const { callee, arguments: args } = props.node;
   return (
     <>
       <Expression node={callee} onUpdate={props.onUpdate} />
       <span>{`(`}</span>
-      {args.map((argument, i) =>
-        t.isExpression(argument) ? (
-          <Expression key={i} node={argument} onUpdate={props.onUpdate} />
-        ) : t.isSpreadElement(argument) ? (
-          <SpreadElement key={i} node={argument} onUpdate={props.onUpdate} />
-        ) : (
-          <NotImplemented key={i} node={argument} />
-        )
-      )}
+      <Join>
+        {args.map((argument, i) =>
+          t.isExpression(argument) ? (
+            <Expression key={i} node={argument} onUpdate={props.onUpdate} />
+          ) : t.isSpreadElement(argument) ? (
+            <SpreadElement key={i} node={argument} onUpdate={props.onUpdate} />
+          ) : (
+            <NotImplemented key={i} node={argument} />
+          )
+        )}
+      </Join>
       <span>{`)`}</span>
     </>
   );
@@ -584,7 +586,7 @@ export function NewExpression(props: P<t.NewExpression>) {
   return (
     <span>
       <span>new </span>
-      <Call {...props} />
+      <CallImpl {...props} />
     </span>
   );
 }
