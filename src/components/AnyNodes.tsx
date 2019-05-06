@@ -830,16 +830,18 @@ export function UpdateExpression(props: P<t.UpdateExpression>) {
 }
 
 export function VariableDeclaration(props: P<t.VariableDeclaration>) {
+  const { kind, declarations } = props.node;
   return (
-    <span>
-      <Ruby kana="へんすう" noKana={props.noKana}>
-        {props.node.kind}
-      </Ruby>
-      <span />
-      {props.node.declarations.map((node, i) => (
-        <VariableDeclarator key={i} {...props} node={node} />
+    <>
+      {declarations.map((declarator, i) => (
+        <div key={i}>
+          <Ruby key={i} kana={'せんげんする'} noKana={props.noKana}>
+            {kind + ' '}
+          </Ruby>
+          <VariableDeclarator key={i} {...props} node={declarator} />
+        </div>
       ))}
-    </span>
+    </>
   );
 }
 
