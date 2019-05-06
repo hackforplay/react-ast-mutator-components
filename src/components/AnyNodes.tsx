@@ -28,9 +28,9 @@ export function ArrayExpression(props: P<t.ArrayExpression>) {
               undefined
             </span>
           ) : t.isSpreadElement(element) ? (
-            <SpreadElement key={i} node={element} onUpdate={props.onUpdate} />
+            <SpreadElement key={i} {...props} node={element} />
           ) : (
-            <Expression key={i} node={element} onUpdate={props.onUpdate} />
+            <Expression key={i} {...props} node={element} />
           )
         )}
       </Join>
@@ -59,14 +59,14 @@ export function AssignmentExpression(props: P<t.AssignmentExpression>) {
 
   return (
     <>
-      <LVal node={left} onUpdate={props.onUpdate} />
+      <LVal {...props} node={left} />
       <span>
         <ruby>
           {op}
           <rt>{hurigana}</rt>
         </ruby>
       </span>
-      <Expression node={right} onUpdate={props.onUpdate} />
+      <Expression {...props} node={right} />
     </>
   );
 }
@@ -75,9 +75,9 @@ export function BinaryExpression(props: P<t.BinaryExpression>) {
   const { operator, left, right } = props.node;
   return (
     <span>
-      <Expression node={left} onUpdate={props.onUpdate} />
+      <Expression {...props} node={left} />
       <span>{` ${operator} `}</span>
-      <Expression node={right} onUpdate={props.onUpdate} />
+      <Expression {...props} node={right} />
     </span>
   );
 }
@@ -100,7 +100,7 @@ export function BlockStatement(props: P<t.BlockStatement>) {
     <Block>
       <>
         {body.map((node, i) => (
-          <Statement key={i} node={node} onUpdate={props.onUpdate} />
+          <Statement key={i} {...props} node={node} />
         ))}
       </>
     </Block>
@@ -148,14 +148,14 @@ function CallImpl(props: P<t.CallExpression | t.NewExpression>) {
   const { callee, arguments: args } = props.node;
   return (
     <>
-      <Expression node={callee} onUpdate={props.onUpdate} />
+      <Expression {...props} node={callee} />
       <span>{`(`}</span>
       <Join>
         {args.map((argument, i) =>
           t.isExpression(argument) ? (
-            <Expression key={i} node={argument} onUpdate={props.onUpdate} />
+            <Expression key={i} {...props} node={argument} />
           ) : t.isSpreadElement(argument) ? (
-            <SpreadElement key={i} node={argument} onUpdate={props.onUpdate} />
+            <SpreadElement key={i} {...props} node={argument} />
           ) : (
             <NotImplemented key={i} node={argument} />
           )
@@ -172,9 +172,9 @@ export function CatchClause(props: P<t.CatchClause>) {
     <>
       <span>catch </span>
       <span>{`(`}</span>
-      {param ? <Identifier node={param} onUpdate={props.onUpdate} /> : null}
+      {param ? <Identifier {...props} node={param} /> : null}
       <span>{`)`}</span>
-      <BlockStatement node={body} onUpdate={props.onUpdate} />
+      <BlockStatement {...props} node={body} />
     </>
   );
 }
@@ -183,21 +183,21 @@ export function ConditionalExpression(props: P<t.ConditionalExpression>) {
   const { test, consequent, alternate } = props.node;
   return (
     <span>
-      <Expression node={test} onUpdate={props.onUpdate} />
+      <Expression {...props} node={test} />
       <span>
         <ruby>
           {' '}
           ? <rt>が真なら</rt>
         </ruby>
       </span>
-      <Expression node={consequent} onUpdate={props.onUpdate} />
+      <Expression {...props} node={consequent} />
       <span>
         <ruby>
           {' '}
           : <rt>偽なら</rt>
         </ruby>
       </span>
-      <Expression node={alternate} onUpdate={props.onUpdate} />
+      <Expression {...props} node={alternate} />
     </span>
   );
 }
@@ -228,12 +228,12 @@ export function DoWhileStatement(props: P<t.DoWhileStatement>) {
   return (
     <div>
       <span>do</span>
-      <Statement node={body} onUpdate={props.onUpdate} />
+      <Statement {...props} node={body} />
       <span>
         <ruby>
           <span>while </span>
           <span>{`(`}</span>
-          <Expression node={test} onUpdate={props.onUpdate} />
+          <Expression {...props} node={test} />
           <span>{`)`}</span>
           <rt>真ならもう一度</rt>
         </ruby>
@@ -250,14 +250,14 @@ export function ExpressionStatement(props: P<t.ExpressionStatement>) {
   const { expression } = props.node;
   return (
     <div>
-      <Expression node={expression} onUpdate={props.onUpdate} />
+      <Expression {...props} node={expression} />
     </div>
   );
 }
 
 export function File(props: P<t.File>) {
   const { program } = props.node;
-  return <Program node={program} onUpdate={props.onUpdate} />;
+  return <Program {...props} node={program} />;
 }
 
 export function ForInStatement(props: P<t.ForInStatement>) {
@@ -267,14 +267,14 @@ export function ForInStatement(props: P<t.ForInStatement>) {
       <span>for </span>
       <span>{`(`}</span>
       {t.isVariableDeclaration(left) ? (
-        <VariableDeclaration node={left} onUpdate={props.onUpdate} />
+        <VariableDeclaration {...props} node={left} />
       ) : (
-        <LVal node={left} onUpdate={props.onUpdate} />
+        <LVal {...props} node={left} />
       )}
       <span> in </span>
-      <Expression node={right} onUpdate={props.onUpdate} />
+      <Expression {...props} node={right} />
       <span>{`)`}</span>
-      <Statement node={body} onUpdate={props.onUpdate} />
+      <Statement {...props} node={body} />
     </div>
   );
 }
@@ -288,14 +288,14 @@ export function ForStatement(props: P<t.ForStatement>) {
       <span>for </span>
       <span>{`(`}</span>
       {t.isVariableDeclaration(init) ? (
-        <VariableDeclaration node={init} onUpdate={props.onUpdate} />
+        <VariableDeclaration {...props} node={init} />
       ) : t.isExpression(init) ? (
-        <Expression node={init} onUpdate={props.onUpdate} />
+        <Expression {...props} node={init} />
       ) : null}
       <span>; </span>
-      {test ? <Expression node={test} onUpdate={props.onUpdate} /> : null}
+      {test ? <Expression {...props} node={test} /> : null}
       <span>; </span>
-      {update ? <Expression node={update} onUpdate={props.onUpdate} /> : null}
+      {update ? <Expression {...props} node={update} /> : null}
       <span>{`)`}</span>
       <CollapseButton collapsed={collapsed} setter={setCollapsed} />
     </div>
@@ -306,7 +306,7 @@ export function ForStatement(props: P<t.ForStatement>) {
   ) : (
     <div>
       {header}
-      <Statement node={body} onUpdate={props.onUpdate} />
+      <Statement {...props} node={body} />
     </div>
   );
 }
@@ -347,10 +347,10 @@ function FunctionImpl(props: P<t.FunctionExpression | t.FunctionDeclaration>) {
       ) : (
         <span>
           <span>{keyword}</span>
-          {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
+          {id ? <Identifier {...props} node={id} /> : null}
           <span> </span>
           <ParamsImpl {...props} />
-          <BlockStatement node={body} onUpdate={props.onUpdate} />
+          <BlockStatement {...props} node={body} />
         </span>
       )}
     </>
@@ -374,24 +374,24 @@ export function IfStatement(props: P<t.IfStatement>) {
     <div>
       <span>if </span>
       <span>{`(`}</span>
-      <Expression node={test} onUpdate={props.onUpdate} />
+      <Expression {...props} node={test} />
       <span>{`)`}</span>
       {t.isExpressionStatement(consequent) ? (
         <Block>
-          <Statement node={consequent} onUpdate={props.onUpdate} />
+          <Statement {...props} node={consequent} />
         </Block>
       ) : (
-        <Statement node={consequent} onUpdate={props.onUpdate} />
+        <Statement {...props} node={consequent} />
       )}
       {alternate ? (
         <>
           <span>else </span>
           {t.isExpressionStatement(alternate) ? (
             <Block>
-              <Statement node={alternate} onUpdate={props.onUpdate} />
+              <Statement {...props} node={alternate} />
             </Block>
           ) : (
-            <Statement node={alternate} onUpdate={props.onUpdate} />
+            <Statement {...props} node={alternate} />
           )}
         </>
       ) : null}
@@ -403,9 +403,9 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
   const { label, body } = props.node;
   return (
     <div>
-      <Identifier node={label} onUpdate={props.onUpdate} />
+      <Identifier {...props} node={label} />
       <span>: </span>
-      <Statement node={body} onUpdate={props.onUpdate} />
+      <Statement {...props} node={body} />
     </div>
   );
 }
@@ -555,9 +555,9 @@ export function LogicalExpression(props: P<t.LogicalExpression>) {
   const { operator, left, right } = props.node;
   return (
     <span>
-      <Expression node={left} onUpdate={props.onUpdate} />
+      <Expression {...props} node={left} />
       <span> {operator} </span>
-      <Expression node={right} onUpdate={props.onUpdate} />
+      <Expression {...props} node={right} />
     </span>
   );
 }
@@ -566,10 +566,10 @@ export function MemberExpression(props: P<t.MemberExpression>) {
   const { object, property, computed } = props.node;
   return (
     <>
-      <Expression node={object} onUpdate={props.onUpdate} />
+      <Expression {...props} node={object} />
       {computed ? <span>{`[`}</span> : <span>.</span>}
       {t.isExpression(property) ? (
-        <Expression node={property} onUpdate={props.onUpdate} />
+        <Expression {...props} node={property} />
       ) : (
         <NotImplemented node={props.node} />
       )}
@@ -591,7 +591,7 @@ export function Program(props: P<t.Program>) {
   return (
     <div>
       {props.node.body.map((node, i) => (
-        <Statement key={i} node={node} onUpdate={props.onUpdate} />
+        <Statement key={i} {...props} node={node} />
       ))}
     </div>
   );
@@ -614,7 +614,7 @@ export function ObjectExpression(props: P<t.ObjectExpression>) {
         <Block inline>
           {properties.map((property, i) =>
             t.isObjectMember(property) ? (
-              <ObjectMember key={i} node={property} onUpdate={props.onUpdate} />
+              <ObjectMember key={i} {...props} node={property} />
             ) : (
               <SpreadElement
                 key={i}
@@ -653,14 +653,14 @@ export function ObjectMethod(props: P<t.ObjectMethod>) {
         {generator ? <span>* </span> : null}
         {computed ? <span>{`[`}</span> : null}
         {t.isExpression(key) ? (
-          <Expression node={key} onUpdate={props.onUpdate} />
+          <Expression {...props} node={key} />
         ) : (
           <NotImplemented node={props.node} />
         )}
         {computed ? <span>{`]`}</span> : null}
       </span>
       <ParamsImpl {...props} />
-      <BlockStatement node={body} onUpdate={props.onUpdate} />
+      <BlockStatement {...props} node={body} />
     </div>
   );
 }
@@ -671,7 +671,7 @@ export function ObjectProperty(props: P<t.ObjectProperty>) {
     <span>
       {computed ? <span>{`[`}</span> : null}
       {t.isExpression(key) ? (
-        <Expression node={key} onUpdate={props.onUpdate} />
+        <Expression {...props} node={key} />
       ) : (
         <NotImplemented node={key} />
       )}
@@ -679,9 +679,9 @@ export function ObjectProperty(props: P<t.ObjectProperty>) {
       <span style={shorthand ? { opacity: 0.1 } : {}}>
         <span>: </span>
         {t.isPatternLike(value) ? (
-          <PatternLike node={value} onUpdate={props.onUpdate} />
+          <PatternLike {...props} node={value} />
         ) : (
-          <Expression node={value} onUpdate={props.onUpdate} />
+          <Expression {...props} node={value} />
         )}
       </span>
     </span>
@@ -696,7 +696,7 @@ export function RestElement(props: P<t.RestElement>) {
   return (
     <span>
       <span>...</span>
-      <LVal node={argument} onUpdate={props.onUpdate} />
+      <LVal {...props} node={argument} />
     </span>
   );
 }
@@ -706,7 +706,7 @@ export function ReturnStatement(props: P<t.ReturnStatement>) {
   return (
     <div>
       <span>return{argument ? ' ' : ''}</span>
-      {argument && <Expression node={argument} onUpdate={props.onUpdate} />}
+      {argument && <Expression {...props} node={argument} />}
       <span>;</span>
     </div>
   );
@@ -719,7 +719,7 @@ export function SequenceExpression(props: P<t.SequenceExpression>) {
       <span>{`(`}</span>
       <Join>
         {expressions.map((expression, i) => (
-          <Expression key={i} node={expression} onUpdate={props.onUpdate} />
+          <Expression key={i} {...props} node={expression} />
         ))}
       </Join>
       <span>{`)`}</span>
@@ -732,7 +732,7 @@ export function ParenthesizedExpression(props: P<t.ParenthesizedExpression>) {
   return (
     <>
       <span>{`(`}</span>
-      <Expression node={expression} onUpdate={props.onUpdate} />
+      <Expression {...props} node={expression} />
       <span>{`)`}</span>
     </>
   );
@@ -745,7 +745,7 @@ export function SwitchCase(props: P<t.SwitchCase>) {
       {test ? (
         <>
           <span>case </span>
-          <Expression node={test} onUpdate={props.onUpdate} />
+          <Expression {...props} node={test} />
           <span>:</span>
         </>
       ) : (
@@ -753,7 +753,7 @@ export function SwitchCase(props: P<t.SwitchCase>) {
       )}
       <div style={{ paddingLeft: 16 }}>
         {consequent.map((statement, i) => (
-          <Statement key={i} node={statement} onUpdate={props.onUpdate} />
+          <Statement key={i} {...props} node={statement} />
         ))}
       </div>
     </div>
@@ -767,13 +767,13 @@ export function SwitchStatement(props: P<t.SwitchStatement>) {
     <div>
       <span>switch </span>
       <span>(</span>
-      <Expression node={discriminant} onUpdate={props.onUpdate} />
+      <Expression {...props} node={discriminant} />
       <span>)</span>
       <div>
         <Block>
           <>
             {cases.map((case_, i) => (
-              <SwitchCase key={i} node={case_} onUpdate={props.onUpdate} />
+              <SwitchCase key={i} {...props} node={case_} />
             ))}
           </>
         </Block>
@@ -792,7 +792,7 @@ export function ThrowStatement(props: P<t.ThrowStatement>) {
     <div>
       <Comments comments={leadingComments} />
       <span>throw{argument ? ' ' : ''}</span>
-      {argument && <Expression node={argument} onUpdate={props.onUpdate} />}
+      {argument && <Expression {...props} node={argument} />}
       <span>;</span>
       <Comments comments={trailingComments} />
     </div>
@@ -804,14 +804,12 @@ export function TryStatement(props: P<t.TryStatement>) {
   return (
     <div>
       <span>try </span>
-      <BlockStatement node={block} onUpdate={props.onUpdate} />
-      {handler ? (
-        <CatchClause node={handler} onUpdate={props.onUpdate} />
-      ) : null}
+      <BlockStatement {...props} node={block} />
+      {handler ? <CatchClause {...props} node={handler} /> : null}
       {finalizer ? (
         <>
           <span>finalize</span>
-          <BlockStatement node={finalizer} onUpdate={props.onUpdate} />
+          <BlockStatement {...props} node={finalizer} />
         </>
       ) : null}
     </div>
@@ -823,7 +821,7 @@ export function UnaryExpression(props: P<t.UnaryExpression>) {
   return (
     <span>
       <span>{operator + ' '}</span>
-      <Expression node={argument} onUpdate={props.onUpdate} />
+      <Expression {...props} node={argument} />
     </span>
   );
 }
@@ -833,7 +831,7 @@ export function UpdateExpression(props: P<t.UpdateExpression>) {
   return (
     <span>
       {prefix ? <span>{operator}</span> : null}
-      <Expression node={argument} onUpdate={props.onUpdate} />
+      <Expression {...props} node={argument} />
       {prefix ? null : <span>{operator}</span>}
     </span>
   );
@@ -848,7 +846,7 @@ export function VariableDeclaration(props: P<t.VariableDeclaration>) {
       </ruby>
       <span />
       {props.node.declarations.map((node, i) => (
-        <VariableDeclarator key={i} node={node} onUpdate={props.onUpdate} />
+        <VariableDeclarator key={i} {...props} node={node} />
       ))}
     </span>
   );
@@ -858,7 +856,7 @@ export function VariableDeclarator(props: P<t.VariableDeclarator>) {
   const { id, init } = props.node;
   return (
     <span>
-      <LVal node={id} onUpdate={props.onUpdate} />
+      <LVal {...props} node={id} />
       {init ? (
         <>
           <span>
@@ -866,7 +864,7 @@ export function VariableDeclarator(props: P<t.VariableDeclarator>) {
               =<rt>←</rt>
             </ruby>
           </span>
-          <Expression node={init} onUpdate={props.onUpdate} />
+          <Expression {...props} node={init} />
         </>
       ) : null}
     </span>
@@ -881,9 +879,9 @@ export function WhileStatement(props: P<t.WhileStatement>) {
       <div>
         <span>while </span>
         <span>(</span>
-        <Expression node={test} onUpdate={props.onUpdate} />
+        <Expression {...props} node={test} />
         <span>)</span>
-        <Statement node={body} onUpdate={props.onUpdate} />
+        <Statement {...props} node={body} />
       </div>
       <Comments comments={trailingComments} />
     </div>
@@ -901,14 +899,14 @@ export function AssignmentPattern(props: P<t.AssignmentPattern>) {
   }
   return (
     <span>
-      <LVal node={left} onUpdate={props.onUpdate} />
+      <LVal {...props} node={left} />
       <span>
         <ruby>
           {` = `}
           <rt>デフォルトは</rt>
         </ruby>
       </span>
-      <Expression node={right} onUpdate={props.onUpdate} />
+      <Expression {...props} node={right} />
     </span>
   );
 }
@@ -924,7 +922,7 @@ export function ArrayPattern(props: P<t.ArrayPattern>) {
       <Join>
         {elements.map((element, i) =>
           element ? (
-            <PatternLike key={i} node={element} onUpdate={props.onUpdate} />
+            <PatternLike key={i} {...props} node={element} />
           ) : (
             <small key={i}>スキップ</small>
           )
@@ -955,9 +953,9 @@ export function ArrowFunctionExpression(props: P<t.ArrowFunctionExpression>) {
           <ParamsImpl {...props} />
           <span> => </span>
           {t.isBlockStatement(body) ? (
-            <BlockStatement node={body} onUpdate={props.onUpdate} />
+            <BlockStatement {...props} node={body} />
           ) : (
-            <Expression node={body} onUpdate={props.onUpdate} />
+            <Expression {...props} node={body} />
           )}
         </>
       )}
@@ -971,9 +969,9 @@ export function ClassBody(props: P<t.ClassBody>) {
     <>
       {body.map((member, i) =>
         t.isMethod(member) ? (
-          <Method key={i} node={member} onUpdate={props.onUpdate} />
+          <Method key={i} {...props} node={member} />
         ) : t.isProperty(member) ? (
-          <Property key={i} node={member} onUpdate={props.onUpdate} />
+          <Property key={i} {...props} node={member} />
         ) : (
           <NotImplemented node={member} />
         )
@@ -1022,12 +1020,12 @@ function ClassImpl(props: P<t.ClassDeclaration | t.ClassExpression>) {
           {superClass ? (
             <>
               <span>extends </span>
-              <Expression node={superClass} onUpdate={props.onUpdate} />
+              <Expression {...props} node={superClass} />
             </>
           ) : null}
-          {id ? <Identifier node={id} onUpdate={props.onUpdate} /> : null}
+          {id ? <Identifier {...props} node={id} /> : null}
           <Block>
-            <ClassBody node={body} onUpdate={props.onUpdate} />
+            <ClassBody {...props} node={body} />
           </Block>
         </>
       )}
@@ -1040,7 +1038,7 @@ export function ExportAllDeclaration(props: P<t.ExportAllDeclaration>) {
   return (
     <div>
       <span>export * from </span>
-      <StringLiteral node={source} onUpdate={props.onUpdate} />
+      <StringLiteral {...props} node={source} />
     </div>
   );
 }
@@ -1051,9 +1049,9 @@ export function ExportDefaultDeclaration(props: P<t.ExportDefaultDeclaration>) {
     <div>
       <span>export default </span>
       {t.isDeclaration(declaration) ? (
-        <Declaration node={declaration} onUpdate={props.onUpdate} />
+        <Declaration {...props} node={declaration} />
       ) : t.isExpression(declaration) ? (
-        <Expression node={declaration} onUpdate={props.onUpdate} />
+        <Expression {...props} node={declaration} />
       ) : null}
     </div>
   );
@@ -1065,9 +1063,7 @@ export function ExportNamedDeclaration(props: P<t.ExportNamedDeclaration>) {
   return (
     <div>
       <span>export </span>
-      {declaration ? (
-        <Declaration node={declaration} onUpdate={props.onUpdate} />
-      ) : null}
+      {declaration ? <Declaration {...props} node={declaration} /> : null}
       <span>{`{ `}</span>
       <Join>
         {specifiers.map((specifier, i) =>
@@ -1102,16 +1098,14 @@ export function ExportSpecifier(props: P<t.ExportSpecifier>) {
   const shorthand = local.name === exported.name;
   return (
     <span>
-      <Identifier node={local} onUpdate={props.onUpdate} />
+      <Identifier {...props} node={local} />
       {shorthand ? null : (
         <ruby>
           {' '}
           as <rt>→</rt>
         </ruby>
       )}
-      {shorthand ? null : (
-        <Identifier node={exported} onUpdate={props.onUpdate} />
-      )}
+      {shorthand ? null : <Identifier {...props} node={exported} />}
     </span>
   );
 }
@@ -1126,12 +1120,12 @@ export function ForOfStatement(props: P<t.ForOfStatement>) {
       {await_ ? <span>await </span> : null}
       <span>(</span>
       {t.isVariableDeclaration(left) ? (
-        <VariableDeclaration node={left} onUpdate={props.onUpdate} />
+        <VariableDeclaration {...props} node={left} />
       ) : (
-        <LVal node={left} onUpdate={props.onUpdate} />
+        <LVal {...props} node={left} />
       )}
       <span> of </span>
-      <Expression node={right} onUpdate={props.onUpdate} />
+      <Expression {...props} node={right} />
       <span>)</span>
       <CollapseButton collapsed={collapsed} setter={setCollapsed} />
     </div>
@@ -1142,7 +1136,7 @@ export function ForOfStatement(props: P<t.ForOfStatement>) {
   ) : (
     <div>
       {header}
-      <Statement node={body} onUpdate={props.onUpdate} />
+      <Statement {...props} node={body} />
     </div>
   );
 }
@@ -1198,7 +1192,7 @@ export function ImportDeclaration(props: P<t.ImportDeclaration>) {
         </>
       ) : null}
       <span> from </span>
-      <StringLiteral node={source} onUpdate={props.onUpdate} />
+      <StringLiteral {...props} node={source} />
     </div>
   );
 }
@@ -1207,7 +1201,7 @@ export function ImportDefaultSpecifier(props: P<t.ImportDefaultSpecifier>) {
   const { local } = props.node;
   return (
     <span>
-      <Identifier node={local} onUpdate={props.onUpdate} />
+      <Identifier {...props} node={local} />
     </span>
   );
 }
@@ -1217,7 +1211,7 @@ export function ImportNamespaceSpecifier(props: P<t.ImportNamespaceSpecifier>) {
   return (
     <span>
       <span>* as </span>
-      <Identifier node={local} onUpdate={props.onUpdate} />
+      <Identifier {...props} node={local} />
     </span>
   );
 }
@@ -1227,9 +1221,9 @@ export function ImportSpecifier(props: P<t.ImportSpecifier>) {
   const shorthand = local.name === imported.name;
   return (
     <span>
-      <Identifier node={imported} onUpdate={props.onUpdate} />
+      <Identifier {...props} node={imported} />
       {shorthand ? null : <span> as </span>}
-      {shorthand ? null : <Identifier node={local} onUpdate={props.onUpdate} />}
+      {shorthand ? null : <Identifier {...props} node={local} />}
     </span>
   );
 }
@@ -1245,10 +1239,10 @@ export function ClassMethod(props: P<t.ClassMethod>) {
       {static_ ? <span>static </span> : null}
       {kind === 'method' ? null : <span>{kind} </span>}
       {computed ? <span>{`[`}</span> : null}
-      <Expression node={key} onUpdate={props.onUpdate} />
+      <Expression {...props} node={key} />
       {computed ? <span>{`]`}</span> : null}
       <ParamsImpl {...props} />
-      <BlockStatement node={body} onUpdate={props.onUpdate} />
+      <BlockStatement {...props} node={body} />
     </div>
   );
 }
@@ -1261,9 +1255,9 @@ export function ObjectPattern(props: P<t.ObjectPattern>) {
       <Join>
         {properties.map((property, i) =>
           t.isObjectProperty(property) ? (
-            <ObjectProperty key={i} node={property} onUpdate={props.onUpdate} />
+            <ObjectProperty key={i} {...props} node={property} />
           ) : (
-            <RestElement key={i} node={property} onUpdate={props.onUpdate} />
+            <RestElement key={i} {...props} node={property} />
           )
         )}
       </Join>
@@ -1277,7 +1271,7 @@ export function SpreadElement(props: P<t.SpreadElement>) {
   return (
     <span>
       <span>...</span>
-      <Expression node={argument} onUpdate={props.onUpdate} />
+      <Expression {...props} node={argument} />
     </span>
   );
 }
@@ -1290,8 +1284,8 @@ export function TaggedTemplateExpression(props: P<t.TaggedTemplateExpression>) {
   const { tag, quasi } = props.node;
   return (
     <span>
-      <Expression node={tag} onUpdate={props.onUpdate} />
-      <TemplateLiteral node={quasi} onUpdate={props.onUpdate} />
+      <Expression {...props} node={tag} />
+      <TemplateLiteral {...props} node={quasi} />
     </span>
   );
 }
@@ -1642,7 +1636,7 @@ export function AwaitExpression(props: P<t.AwaitExpression>) {
   return (
     <span>
       <span>await </span>
-      <Expression node={argument} onUpdate={props.onUpdate} />
+      <Expression {...props} node={argument} />
     </span>
   );
 }
@@ -1985,7 +1979,7 @@ function ParamsImpl(
       <span>{`(`}</span>
       <Join>
         {params.map((param, i) => (
-          <LVal key={i} node={param} onUpdate={props.onUpdate} />
+          <LVal key={i} {...props} node={param} />
         ))}
       </Join>
       <span>{`)`}</span>
