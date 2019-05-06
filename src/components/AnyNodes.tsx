@@ -1640,7 +1640,13 @@ export function ArgumentPlaceholder(props: P<t.ArgumentPlaceholder>) {
 }
 
 export function AwaitExpression(props: P<t.AwaitExpression>) {
-  return <NotImplemented node={props.node} />;
+  const { argument } = props.node;
+  return (
+    <span>
+      <span>await </span>
+      <Expression node={argument} onUpdate={props.onUpdate} />
+    </span>
+  );
 }
 
 export function BindExpression(props: P<t.BindExpression>) {
