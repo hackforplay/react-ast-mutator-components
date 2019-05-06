@@ -610,11 +610,7 @@ export function ObjectExpression(props: P<t.ObjectExpression>) {
             t.isObjectMember(property) ? (
               <ObjectMember key={i} {...props} node={property} />
             ) : (
-              <SpreadElement
-                key={i}
-                node={property}
-                onUpdate={props.onUpdate}
-              />
+              <SpreadElement key={i} {...props} node={property} />
             )
           )}
         </Block>
@@ -1066,23 +1062,11 @@ export function ExportNamedDeclaration(props: P<t.ExportNamedDeclaration>) {
       <Join>
         {specifiers.map((specifier, i) =>
           t.isExportSpecifier(specifier) ? (
-            <ExportSpecifier
-              key={i}
-              node={specifier}
-              onUpdate={props.onUpdate}
-            />
+            <ExportSpecifier key={i} {...props} node={specifier} />
           ) : t.isExportDefaultSpecifier(specifier) ? (
-            <ExportDefaultSpecifier
-              key={i}
-              node={specifier}
-              onUpdate={props.onUpdate}
-            />
+            <ExportDefaultSpecifier key={i} {...props} node={specifier} />
           ) : (
-            <ExportNamespaceSpecifier
-              key={i}
-              node={specifier}
-              onUpdate={props.onUpdate}
-            />
+            <ExportNamespaceSpecifier key={i} {...props} node={specifier} />
           )
         )}
       </Join>
@@ -1156,18 +1140,12 @@ export function ImportDeclaration(props: P<t.ImportDeclaration>) {
     <div>
       <span>import </span>
       {defaultSpecifier ? (
-        <ImportDefaultSpecifier
-          node={defaultSpecifier}
-          onUpdate={props.onUpdate}
-        />
+        <ImportDefaultSpecifier {...props} node={defaultSpecifier} />
       ) : null}
       {namespaceSpecifier ? (
         <>
           {defaultSpecifier ? <span>, </span> : null}
-          <ImportNamespaceSpecifier
-            node={namespaceSpecifier}
-            onUpdate={props.onUpdate}
-          />
+          <ImportNamespaceSpecifier {...props} node={namespaceSpecifier} />
         </>
       ) : null}
       {rest.length > 0 ? (
@@ -1177,11 +1155,7 @@ export function ImportDeclaration(props: P<t.ImportDeclaration>) {
           <Join>
             {rest.map((specifier, i) =>
               t.isImportSpecifier(specifier) ? (
-                <ImportSpecifier
-                  key={i}
-                  node={specifier}
-                  onUpdate={props.onUpdate}
-                />
+                <ImportSpecifier key={i} {...props} node={specifier} />
               ) : (
                 <NotImplemented key={i} node={specifier} />
               )
@@ -1307,18 +1281,11 @@ export function TemplateLiteral(props: P<t.TemplateLiteral>) {
       <span>`</span>
       {slots.map((_, i) =>
         i % 2 === 0 ? (
-          <TemplateElement
-            key={i}
-            node={quasis[i / 2]}
-            onUpdate={props.onUpdate}
-          />
+          <TemplateElement key={i} {...props} node={quasis[i / 2]} />
         ) : (
           <span key={i}>
             <span>{'${'}</span>
-            <Expression
-              node={expressions[(i / 2) >> 0]}
-              onUpdate={props.onUpdate}
-            />
+            <Expression {...props} node={expressions[(i / 2) >> 0]} />
             <span>{'}'}</span>
           </span>
         )
