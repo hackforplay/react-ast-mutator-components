@@ -897,7 +897,22 @@ export function WithStatement(props: P<t.WithStatement>) {
 }
 
 export function AssignmentPattern(props: P<t.AssignmentPattern>) {
-  return <NotImplemented node={props.node} />;
+  const { left, right, decorators } = props.node;
+  if (decorators) {
+    return <NotImplemented node={props.node} />;
+  }
+  return (
+    <span>
+      <LVal node={left} onUpdate={props.onUpdate} />
+      <span>
+        <ruby>
+          {` = `}
+          <rt>デフォルトは</rt>
+        </ruby>
+      </span>
+      <Expression node={right} onUpdate={props.onUpdate} />
+    </span>
+  );
 }
 
 export function ArrayPattern(props: P<t.ArrayPattern>) {
