@@ -861,7 +861,7 @@ export function VariableDeclarator(props: P<t.VariableDeclarator>) {
         <>
           <span>
             <ruby>
-              =<rt>←</rt>
+              =<rt>は</rt>
             </ruby>
           </span>
           <Expression {...props} node={init} />
