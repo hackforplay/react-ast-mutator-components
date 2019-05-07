@@ -79145,6 +79145,23 @@ function (_super) {
       code: '',
       error: ''
     };
+
+    _this.update = function () {
+      var testPath = /^#(.*)/i.exec(location.hash);
+      var hash = testPath && testPath[1];
+      if (!hash) return;
+      console.info('load', hash);
+      fetch(hash).then(function (response) {
+        return response.text();
+      }).then(function (code) {
+        _this.setState({
+          code: code
+        });
+
+        textarea.value = code;
+      });
+    };
+
     return _this;
   }
 
@@ -79158,19 +79175,8 @@ function (_super) {
       });
     };
 
-    var testPath = /\/test(\/.*)/i.exec(location.pathname);
-
-    if (testPath) {
-      fetch(testPath[1]).then(function (response) {
-        return response.text();
-      }).then(function (code) {
-        _this.setState({
-          code: code
-        });
-
-        textarea.value = code;
-      });
-    }
+    window.onhashchange = this.update;
+    this.update();
   };
 
   Entry.prototype.componentDidCatch = function (error) {
@@ -79255,7 +79261,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "64310" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63421" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
