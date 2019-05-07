@@ -11,6 +11,14 @@ if (!textarea || !result) {
   throw new Error('DOM Error');
 }
 
+const kana = {
+  one: 'いち',
+  two: 'に',
+  three: 'さん',
+  'one.two': 'いちのに',
+  'one.two.three': 'いちのにのさん'
+};
+
 class Entry extends React.Component {
   state = {
     code: '',
@@ -64,6 +72,7 @@ class Entry extends React.Component {
     return (
       <Root
         node={file}
+        kana={kana}
         onUpdate={(prev, next) => {
           textarea.value =
             textarea.value.slice(0, prev.start) +

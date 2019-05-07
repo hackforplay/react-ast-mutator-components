@@ -23,6 +23,7 @@ for (const fixturePath of fixtures) {
           {},
           React.createElement(Root, {
             node,
+            kana: {},
             onUpdate() {}
           })
         )

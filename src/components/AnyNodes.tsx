@@ -351,6 +351,7 @@ export function Identifier(props: P<t.Identifier>) {
   if (decorators) {
     return <NotImplemented node={decorators[0]} />;
   }
+  const kana = props.noKana ? '' : props.kana[name] || '';
   return (
     <span>
       {name === 'undefined' ? (
@@ -358,7 +359,9 @@ export function Identifier(props: P<t.Identifier>) {
           undefined
         </Ruby>
       ) : (
-        name
+        <Ruby kana={kana} noKana={!kana}>
+          {name}
+        </Ruby>
       )}
     </span>
   );
@@ -559,18 +562,44 @@ export function LogicalExpression(props: P<t.LogicalExpression>) {
 
 export function MemberExpression(props: P<t.MemberExpression>) {
   const { object, property, computed } = props.node;
+  const key = props.noKana ? '' : joinMemberNames(props.node, '.');
+  const kana = props.kana[key] || '';
+
   return (
     <>
-      <Expression {...props} node={object} />
-      {computed ? <span>{`[`}</span> : <span>.</span>}
-      {t.isExpression(property) ? (
-        <Expression {...props} node={property} />
-      ) : (
-        <NotImplemented node={props.node} />
-      )}
-      {computed ? <span>{`]`}</span> : null}
+      <Ruby kana={kana} noKana={!kana}>
+        <Expression
+          {...props}
+          node={object}
+          noKana={props.noKana || Boolean(kana)}
+        />
+        {computed ? <span>{`[`}</span> : <span>.</span>}
+        {t.isExpression(property) ? (
+          <Expression {...props} node={property} noKana />
+        ) : (
+          <NotImplemented node={props.node} />
+        )}
+        {computed ? <span>{`]`}</span> : null}
+      </Ruby>
     </>
   );
+}
+
+function joinMemberNames(node: t.MemberExpression, delimiter = '.'): string {
+  const { object, property } = node;
+  const left = t.isMemberExpression(object)
+    ? joinMemberNames(object, delimiter)
+    : t.isIdentifier(object)
+    ? object.name
+    : '';
+  if (!left) return '';
+  const right = t.isIdentifier(property)
+    ? property.name
+    : t.isStringLiteral(property)
+    ? property.value
+    : '';
+  if (!right) return '';
+  return left + delimiter + right;
 }
 
 export function NewExpression(props: P<t.NewExpression>) {
