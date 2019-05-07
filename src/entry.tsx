@@ -35,21 +35,25 @@ class Entry extends React.Component {
     textarea.oninput = () => {
       this.setState({ code: textarea.value, error: '' });
     };
-
-    const testPath = /\/test(\/.*)/i.exec(location.pathname);
-    if (testPath) {
-      fetch(testPath[1])
-        .then(response => response.text())
-        .then(code => {
-          this.setState({ code });
-          textarea.value = code;
-        });
-    }
+    window.onhashchange = this.update;
+    this.update();
   }
 
   componentDidCatch(error: Error) {
     this.setState({ error: error.message });
   }
+
+  update = () => {
+    const testPath = /^#(.*)/i.exec(location.hash);
+    const hash = testPath && testPath[1];
+    if (!hash) return;
+    fetch(hash)
+      .then(response => response.text())
+      .then(code => {
+        this.setState({ code });
+        textarea.value = code;
+      });
+  };
 
   render() {
     const { code, error } = this.state;

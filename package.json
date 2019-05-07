@@ -15,7 +15,7 @@
     "format": "prettier 'src/**/*' --write",
     "start": "parcel ./public/index.html",
     "fixtures": "cp -r test/fixtures/ dist/",
-    "deploy": "npm run fixtures && npm t && npx gh-pages -d dist",
+    "deploy": "npm run fixtures && npm t && npx parcel build public/index.html --public-url './' && npx gh-pages -d dist",
     "semantic-release": "semantic-release"
   },
   "author": "teramotodaiki",
