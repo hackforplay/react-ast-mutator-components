@@ -38,6 +38,19 @@
   <body
     oncopy="!function(e,s,l){l=e.classList;l.add(s);requestAnimationFrame(function(){l.remove(s)})}(this,'remove-rt-before-copy')"
   >
+    <select
+      id="s"
+      name="samples"
+      onchange="location.href=document.getElementById('s').value"
+    >
+      <option value="/">サンプルを選択</option>
+      <option value="/test/sample/assignment-expression.js">代入</option>
+      <option value="/test/sample/kana.js">ふりがな</option>
+      <option value="/test/sample/madosho.js">魔道書</option>
+    </select>
+    <script>
+      document.getElementById('s').value = location.pathname;
+    </script>
     <div class="container">
       <textarea name="code" id="code" cols="30" rows="10"></textarea>
       <div id="result"></div>
