@@ -2,6 +2,7 @@ import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import * as React from 'react';
 import { File } from './components/AnyNodes';
+import { NodeProps } from './components';
 
 type NodeSnapshot = {
   start: number;
@@ -11,12 +12,7 @@ type NodeSnapshot = {
 
 type OnUpdate = (prev: NodeSnapshot, next: NodeSnapshot) => void;
 
-type Props<NodeType> = {
-  node: NodeType;
-  onUpdate: OnUpdate;
-};
-
-export function Root(props: Props<t.File>) {
+export function Root(props: NodeProps<t.File>) {
   const onUpdate: OnUpdate = (prev, next) => {
     const increased = next.end - prev.end;
     if (increased !== 0) {
@@ -34,7 +30,7 @@ export function Root(props: Props<t.File>) {
   };
   return (
     <div style={{ overflow: 'scroll' }}>
-      <File node={props.node} onUpdate={onUpdate} />
+      <File {...props} onUpdate={onUpdate} />
     </div>
   );
 }
