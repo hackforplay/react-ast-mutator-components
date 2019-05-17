@@ -1,5 +1,7 @@
 import * as t from '@babel/types';
 import * as React from 'react';
+import { RootContext } from '..';
+import { ja as lang } from '../lang';
 import {
   Declaration,
   Expression,
@@ -14,7 +16,6 @@ import { Comments } from './Comments';
 import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
 import { NodeProps as P } from './types';
-import { ja as lang } from '../lang';
 
 export function ArrayExpression(props: P<t.ArrayExpression>) {
   const { elements } = props.node;
@@ -411,47 +412,51 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
 
 export function StringLiteral(props: P<t.StringLiteral>) {
   const { type, value, start, end } = props.node;
-  const [editable, setEditable] = React.useState(false);
 
   if (start === null || end === null) {
     console.log(props.node);
     throw new Error('start or end is null');
   }
 
-  return editable ? (
-    <InputMutator
-      type={type}
-      defaultValue={value}
-      onUpdate={newValue => {
-        props.node.value = newValue;
-        props.onUpdate(
-          { start, end, value: `'${value}'` },
-          {
-            start,
-            end: start + newValue.length + 2,
-            value: `'${newValue}'`
-          }
-        );
-        setEditable(false);
-      }}
-    />
-  ) : (
-    <>
-      <span>'</span>
-      <span
-        onClick={() => setEditable(true)}
-        style={{ backgroundColor: '#ff835d', borderRadius: 2 }}
-      >
-        {value}
-      </span>
-      <span>'</span>
-    </>
+  return (
+    <RootContext.Consumer>
+      {state =>
+        state.isNodeActive(props.node) ? (
+          <InputMutator
+            type={type}
+            defaultValue={value}
+            onUpdate={newValue => {
+              props.node.value = newValue;
+              props.onUpdate(
+                { start, end, value: `'${value}'` },
+                {
+                  start,
+                  end: start + newValue.length + 2,
+                  value: `'${newValue}'`
+                }
+              );
+              state.setNodePassive(props.node);
+            }}
+          />
+        ) : (
+          <>
+            <span>'</span>
+            <span
+              onClick={() => state.setNodeActive(props.node)}
+              style={{ backgroundColor: '#ff835d', borderRadius: 2 }}
+            >
+              {value}
+            </span>
+            <span>'</span>
+          </>
+        )
+      }
+    </RootContext.Consumer>
   );
 }
 
 export function NumericLiteral(props: P<t.NumericLiteral>) {
   const { type, value, start, end } = props.node;
-  const [editable, setEditable] = React.useState(false);
 
   if (start === null || end === null) {
     console.log(props.node);
@@ -465,29 +470,35 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     borderRadius: 3
   };
 
-  return editable ? (
-    <InputMutator
-      type={type}
-      defaultValue={value.toString()}
-      onUpdate={newValue => {
-        props.node.value = parseFloat(newValue);
-        props.onUpdate(
-          { start, end, value: value.toString() },
-          {
-            start,
-            end: start + newValue.length,
-            value: newValue
-          }
-        );
-        setEditable(false);
-      }}
-    />
-  ) : (
-    <>
-      <span onClick={() => setEditable(true)} style={style}>
-        {value}
-      </span>
-    </>
+  return (
+    <RootContext.Consumer>
+      {state =>
+        state.isNodeActive(props.node) ? (
+          <InputMutator
+            type={type}
+            defaultValue={value.toString()}
+            onUpdate={newValue => {
+              props.node.value = parseFloat(newValue);
+              props.onUpdate(
+                { start, end, value: value.toString() },
+                {
+                  start,
+                  end: start + newValue.length,
+                  value: newValue
+                }
+              );
+              state.setNodePassive(props.node);
+            }}
+          />
+        ) : (
+          <>
+            <span onClick={() => state.setNodeActive(props.node)} style={style}>
+              {value}
+            </span>
+          </>
+        )
+      }
+    </RootContext.Consumer>
   );
 }
 
@@ -503,41 +514,46 @@ export function NullLiteral(props: P<t.NullLiteral>) {
 
 export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   const { type, value, start, end } = props.node;
-  const [editable, setEditable] = React.useState(false);
 
   if (start === null || end === null) {
     console.log(props.node);
     throw new Error('start or end is null');
   }
 
-  return editable ? (
-    <InputMutator
-      type={type}
-      defaultValue={value.toString()}
-      onUpdate={newValue => {
-        props.node.value = newValue === 'true';
-        props.onUpdate(
-          { start, end, value: value.toString() },
-          {
-            start,
-            end: start + newValue.length,
-            value: newValue
-          }
-        );
-        setEditable(false);
-      }}
-    />
-  ) : (
-    <>
-      <span
-        onClick={() => setEditable(true)}
-        style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
-      >
-        <Ruby kana={value ? lang.true : lang.false} noKana={props.noKana}>
-          {value.toString()}
-        </Ruby>
-      </span>
-    </>
+  return (
+    <RootContext.Consumer>
+      {state =>
+        state.isNodeActive(props.node) ? (
+          <InputMutator
+            type={type}
+            defaultValue={value.toString()}
+            onUpdate={newValue => {
+              props.node.value = newValue === 'true';
+              props.onUpdate(
+                { start, end, value: value.toString() },
+                {
+                  start,
+                  end: start + newValue.length,
+                  value: newValue
+                }
+              );
+              state.setNodePassive(props.node);
+            }}
+          />
+        ) : (
+          <>
+            <span
+              onClick={() => state.setNodeActive(props.node)}
+              style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
+            >
+              <Ruby kana={value ? lang.true : lang.false} noKana={props.noKana}>
+                {value.toString()}
+              </Ruby>
+            </span>
+          </>
+        )
+      }
+    </RootContext.Consumer>
   );
 }
 
