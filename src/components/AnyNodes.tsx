@@ -421,7 +421,7 @@ export function StringLiteral(props: P<t.StringLiteral>) {
   return (
     <RootContext.Consumer>
       {state =>
-        state.isNodeActive(props.node) ? (
+        state.activeNode === props.node ? (
           <InputMutator
             type={type}
             defaultValue={value}
@@ -435,14 +435,14 @@ export function StringLiteral(props: P<t.StringLiteral>) {
                   value: `'${newValue}'`
                 }
               );
-              state.setNodePassive(props.node);
+              state.setActiveNode();
             }}
           />
         ) : (
           <>
             <span>'</span>
             <span
-              onClick={() => state.setNodeActive(props.node)}
+              onClick={() => state.setActiveNode(props.node)}
               style={{ backgroundColor: '#ff835d', borderRadius: 2 }}
             >
               {value}
@@ -473,7 +473,7 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
   return (
     <RootContext.Consumer>
       {state =>
-        state.isNodeActive(props.node) ? (
+        state.activeNode === props.node ? (
           <InputMutator
             type={type}
             defaultValue={value.toString()}
@@ -487,12 +487,12 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
                   value: newValue
                 }
               );
-              state.setNodePassive(props.node);
+              state.setActiveNode();
             }}
           />
         ) : (
           <>
-            <span onClick={() => state.setNodeActive(props.node)} style={style}>
+            <span onClick={() => state.setActiveNode(props.node)} style={style}>
               {value}
             </span>
           </>
@@ -523,7 +523,7 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   return (
     <RootContext.Consumer>
       {state =>
-        state.isNodeActive(props.node) ? (
+        state.activeNode === props.node ? (
           <InputMutator
             type={type}
             defaultValue={value.toString()}
@@ -537,13 +537,13 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
                   value: newValue
                 }
               );
-              state.setNodePassive(props.node);
+              state.setActiveNode();
             }}
           />
         ) : (
           <>
             <span
-              onClick={() => state.setNodeActive(props.node)}
+              onClick={() => state.setActiveNode(props.node)}
               style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
             >
               <Ruby kana={value ? lang.true : lang.false} noKana={props.noKana}>

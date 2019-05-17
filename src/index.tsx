@@ -14,23 +14,17 @@ type OnUpdate = (prev: NodeSnapshot, next: NodeSnapshot) => void;
 
 interface IRootContext {
   /**
-   * Check specify node which is active
+   * Only active node
    */
-  isNodeActive: (node: t.Node) => boolean;
+  activeNode?: t.Node;
   /**
-   * Make specify node and its parents active
+   * Make specify node active or reset to undefined
    */
-  setNodeActive: (node: t.Node) => void;
-  /**
-   * Make specify node passive but make its parents active
-   */
-  setNodePassive: (node: t.Node) => void;
+  setActiveNode: (node?: t.Node) => void;
 }
 
 export const RootContext = React.createContext<IRootContext>({
-  isNodeActive: () => false,
-  setNodeActive: () => {},
-  setNodePassive: () => {}
+  setActiveNode: () => {}
 });
 
 export interface RootProps extends NodeProps<t.File> {
@@ -48,11 +42,7 @@ export function Root(props: RootProps) {
   };
 
   // Collapsing, editing, or selecting nodes (includes parents)
-  const [activeNodes, setActiveNodes] = React.useState(new WeakSet<t.Node>());
-  const isNodeActive = (node: t.Node) => activeNodes.has(node);
-  const setNodeActive = (node: t.Node) =>
-    setActiveNodes(getParentNodes(node).add(node));
-  const setNodePassive = (node: t.Node) => setActiveNodes(getParentNodes(node));
+  const [activeNode, setActiveNode] = React.useState<t.Node>();
 
   React.useEffect(() => {
     // Initialize map
@@ -81,9 +71,7 @@ export function Root(props: RootProps) {
     props.onUpdate(prev, next);
   };
   return (
-    <RootContext.Provider
-      value={{ isNodeActive, setNodeActive, setNodePassive }}
-    >
+    <RootContext.Provider value={{ activeNode, setActiveNode }}>
       <div style={{ overflow: 'scroll', ...(props.style || {}) }}>
         <File {...props} onUpdate={onUpdate} />
       </div>
