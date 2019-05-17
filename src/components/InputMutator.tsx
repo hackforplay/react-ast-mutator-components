@@ -29,6 +29,7 @@ type InputMutatorProps = {
     | t.BooleanLiteral['type'];
   defaultValue: string;
   onUpdate: (value: string) => void;
+  style?: React.CSSProperties;
 };
 
 export function InputMutator(props: InputMutatorProps) {
@@ -38,6 +39,11 @@ export function InputMutator(props: InputMutatorProps) {
   const confirm = () => {
     if (invalid) return;
     props.onUpdate(value);
+  };
+
+  const style = {
+    ...(props.style || {}),
+    ...(invalid ? { backgroundColor: 'red' } : {})
   };
 
   return (
@@ -57,7 +63,7 @@ export function InputMutator(props: InputMutatorProps) {
       }}
       onKeyDown={e => e.key === 'Enter' && confirm()}
       onBlur={() => confirm()}
-      style={invalid ? { backgroundColor: 'red' } : {}}
+      style={style}
     />
   );
 }

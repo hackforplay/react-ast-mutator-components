@@ -458,6 +458,13 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     throw new Error('start or end is null');
   }
 
+  const style = {
+    backgroundColor: 'rgb(18, 124, 201)',
+    padding: 5,
+    color: 'white',
+    borderRadius: 3
+  };
+
   return editable ? (
     <InputMutator
       type={type}
@@ -477,10 +484,7 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     />
   ) : (
     <>
-      <span
-        onClick={() => setEditable(true)}
-        style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
-      >
+      <span onClick={() => setEditable(true)} style={style}>
         {value}
       </span>
     </>
