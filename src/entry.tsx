@@ -89,6 +89,9 @@ class Entry extends React.Component {
             next.value +
             textarea.value.slice(prev.end);
         }}
+        style={{
+          border: '1px solid black'
+        }}
       />
     );
   }

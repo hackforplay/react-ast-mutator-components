@@ -12,7 +12,11 @@ type NodeSnapshot = {
 
 type OnUpdate = (prev: NodeSnapshot, next: NodeSnapshot) => void;
 
-export function Root(props: NodeProps<t.File>) {
+export interface RootProps extends NodeProps<t.File> {
+  style?: React.CSSProperties;
+}
+
+export function Root(props: RootProps) {
   const onUpdate: OnUpdate = (prev, next) => {
     const increased = next.end - prev.end;
     if (increased !== 0) {
@@ -29,7 +33,7 @@ export function Root(props: NodeProps<t.File>) {
     props.onUpdate(prev, next);
   };
   return (
-    <div style={{ overflow: 'scroll' }}>
+    <div style={{ overflow: 'scroll', ...(props.style || {}) }}>
       <File {...props} onUpdate={onUpdate} />
     </div>
   );
