@@ -3,6 +3,15 @@
   "version": "1.0.0",
   "description": "React components to mutate Babel AST.",
   "main": "lib/index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/hackforplay/react-ast-mutator-components"
