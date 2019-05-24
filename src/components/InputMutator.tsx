@@ -41,7 +41,10 @@ export function InputMutator(props: InputMutatorProps) {
     props.onUpdate(value);
   };
 
-  const style = {
+  const style: React.CSSProperties = {
+    fontSize: '1em',
+    paddingLeft: '0.25em',
+    marginLeft: '0.25em',
     ...(props.style || {}),
     ...(invalid ? { backgroundColor: 'red' } : {})
   };
