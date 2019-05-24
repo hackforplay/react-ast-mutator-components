@@ -443,7 +443,12 @@ export function StringLiteral(props: P<t.StringLiteral>) {
             <span>'</span>
             <span
               onClick={() => state.setActiveNode(props.node)}
-              style={{ backgroundColor: '#ff835d', borderRadius: 2 }}
+              style={{
+                backgroundColor: '#ff835d',
+                borderRadius: 2,
+                marginRight: '0.5em',
+                marginLeft: '0.5em'
+              }}
             >
               {value}
             </span>
@@ -463,11 +468,13 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     throw new Error('start or end is null');
   }
 
-  const style = {
+  const style: React.CSSProperties = {
     backgroundColor: 'rgb(18, 124, 201)',
     padding: 5,
     color: 'white',
-    borderRadius: 3
+    borderRadius: 3,
+    marginRight: '0.5em',
+    marginLeft: '0.5em'
   };
 
   return (
@@ -544,7 +551,12 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
           <>
             <span
               onClick={() => state.setActiveNode(props.node)}
-              style={{ backgroundColor: '#47ffff', borderRadius: 2 }}
+              style={{
+                backgroundColor: '#47ffff',
+                borderRadius: 2,
+                marginRight: '0.5em',
+                marginLeft: '0.5em'
+              }}
             >
               <Ruby kana={value ? lang.true : lang.false} noKana={props.noKana}>
                 {value.toString()}
