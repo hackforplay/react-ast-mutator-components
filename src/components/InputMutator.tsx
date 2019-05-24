@@ -62,6 +62,7 @@ export function InputMutator(props: InputMutatorProps) {
         setValue(escaped);
       }}
       onKeyDown={e => e.key === 'Enter' && confirm()}
+      onBlur={() => confirm()}
       style={style}
     />
   );
