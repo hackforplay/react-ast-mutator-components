@@ -447,7 +447,8 @@ export function StringLiteral(props: P<t.StringLiteral>) {
                 backgroundColor: '#ff835d',
                 borderRadius: 2,
                 marginRight: '0.5em',
-                marginLeft: '0.5em'
+                marginLeft: '0.5em',
+                cursor: 'pointer'
               }}
             >
               {value}
@@ -474,7 +475,8 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     color: 'white',
     borderRadius: 3,
     marginRight: '0.5em',
-    marginLeft: '0.5em'
+    marginLeft: '0.5em',
+    cursor: 'pointer'
   };
 
   return (
@@ -555,7 +557,8 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
                 backgroundColor: '#47ffff',
                 borderRadius: 2,
                 marginRight: '0.5em',
-                marginLeft: '0.5em'
+                marginLeft: '0.5em',
+                cursor: 'pointer'
               }}
             >
               <Ruby kana={value ? lang.true : lang.false} noKana={props.noKana}>
