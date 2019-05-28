@@ -54,7 +54,7 @@ export function AssignmentExpression(props: P<t.AssignmentExpression>) {
       <LVal {...props} node={left} />
       <span>
         <Ruby kana={hurigana} noKana={props.noKana}>
-          {operator}
+          {` ${operator} `}
         </Ruby>
       </span>
       <Expression {...props} node={right} />
@@ -237,7 +237,7 @@ export function EmptyStatement(props: P<t.EmptyStatement>) {
 export function ExpressionStatement(props: P<t.ExpressionStatement>) {
   const { expression } = props.node;
   return (
-    <div style={{ paddingTop: '1em' }} >
+    <div style={{ paddingTop: '1em' }}>
       <Expression {...props} node={expression} />
     </div>
   );
@@ -446,8 +446,8 @@ export function StringLiteral(props: P<t.StringLiteral>) {
               style={{
                 backgroundColor: '#ff835d',
                 borderRadius: 2,
-                marginRight: '0.5em',
-                marginLeft: '0.5em',
+                marginRight: '0.25em',
+                marginLeft: '0.25em',
                 cursor: 'pointer'
               }}
             >
@@ -474,8 +474,8 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     padding: 5,
     color: 'white',
     borderRadius: 3,
-    marginRight: '0.5em',
-    marginLeft: '0.5em',
+    marginRight: '0.25em',
+    marginLeft: '0.25em',
     cursor: 'pointer'
   };
 
@@ -556,8 +556,8 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
               style={{
                 backgroundColor: '#47ffff',
                 borderRadius: 2,
-                marginRight: '0.5em',
-                marginLeft: '0.5em',
+                marginRight: '0.25em',
+                marginLeft: '0.25em',
                 cursor: 'pointer'
               }}
             >
@@ -919,7 +919,7 @@ export function VariableDeclarator(props: P<t.VariableDeclarator>) {
         <>
           <span>
             <Ruby kana={lang.init} noKana={props.noKana}>
-              =
+              {` = `}
             </Ruby>
           </span>
           <Expression {...props} node={init} />

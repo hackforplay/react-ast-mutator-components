@@ -77,6 +77,7 @@ export function Root(props: RootProps) {
           overflow: 'scroll',
           fontFamily: `Menlo, "Lucida Console", monospace`,
           fontSize: '1.25rem',
+          whiteSpace: 'pre',
           ...(props.style || {})
         }}
       >
