@@ -72,7 +72,14 @@ export function Root(props: RootProps) {
   };
   return (
     <RootContext.Provider value={{ activeNode, setActiveNode }}>
-      <div style={{ overflow: 'scroll', ...(props.style || {}) }}>
+      <div
+        style={{
+          overflow: 'scroll',
+          fontFamily: `Menlo, "Lucida Console", monospace`,
+          fontSize: '1.25rem',
+          ...(props.style || {})
+        }}
+      >
         <File {...props} onUpdate={onUpdate} />
       </div>
     </RootContext.Provider>
