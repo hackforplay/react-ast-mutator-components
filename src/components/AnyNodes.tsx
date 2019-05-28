@@ -237,7 +237,7 @@ export function EmptyStatement(props: P<t.EmptyStatement>) {
 export function ExpressionStatement(props: P<t.ExpressionStatement>) {
   const { expression } = props.node;
   return (
-    <div>
+    <div style={{ paddingTop: '1em' }} >
       <Expression {...props} node={expression} />
     </div>
   );
