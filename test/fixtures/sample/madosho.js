@@ -1,13 +1,11 @@
-スライム.hp = 999;
+slime.hp = 999;
 
-イモムシ.hp = 9999;
+insect.hp = 9999;
 
-プレイヤー.atk = 1;
+player.atk = 1;
 
-プレイヤー.locate(7, 2);
+player.locate(7, 2);
 
-プレイヤー.locate(7, 6);
+bat.locate(11, 6);
 
-コウモリ.locate(11, 6);
-
-プレイヤー.hp = 99;
+player.hp = 99;

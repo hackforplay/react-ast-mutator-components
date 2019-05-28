@@ -17,12 +17,12 @@ const kana = {
   three: 'さん',
   'one.two': 'いちのに',
   'one.two.three': 'いちのにのさん',
-  'スライム.hp': 'スライムのたいりょく',
-  'イモムシ.hp': 'イモムシのたいりょく',
-  'プレイヤー.atk': 'プレイヤーのこうげきりょく',
-  'プレイヤー.locate': 'プレイヤーをうごかす',
-  'コウモリ.locate': 'コウモリをうごかす',
-  'プレイヤー.hp': 'プレイヤーのたいりょく'
+  'slime.hp': 'スライムのたいりょく',
+  'insect.hp': 'イモムシのたいりょく',
+  'player.atk': 'プレイヤーのこうげきりょく',
+  'player.locate': 'プレイヤーをうごかす',
+  'bat.locate': 'コウモリをうごかす',
+  'player.hp': 'プレイヤーのたいりょく'
 };
 
 class Entry extends React.Component {
