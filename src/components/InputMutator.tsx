@@ -9,11 +9,11 @@ const escapeStringLiteral = (str: string) => {
 };
 
 const escapeNumericLiteral = (str: string) => {
-  let escaped = str.replace(/[０-９ー]/g, sub =>
-    String.fromCharCode(sub.charCodeAt(0) - 0xfee0)
-  ); // １ to 1
-  escaped = escaped.replace(/。/, '.');
-  escaped = escaped.replace(/^\./, '0.');
+  let escaped = str
+    .replace(/[０-９]/g, sub => String.fromCharCode(sub.charCodeAt(0) - 0xfee0))
+    .replace(/[。．]/g, '.')
+    .replace(/[ー－]/g, '-')
+    .replace(/^\./, '0.');
   return { escaped, invalid: !/^-?\d*\.?\d+$/.test(escaped) };
 };
 
