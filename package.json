@@ -4,10 +4,12 @@
   "description": "React components to mutate Babel AST.",
   "main": "lib/index.js",
   "directories": {
-    "lib": "lib"
+    "lib": "lib",
+    "src": "src"
   },
   "files": [
-    "lib"
+    "lib",
+    "src"
   ],
   "publishConfig": {
     "access": "public"
