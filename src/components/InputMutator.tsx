@@ -53,6 +53,7 @@ export function InputMutator(props: InputMutatorProps) {
     <input
       autoFocus
       value={value}
+      type={props.type === 'NumericLiteral' ? 'number' : 'text'}
       onChange={e => {
         const { value } = e.currentTarget;
         const { escaped, invalid } =
