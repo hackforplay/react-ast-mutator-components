@@ -75859,7 +75859,31 @@ traverse.hasType = function (tree, type, blacklistTypes) {
 };
 
 traverse.cache = cache;
-},{"./context":"../node_modules/@babel/traverse/lib/context.js","./visitors":"../node_modules/@babel/traverse/lib/visitors.js","lodash/includes":"../node_modules/lodash/includes.js","@babel/types":"../node_modules/@babel/types/lib/index.js","./cache":"../node_modules/@babel/traverse/lib/cache.js","./path":"../node_modules/@babel/traverse/lib/path/index.js","./scope":"../node_modules/@babel/traverse/lib/scope/index.js","./hub":"../node_modules/@babel/traverse/lib/hub.js"}],"../src/components/Aliases.tsx":[function(require,module,exports) {
+},{"./context":"../node_modules/@babel/traverse/lib/context.js","./visitors":"../node_modules/@babel/traverse/lib/visitors.js","lodash/includes":"../node_modules/lodash/includes.js","@babel/types":"../node_modules/@babel/types/lib/index.js","./cache":"../node_modules/@babel/traverse/lib/cache.js","./path":"../node_modules/@babel/traverse/lib/path/index.js","./scope":"../node_modules/@babel/traverse/lib/scope/index.js","./hub":"../node_modules/@babel/traverse/lib/hub.js"}],"../src/lang/ja.ts":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _a;
+
+exports.ja = (_a = {}, _a['%='] = '剰余代入', _a['&='] = 'ビットごとの AND 代入', _a['**='] = 'べき乗代入', _a['()=>{}'] = 'アローかんすうを作る', _a['*='] = 'にかける', _a['+='] = 'に足す', _a['-='] = 'から引く', _a['/='] = 'をわる', _a[':'] = 'ギなら', _a['<<='] = '左シフト代入', _a['='] = 'に入れる', _a['>>='] = '右シフト代入', _a['>>>='] = '符号なし右シフト代入', _a['?'] = 'がシンなら', _a['^='] = 'ビットごとの XOR 代入', _a['as'] = 'と名付ける', _a.assignmentPattern = '省略時は', _a['class{}'] = 'クラスを作る', _a.const = 'せんげんする', _a.continue = 'くり返しをやめる', _a.debugger = 'デバッガーを起動', _a['do while'] = 'シンならもう一度', _a.extends = '継承する', _a.false = 'ギ', _a['function(){}'] = 'かんすうを作る', _a.idEnd = '」', _a.idStart = '「', _a.init = 'は', _a.let = 'せんげんする', _a.null = 'ヌル', _a.object = 'オブジェクト', _a.true = 'シン', _a.undefined = 'アンディファインド', _a.var = 'せんげんする', _a.while = 'シンの間くり返す', _a['|='] = 'ビットごとの OR 代入', _a);
+},{}],"../src/lang/index.ts":[function(require,module,exports) {
+"use strict";
+
+function __export(m) {
+  for (var p in m) {
+    if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+  }
+}
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+__export(require("./ja"));
+},{"./ja":"../src/lang/ja.ts"}],"../src/components/Aliases.tsx":[function(require,module,exports) {
 "use strict";
 
 var __assign = this && this.__assign || function () {
@@ -76250,6 +76274,22 @@ exports.Comments = Comments;
 },{"react":"../node_modules/react/index.js"}],"../src/components/InputMutator.tsx":[function(require,module,exports) {
 "use strict";
 
+var __assign = this && this.__assign || function () {
+  __assign = Object.assign || function (t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+      s = arguments[i];
+
+      for (var p in s) {
+        if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+    }
+
+    return t;
+  };
+
+  return __assign.apply(this, arguments);
+};
+
 var __importStar = this && this.__importStar || function (mod) {
   if (mod && mod.__esModule) return mod;
   var result = {};
@@ -76277,12 +76317,9 @@ var escapeStringLiteral = function escapeStringLiteral(str) {
 };
 
 var escapeNumericLiteral = function escapeNumericLiteral(str) {
-  var escaped = str.replace(/[０-９ー]/g, function (sub) {
+  var escaped = str.replace(/[０-９]/g, function (sub) {
     return String.fromCharCode(sub.charCodeAt(0) - 0xfee0);
-  }); // １ to 1
-
-  escaped = escaped.replace(/。/, '.');
-  escaped = escaped.replace(/^\./, '0.');
+  }).replace(/[。．]/g, '.').replace(/[ー－]/g, '-').replace(/^\./, '0.');
   return {
     escaped: escaped,
     invalid: !/^-?\d*\.?\d+$/.test(escaped)
@@ -76311,9 +76348,18 @@ function InputMutator(props) {
     props.onUpdate(value);
   };
 
+  var style = __assign({
+    fontSize: '1em',
+    paddingLeft: '0.25em',
+    marginLeft: '0.25em'
+  }, props.style || {}, invalid ? {
+    backgroundColor: 'red'
+  } : {});
+
   return React.createElement("input", {
     autoFocus: true,
     value: value,
+    type: props.type === 'NumericLiteral' ? 'number' : 'text',
     onChange: function onChange(e) {
       var value = e.currentTarget.value;
 
@@ -76330,9 +76376,7 @@ function InputMutator(props) {
     onBlur: function onBlur() {
       return confirm();
     },
-    style: invalid ? {
-      backgroundColor: 'red'
-    } : {}
+    style: style
   });
 }
 
@@ -76350,31 +76394,7 @@ function NotImplemented(props) {
 }
 
 exports.NotImplemented = NotImplemented;
-},{}],"../src/lang/ja.ts":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _a;
-
-exports.ja = (_a = {}, _a['%='] = '剰余代入', _a['&='] = 'ビットごとの AND 代入', _a['**='] = 'べき乗代入', _a['()=>{}'] = 'アローかんすうを作る', _a['*='] = 'にかける', _a['+='] = 'に足す', _a['-='] = 'から引く', _a['/='] = 'をわる', _a[':'] = 'ギなら', _a['<<='] = '左シフト代入', _a['='] = 'に入れる', _a['>>='] = '右シフト代入', _a['>>>='] = '符号なし右シフト代入', _a['?'] = 'がシンなら', _a['^='] = 'ビットごとの XOR 代入', _a['as'] = 'と名付ける', _a.assignmentPattern = '省略時は', _a['class{}'] = 'クラスを作る', _a.const = 'せんげんする', _a.continue = 'くり返しをやめる', _a.debugger = 'デバッガーを起動', _a['do while'] = 'シンならもう一度', _a.extends = '継承する', _a.false = 'ギ', _a['function(){}'] = 'かんすうを作る', _a.idEnd = '」', _a.idStart = '「', _a.init = 'は', _a.let = 'せんげんする', _a.null = 'ヌル', _a.object = 'オブジェクト', _a.true = 'シン', _a.undefined = 'アンディファインド', _a.var = 'せんげんする', _a.while = 'シンの間くり返す', _a['|='] = 'ビットごとの OR 代入', _a);
-},{}],"../src/lang/index.ts":[function(require,module,exports) {
-"use strict";
-
-function __export(m) {
-  for (var p in m) {
-    if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-  }
-}
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-__export(require("./ja"));
-},{"./ja":"../src/lang/ja.ts"}],"../src/components/AnyNodes.tsx":[function(require,module,exports) {
+},{}],"../src/components/AnyNodes.tsx":[function(require,module,exports) {
 "use strict";
 
 var __assign = this && this.__assign || function () {
@@ -76411,6 +76431,10 @@ var t = __importStar(require("@babel/types"));
 
 var React = __importStar(require("react"));
 
+var __1 = require("..");
+
+var lang_1 = require("../lang");
+
 var Aliases_1 = require("./Aliases");
 
 var Comments_1 = require("./Comments");
@@ -76418,8 +76442,6 @@ var Comments_1 = require("./Comments");
 var InputMutator_1 = require("./InputMutator");
 
 var NotImplemented_1 = require("./NotImplemented");
-
-var lang_1 = require("../lang");
 
 function ArrayExpression(props) {
   var elements = props.node.elements;
@@ -76470,7 +76492,7 @@ function AssignmentExpression(props) {
   })), React.createElement("span", null, React.createElement(Ruby, {
     kana: hurigana,
     noKana: props.noKana
-  }, operator)), React.createElement(Aliases_1.Expression, __assign({}, props, {
+  }, " " + operator + " ")), React.createElement(Aliases_1.Expression, __assign({}, props, {
     node: right
   })));
 }
@@ -76664,7 +76686,11 @@ exports.EmptyStatement = EmptyStatement;
 
 function ExpressionStatement(props) {
   var expression = props.node.expression;
-  return React.createElement("div", null, React.createElement(Aliases_1.Expression, __assign({}, props, {
+  return React.createElement("div", {
+    style: {
+      paddingTop: '1em'
+    }
+  }, React.createElement(Aliases_1.Expression, __assign({}, props, {
     node: expression
   })));
 }
@@ -76835,40 +76861,41 @@ function StringLiteral(props) {
       start = _a.start,
       end = _a.end;
 
-  var _b = React.useState(false),
-      editable = _b[0],
-      setEditable = _b[1];
-
   if (start === null || end === null) {
     console.log(props.node);
     throw new Error('start or end is null');
   }
 
-  return editable ? React.createElement(InputMutator_1.InputMutator, {
-    type: type,
-    defaultValue: value,
-    onUpdate: function onUpdate(newValue) {
-      props.node.value = newValue;
-      props.onUpdate({
-        start: start,
-        end: end,
-        value: "'" + value + "'"
-      }, {
-        start: start,
-        end: start + newValue.length + 2,
-        value: "'" + newValue + "'"
-      });
-      setEditable(false);
-    }
-  }) : React.createElement(React.Fragment, null, React.createElement("span", null, "'"), React.createElement("span", {
-    onClick: function onClick() {
-      return setEditable(true);
-    },
-    style: {
-      backgroundColor: '#ff835d',
-      borderRadius: 2
-    }
-  }, value), React.createElement("span", null, "'"));
+  return React.createElement(__1.RootContext.Consumer, null, function (state) {
+    return state.activeNode === props.node ? React.createElement(InputMutator_1.InputMutator, {
+      type: type,
+      defaultValue: value,
+      onUpdate: function onUpdate(newValue) {
+        props.node.value = newValue;
+        props.onUpdate({
+          start: start,
+          end: end,
+          value: "'" + value + "'"
+        }, {
+          start: start,
+          end: start + newValue.length + 2,
+          value: "'" + newValue + "'"
+        });
+        state.setActiveNode();
+      }
+    }) : React.createElement(React.Fragment, null, React.createElement("span", null, "'"), React.createElement("span", {
+      onClick: function onClick() {
+        return state.setActiveNode(props.node);
+      },
+      style: {
+        backgroundColor: '#ff835d',
+        borderRadius: 2,
+        marginRight: '0.25em',
+        marginLeft: '0.25em',
+        cursor: 'pointer'
+      }
+    }, value), React.createElement("span", null, "'"));
+  });
 }
 
 exports.StringLiteral = StringLiteral;
@@ -76880,40 +76907,44 @@ function NumericLiteral(props) {
       start = _a.start,
       end = _a.end;
 
-  var _b = React.useState(false),
-      editable = _b[0],
-      setEditable = _b[1];
-
   if (start === null || end === null) {
     console.log(props.node);
     throw new Error('start or end is null');
   }
 
-  return editable ? React.createElement(InputMutator_1.InputMutator, {
-    type: type,
-    defaultValue: value.toString(),
-    onUpdate: function onUpdate(newValue) {
-      props.node.value = parseFloat(newValue);
-      props.onUpdate({
-        start: start,
-        end: end,
-        value: value.toString()
-      }, {
-        start: start,
-        end: start + newValue.length,
-        value: newValue
-      });
-      setEditable(false);
-    }
-  }) : React.createElement(React.Fragment, null, React.createElement("span", {
-    onClick: function onClick() {
-      return setEditable(true);
-    },
-    style: {
-      backgroundColor: '#47ffff',
-      borderRadius: 2
-    }
-  }, value));
+  var style = {
+    backgroundColor: 'rgb(18, 124, 201)',
+    padding: 5,
+    color: 'white',
+    borderRadius: 3,
+    marginRight: '0.25em',
+    marginLeft: '0.25em',
+    cursor: 'pointer'
+  };
+  return React.createElement(__1.RootContext.Consumer, null, function (state) {
+    return state.activeNode === props.node ? React.createElement(InputMutator_1.InputMutator, {
+      type: type,
+      defaultValue: value.toString(),
+      onUpdate: function onUpdate(newValue) {
+        props.node.value = parseFloat(newValue);
+        props.onUpdate({
+          start: start,
+          end: end,
+          value: value.toString()
+        }, {
+          start: start,
+          end: start + newValue.length,
+          value: newValue
+        });
+        state.setActiveNode();
+      }
+    }) : React.createElement(React.Fragment, null, React.createElement("span", {
+      onClick: function onClick() {
+        return state.setActiveNode(props.node);
+      },
+      style: style
+    }, value));
+  });
 }
 
 exports.NumericLiteral = NumericLiteral;
@@ -76934,43 +76965,44 @@ function BooleanLiteral(props) {
       start = _a.start,
       end = _a.end;
 
-  var _b = React.useState(false),
-      editable = _b[0],
-      setEditable = _b[1];
-
   if (start === null || end === null) {
     console.log(props.node);
     throw new Error('start or end is null');
   }
 
-  return editable ? React.createElement(InputMutator_1.InputMutator, {
-    type: type,
-    defaultValue: value.toString(),
-    onUpdate: function onUpdate(newValue) {
-      props.node.value = newValue === 'true';
-      props.onUpdate({
-        start: start,
-        end: end,
-        value: value.toString()
-      }, {
-        start: start,
-        end: start + newValue.length,
-        value: newValue
-      });
-      setEditable(false);
-    }
-  }) : React.createElement(React.Fragment, null, React.createElement("span", {
-    onClick: function onClick() {
-      return setEditable(true);
-    },
-    style: {
-      backgroundColor: '#47ffff',
-      borderRadius: 2
-    }
-  }, React.createElement(Ruby, {
-    kana: value ? lang_1.ja.true : lang_1.ja.false,
-    noKana: props.noKana
-  }, value.toString())));
+  return React.createElement(__1.RootContext.Consumer, null, function (state) {
+    return state.activeNode === props.node ? React.createElement(InputMutator_1.InputMutator, {
+      type: type,
+      defaultValue: value.toString(),
+      onUpdate: function onUpdate(newValue) {
+        props.node.value = newValue === 'true';
+        props.onUpdate({
+          start: start,
+          end: end,
+          value: value.toString()
+        }, {
+          start: start,
+          end: start + newValue.length,
+          value: newValue
+        });
+        state.setActiveNode();
+      }
+    }) : React.createElement(React.Fragment, null, React.createElement("span", {
+      onClick: function onClick() {
+        return state.setActiveNode(props.node);
+      },
+      style: {
+        backgroundColor: '#47ffff',
+        borderRadius: 2,
+        marginRight: '0.25em',
+        marginLeft: '0.25em',
+        cursor: 'pointer'
+      }
+    }, React.createElement(Ruby, {
+      kana: value ? lang_1.ja.true : lang_1.ja.false,
+      noKana: props.noKana
+    }, value.toString())));
+  });
 }
 
 exports.BooleanLiteral = BooleanLiteral;
@@ -77320,7 +77352,7 @@ function VariableDeclarator(props) {
   })), init ? React.createElement(React.Fragment, null, React.createElement("span", null, React.createElement(Ruby, {
     kana: lang_1.ja.init,
     noKana: props.noKana
-  }, "=")), React.createElement(Aliases_1.Expression, __assign({}, props, {
+  }, " = ")), React.createElement(Aliases_1.Expression, __assign({}, props, {
     node: init
   }))) : null);
 }
@@ -78987,7 +79019,7 @@ function Join(props) {
 function Ruby(props) {
   return props.noKana ? React.createElement(React.Fragment, null, props.children) : React.createElement("ruby", null, props.children, React.createElement("rt", null, props.kana));
 }
-},{"@babel/types":"../node_modules/@babel/types/lib/index.js","react":"../node_modules/react/index.js","./Aliases":"../src/components/Aliases.tsx","./Comments":"../src/components/Comments.tsx","./InputMutator":"../src/components/InputMutator.tsx","./NotImplemented":"../src/components/NotImplemented.tsx","../lang":"../src/lang/index.ts"}],"../src/index.tsx":[function(require,module,exports) {
+},{"@babel/types":"../node_modules/@babel/types/lib/index.js","react":"../node_modules/react/index.js","..":"../src/index.tsx","../lang":"../src/lang/index.ts","./Aliases":"../src/components/Aliases.tsx","./Comments":"../src/components/Comments.tsx","./InputMutator":"../src/components/InputMutator.tsx","./NotImplemented":"../src/components/NotImplemented.tsx"}],"../src/index.tsx":[function(require,module,exports) {
 "use strict";
 
 var __assign = this && this.__assign || function () {
@@ -79032,7 +79064,37 @@ var React = __importStar(require("react"));
 
 var AnyNodes_1 = require("./components/AnyNodes");
 
+exports.RootContext = React.createContext({
+  setActiveNode: function setActiveNode() {}
+});
+
 function Root(props) {
+  // Inverse relation of node tree
+  var _a = React.useState(new WeakMap()),
+      childParentMap = _a[0],
+      setChildParentMap = _a[1];
+
+  var getParentNodes = function getParentNodes(node) {
+    var parent = childParentMap.get(node);
+    return parent ? getParentNodes(parent).add(parent) : new WeakSet();
+  }; // Collapsing, editing, or selecting nodes (includes parents)
+
+
+  var _b = React.useState(),
+      activeNode = _b[0],
+      setActiveNode = _b[1];
+
+  React.useEffect(function () {
+    // Initialize map
+    var map = new WeakMap();
+    traverse_1.default(props.node, {
+      enter: function enter(path) {
+        map.set(path.node, path.parent);
+      }
+    });
+    setChildParentMap(map);
+  }, [props.node]);
+
   var onUpdate = function onUpdate(prev, next) {
     var increased = next.end - prev.end;
 
@@ -79051,13 +79113,21 @@ function Root(props) {
     props.onUpdate(prev, next);
   };
 
-  return React.createElement("div", {
-    style: {
-      overflow: 'scroll'
+  return React.createElement(exports.RootContext.Provider, {
+    value: {
+      activeNode: activeNode,
+      setActiveNode: setActiveNode
     }
+  }, React.createElement("div", {
+    style: __assign({
+      overflow: 'scroll',
+      fontFamily: "Menlo, \"Lucida Console\", monospace",
+      fontSize: '1.25rem',
+      whiteSpace: 'pre'
+    }, props.style || {})
   }, React.createElement(AnyNodes_1.File, __assign({}, props, {
     onUpdate: onUpdate
-  })));
+  }))));
 }
 
 exports.Root = Root;
@@ -79125,12 +79195,12 @@ var kana = {
   three: 'さん',
   'one.two': 'いちのに',
   'one.two.three': 'いちのにのさん',
-  'スライム.hp': 'スライムのたいりょく',
-  'イモムシ.hp': 'イモムシのたいりょく',
-  'プレイヤー.atk': 'プレイヤーのこうげきりょく',
-  'プレイヤー.locate': 'プレイヤーをうごかす',
-  'コウモリ.locate': 'コウモリをうごかす',
-  'プレイヤー.hp': 'プレイヤーのたいりょく'
+  'slime.hp': 'スライムのたいりょく',
+  'insect.hp': 'イモムシのたいりょく',
+  'player.atk': 'プレイヤーのこうげきりょく',
+  'player.locate': 'プレイヤーをうごかす',
+  'bat.locate': 'コウモリをうごかす',
+  'player.hp': 'プレイヤーのたいりょく'
 };
 
 var Entry =
@@ -79150,7 +79220,6 @@ function (_super) {
       var testPath = /^#(.*)/i.exec(location.hash);
       var hash = testPath && testPath[1];
       if (!hash) return;
-      console.info('load', hash);
       fetch(hash).then(function (response) {
         return response.text();
       }).then(function (code) {
@@ -79225,6 +79294,9 @@ function (_super) {
       kana: kana,
       onUpdate: function onUpdate(prev, next) {
         textarea.value = textarea.value.slice(0, prev.start) + next.value + textarea.value.slice(prev.end);
+      },
+      style: {
+        border: '1px solid black'
       }
     });
   };
@@ -79261,7 +79333,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63421" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61253" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
