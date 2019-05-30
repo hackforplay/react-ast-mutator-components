@@ -8,11 +8,18 @@ export interface NodeProps<NodeType extends BaseNode> {
 }
 
 export interface OnUpdate {
-  (prev: NodeSnapshot, next: NodeSnapshot): void;
+  (update: Update): void;
 }
 
 export interface NodeSnapshot {
   start: number;
   end: number;
   value: string;
+}
+
+export interface Update {
+  prev: NodeSnapshot;
+  next: NodeSnapshot;
+  type: 'input' | 'undo';
+  undo: () => void;
 }

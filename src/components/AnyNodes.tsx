@@ -412,6 +412,7 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
 
 export function StringLiteral(props: P<t.StringLiteral>) {
   const { type, value, start, end } = props.node;
+  const [, forceUpdate] = React.useState({});
 
   if (start === null || end === null) {
     console.log(props.node);
@@ -427,14 +428,28 @@ export function StringLiteral(props: P<t.StringLiteral>) {
             defaultValue={value}
             onUpdate={newValue => {
               props.node.value = newValue;
-              props.onUpdate(
-                { start, end, value: `'${value}'` },
-                {
-                  start,
-                  end: start + newValue.length + 2,
-                  value: `'${newValue}'`
+              const prev = { start, end, value: `'${value}'` };
+              const next = {
+                start,
+                end: start + newValue.length + 2,
+                value: `'${newValue}'`
+              };
+
+              props.onUpdate({
+                prev,
+                next,
+                type: 'input',
+                undo() {
+                  props.node.value = value;
+                  props.onUpdate({
+                    prev: next,
+                    next: prev,
+                    type: 'undo',
+                    undo() {} // Cannot redo
+                  });
+                  forceUpdate({});
                 }
-              );
+              });
               state.setActiveNode();
             }}
           />
@@ -463,6 +478,7 @@ export function StringLiteral(props: P<t.StringLiteral>) {
 
 export function NumericLiteral(props: P<t.NumericLiteral>) {
   const { type, value, start, end } = props.node;
+  const [, forceUpdate] = React.useState({});
 
   if (start === null || end === null) {
     console.log(props.node);
@@ -488,14 +504,27 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
             defaultValue={value.toString()}
             onUpdate={newValue => {
               props.node.value = parseFloat(newValue);
-              props.onUpdate(
-                { start, end, value: value.toString() },
-                {
-                  start,
-                  end: start + newValue.length,
-                  value: newValue
+              const prev = { start, end, value: value.toString() };
+              const next = {
+                start,
+                end: start + newValue.length,
+                value: newValue
+              };
+              props.onUpdate({
+                prev,
+                next,
+                type: 'input',
+                undo() {
+                  props.node.value = value;
+                  props.onUpdate({
+                    prev: next,
+                    next: prev,
+                    type: 'undo',
+                    undo() {} // Cannot redo
+                  });
+                  forceUpdate({});
                 }
-              );
+              });
               state.setActiveNode();
             }}
           />
@@ -523,6 +552,7 @@ export function NullLiteral(props: P<t.NullLiteral>) {
 
 export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   const { type, value, start, end } = props.node;
+  const [, forceUpdate] = React.useState({});
 
   if (start === null || end === null) {
     console.log(props.node);
@@ -538,14 +568,27 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
             defaultValue={value.toString()}
             onUpdate={newValue => {
               props.node.value = newValue === 'true';
-              props.onUpdate(
-                { start, end, value: value.toString() },
-                {
-                  start,
-                  end: start + newValue.length,
-                  value: newValue
+              const prev = { start, end, value: value.toString() };
+              const next = {
+                start,
+                end: start + newValue.length,
+                value: newValue
+              };
+              props.onUpdate({
+                prev,
+                next,
+                type: 'input',
+                undo() {
+                  props.node.value = value;
+                  props.onUpdate({
+                    prev: next,
+                    next: prev,
+                    type: 'undo',
+                    undo() {} // Cannot redo
+                  });
+                  forceUpdate({});
                 }
-              );
+              });
               state.setActiveNode();
             }}
           />

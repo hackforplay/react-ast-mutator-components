@@ -1,16 +1,8 @@
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import * as React from 'react';
+import { NodeProps, Update } from './components';
 import { File } from './components/AnyNodes';
-import { NodeProps } from './components';
-
-type NodeSnapshot = {
-  start: number;
-  end: number;
-  value: string;
-};
-
-type OnUpdate = (prev: NodeSnapshot, next: NodeSnapshot) => void;
 
 interface IRootContext {
   /**
@@ -55,21 +47,29 @@ export function Root(props: RootProps) {
     setChildParentMap(map);
   }, [props.node]);
 
-  const onUpdate: OnUpdate = (prev, next) => {
-    const increased = next.end - prev.end;
+  // History
+  const [history] = React.useState<Update[]>([]);
+
+  const onUpdate: typeof props.onUpdate = update => {
+    const increased = update.next.end - update.prev.end;
     if (increased !== 0) {
       // Keep start and end correctly
       traverse(props.node, {
         enter(path) {
-          if (path.node.end === null || path.node.end < prev.end) return;
+          if (path.node.end === null || path.node.end < update.prev.end) return;
           path.node.end += increased;
-          if (path.node.start === null || path.node.start < prev.end) return;
+          if (path.node.start === null || path.node.start < update.prev.end)
+            return;
           path.node.start += increased;
         }
       });
     }
-    props.onUpdate(prev, next);
+    props.onUpdate(update);
+    if (update.type === 'input') {
+      history.push(update);
+    }
   };
+
   return (
     <RootContext.Provider value={{ activeNode, setActiveNode }}>
       <div
@@ -81,6 +81,16 @@ export function Root(props: RootProps) {
           ...(props.style || {})
         }}
       >
+        <button
+          onClick={() => {
+            const update = history.pop();
+            if (update) {
+              update.undo();
+            }
+          }}
+        >
+          undo
+        </button>
         <File {...props} onUpdate={onUpdate} />
       </div>
     </RootContext.Provider>
