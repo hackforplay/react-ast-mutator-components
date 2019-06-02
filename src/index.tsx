@@ -1,8 +1,10 @@
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import * as React from 'react';
+import { createStore } from 'redux';
 import { NodeProps, Update } from './components';
 import { File } from './components/AnyNodes';
+import { reducer } from './store';
 
 interface IRootContext {
   /**
@@ -24,6 +26,8 @@ export interface RootProps extends NodeProps<t.File> {
 }
 
 export function Root(props: RootProps) {
+  const [store] = React.useState(() => createStore(reducer));
+
   // Inverse relation of node tree
   const [childParentMap, setChildParentMap] = React.useState(
     new WeakMap<t.Node, t.Node>()
@@ -109,7 +113,7 @@ export function Root(props: RootProps) {
         >
           redo
         </button>
-        <File {...props} onUpdate={onUpdate} />
+        <File {...props} onUpdate={onUpdate} store={store} />
       </div>
     </RootContext.Provider>
   );
