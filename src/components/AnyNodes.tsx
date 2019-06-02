@@ -12,6 +12,7 @@ import {
   Property,
   Statement
 } from './Aliases';
+import { useForceUpdate } from '../utils';
 import { Comments } from './Comments';
 import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
@@ -412,7 +413,7 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
 
 export function StringLiteral(props: P<t.StringLiteral>) {
   const { type, value } = props.node;
-  const [, forceUpdate] = React.useState({});
+  const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
     (newValue: string) => {
@@ -482,7 +483,7 @@ export function StringLiteral(props: P<t.StringLiteral>) {
 
 export function NumericLiteral(props: P<t.NumericLiteral>) {
   const { type, value } = props.node;
-  const [, forceUpdate] = React.useState({});
+  const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
     (newValue: string) => {
@@ -561,7 +562,7 @@ export function NullLiteral(props: P<t.NullLiteral>) {
 
 export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   const { type, value } = props.node;
-  const [, forceUpdate] = React.useState({});
+  const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
     (newValue: string) => {
