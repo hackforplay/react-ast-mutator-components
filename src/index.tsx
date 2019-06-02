@@ -21,7 +21,20 @@ export const RootContext = React.createContext<IRootContext>({
   setActiveNode: () => {}
 });
 
+export interface NodeSnapshot {
+  start: number;
+  end: number;
+  value: string;
+}
+
+export interface Update {
+  prev: NodeSnapshot;
+  next: NodeSnapshot;
+  type: 'input' | 'undo' | 'redo';
+}
+
 export interface RootProps extends NodeProps<t.File> {
+  onUpdate: (update: Update) => void;
   style?: React.CSSProperties;
 }
 
@@ -151,7 +164,7 @@ export function Root(props: RootProps) {
         <button disabled={!history.canRedo} onClick={redo}>
           redo
         </button>
-        <File {...props} onUpdate={onUpdate} store={store} />
+        <File {...props} store={store} />
       </div>
     </RootContext.Provider>
   );
