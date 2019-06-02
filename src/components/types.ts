@@ -20,6 +20,6 @@ export interface NodeSnapshot {
 export interface Update {
   prev: NodeSnapshot;
   next: NodeSnapshot;
-  type: 'input' | 'undo';
-  undo: () => void;
+  type: 'input' | 'undo' | 'redo';
+  undo: (update: Update) => void;
 }

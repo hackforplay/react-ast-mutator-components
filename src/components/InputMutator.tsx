@@ -29,6 +29,7 @@ type InputMutatorProps = {
     | t.BooleanLiteral['type'];
   defaultValue: string;
   onUpdate: (value: string) => void;
+  onEnd: () => void;
   style?: React.CSSProperties;
 };
 
@@ -38,7 +39,10 @@ export function InputMutator(props: InputMutatorProps) {
 
   const confirm = () => {
     if (invalid) return;
-    props.onUpdate(value);
+    if (value !== props.defaultValue) {
+      props.onUpdate(value);
+    }
+    props.onEnd();
   };
 
   const style: React.CSSProperties = {

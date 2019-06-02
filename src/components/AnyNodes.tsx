@@ -15,7 +15,7 @@ import {
 import { Comments } from './Comments';
 import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
-import { NodeProps as P } from './types';
+import { NodeProps as P, Update } from './types';
 
 export function ArrayExpression(props: P<t.ArrayExpression>) {
   const { elements } = props.node;
@@ -411,13 +411,41 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
 }
 
 export function StringLiteral(props: P<t.StringLiteral>) {
-  const { type, value, start, end } = props.node;
+  const { type, value } = props.node;
   const [, forceUpdate] = React.useState({});
 
-  if (start === null || end === null) {
-    console.log(props.node);
-    throw new Error('start or end is null');
-  }
+  const onUpdate = React.useCallback(
+    (newValue: string) => {
+      const { value, start, end } = props.node;
+      if (start === null || end === null) return;
+      const redo = (update?: Update) => {
+        props.node.value = newValue;
+        props.onUpdate({
+          prev: { start, end, value: `'${value}'` },
+          next: {
+            start,
+            end: start + newValue.length + 2,
+            value: `'${newValue}'`
+          },
+          type: update ? 'redo' : 'input',
+          undo
+        });
+        forceUpdate({});
+      };
+      function undo(update: Update) {
+        props.node.value = value;
+        props.onUpdate({
+          prev: update.next,
+          next: update.prev,
+          type: 'undo',
+          undo: redo
+        });
+        forceUpdate({});
+      }
+      redo();
+    },
+    [value]
+  );
 
   return (
     <RootContext.Consumer>
@@ -426,32 +454,8 @@ export function StringLiteral(props: P<t.StringLiteral>) {
           <InputMutator
             type={type}
             defaultValue={value}
-            onUpdate={newValue => {
-              props.node.value = newValue;
-              const prev = { start, end, value: `'${value}'` };
-              const next = {
-                start,
-                end: start + newValue.length + 2,
-                value: `'${newValue}'`
-              };
-
-              props.onUpdate({
-                prev,
-                next,
-                type: 'input',
-                undo() {
-                  props.node.value = value;
-                  props.onUpdate({
-                    prev: next,
-                    next: prev,
-                    type: 'undo',
-                    undo() {} // Cannot redo
-                  });
-                  forceUpdate({});
-                }
-              });
-              state.setActiveNode();
-            }}
+            onUpdate={onUpdate}
+            onEnd={state.setActiveNode}
           />
         ) : (
           <>
@@ -477,13 +481,41 @@ export function StringLiteral(props: P<t.StringLiteral>) {
 }
 
 export function NumericLiteral(props: P<t.NumericLiteral>) {
-  const { type, value, start, end } = props.node;
+  const { type, value } = props.node;
   const [, forceUpdate] = React.useState({});
 
-  if (start === null || end === null) {
-    console.log(props.node);
-    throw new Error('start or end is null');
-  }
+  const onUpdate = React.useCallback(
+    (newValue: string) => {
+      const { start, end, value } = props.node;
+      if (start === null || end === null) return;
+      const redo = (update?: Update) => {
+        props.node.value = parseFloat(newValue);
+        props.onUpdate({
+          prev: { start, end, value: value.toString() },
+          next: {
+            start,
+            end: start + newValue.length,
+            value: newValue
+          },
+          type: update ? 'redo' : 'input',
+          undo
+        });
+        forceUpdate({});
+      };
+      function undo(update: Update) {
+        props.node.value = value;
+        props.onUpdate({
+          prev: update.next,
+          next: update.prev,
+          type: 'undo',
+          undo: redo
+        });
+        forceUpdate({});
+      }
+      redo();
+    },
+    [props.node]
+  );
 
   const style: React.CSSProperties = {
     backgroundColor: 'rgb(18, 124, 201)',
@@ -502,31 +534,8 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
           <InputMutator
             type={type}
             defaultValue={value.toString()}
-            onUpdate={newValue => {
-              props.node.value = parseFloat(newValue);
-              const prev = { start, end, value: value.toString() };
-              const next = {
-                start,
-                end: start + newValue.length,
-                value: newValue
-              };
-              props.onUpdate({
-                prev,
-                next,
-                type: 'input',
-                undo() {
-                  props.node.value = value;
-                  props.onUpdate({
-                    prev: next,
-                    next: prev,
-                    type: 'undo',
-                    undo() {} // Cannot redo
-                  });
-                  forceUpdate({});
-                }
-              });
-              state.setActiveNode();
-            }}
+            onUpdate={onUpdate}
+            onEnd={state.setActiveNode}
           />
         ) : (
           <>
@@ -551,13 +560,41 @@ export function NullLiteral(props: P<t.NullLiteral>) {
 }
 
 export function BooleanLiteral(props: P<t.BooleanLiteral>) {
-  const { type, value, start, end } = props.node;
+  const { type, value } = props.node;
   const [, forceUpdate] = React.useState({});
 
-  if (start === null || end === null) {
-    console.log(props.node);
-    throw new Error('start or end is null');
-  }
+  const onUpdate = React.useCallback(
+    (newValue: string) => {
+      const { value, start, end } = props.node;
+      if (start === null || end === null) return;
+      const redo = (update?: Update) => {
+        props.node.value = newValue === 'true';
+        props.onUpdate({
+          prev: { start, end, value: value.toString() },
+          next: {
+            start,
+            end: start + newValue.length,
+            value: newValue
+          },
+          type: update ? 'redo' : 'input',
+          undo
+        });
+        forceUpdate({});
+      };
+      function undo(update: Update) {
+        props.node.value = value;
+        props.onUpdate({
+          prev: update.next,
+          next: update.prev,
+          type: 'undo',
+          undo: redo
+        });
+        forceUpdate({});
+      }
+      redo();
+    },
+    [value]
+  );
 
   return (
     <RootContext.Consumer>
@@ -566,31 +603,8 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
           <InputMutator
             type={type}
             defaultValue={value.toString()}
-            onUpdate={newValue => {
-              props.node.value = newValue === 'true';
-              const prev = { start, end, value: value.toString() };
-              const next = {
-                start,
-                end: start + newValue.length,
-                value: newValue
-              };
-              props.onUpdate({
-                prev,
-                next,
-                type: 'input',
-                undo() {
-                  props.node.value = value;
-                  props.onUpdate({
-                    prev: next,
-                    next: prev,
-                    type: 'undo',
-                    undo() {} // Cannot redo
-                  });
-                  forceUpdate({});
-                }
-              });
-              state.setActiveNode();
-            }}
+            onUpdate={onUpdate}
+            onEnd={state.setActiveNode}
           />
         ) : (
           <>

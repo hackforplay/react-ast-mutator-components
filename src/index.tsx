@@ -48,7 +48,8 @@ export function Root(props: RootProps) {
   }, [props.node]);
 
   // History
-  const [history] = React.useState<Update[]>([]);
+  const [undoHistory] = React.useState<Update[]>([]);
+  const [redoHistory] = React.useState<Update[]>([]);
 
   const onUpdate: typeof props.onUpdate = update => {
     const increased = update.next.end - update.prev.end;
@@ -66,7 +67,14 @@ export function Root(props: RootProps) {
     }
     props.onUpdate(update);
     if (update.type === 'input') {
-      history.push(update);
+      undoHistory.push(update);
+    }
+    if (update.type === 'undo') {
+      redoHistory.push(update);
+    } else if (update.type === 'redo') {
+      undoHistory.push(update);
+    } else {
+      redoHistory.splice(0, redoHistory.length); // clear
     }
   };
 
@@ -83,13 +91,23 @@ export function Root(props: RootProps) {
       >
         <button
           onClick={() => {
-            const update = history.pop();
+            const update = undoHistory.pop();
             if (update) {
-              update.undo();
+              update.undo(update);
             }
           }}
         >
           undo
+        </button>
+        <button
+          onClick={() => {
+            const update = redoHistory.pop();
+            if (update) {
+              update.undo(update);
+            }
+          }}
+        >
+          redo
         </button>
         <File {...props} onUpdate={onUpdate} />
       </div>
