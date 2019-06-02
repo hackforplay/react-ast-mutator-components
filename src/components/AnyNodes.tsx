@@ -2,21 +2,13 @@ import * as t from '@babel/types';
 import * as React from 'react';
 import { RootContext } from '..';
 import { ja as lang } from '../lang';
-import {
-  Declaration,
-  Expression,
-  LVal,
-  Method,
-  ObjectMember,
-  PatternLike,
-  Property,
-  Statement
-} from './Aliases';
+import { useSelector } from '../store';
 import { useForceUpdate } from '../utils';
+import { Declaration, Expression, LVal, Method, ObjectMember, PatternLike, Property, Statement } from './Aliases';
 import { Comments } from './Comments';
 import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
-import { NodeProps as P, Update } from './types';
+import { NodeProps as P } from './types';
 
 export function ArrayExpression(props: P<t.ArrayExpression>) {
   const { elements } = props.node;
@@ -413,37 +405,26 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
 
 export function StringLiteral(props: P<t.StringLiteral>) {
   const { type, value } = props.node;
+  const [, dispatch] = useSelector(props.store, () => {});
   const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
     (newValue: string) => {
       const { value, start, end } = props.node;
       if (start === null || end === null) return;
-      const redo = (update?: Update) => {
-        props.node.value = newValue;
-        props.onUpdate({
-          prev: { start, end, value: `'${value}'` },
-          next: {
-            start,
-            end: start + newValue.length + 2,
-            value: `'${newValue}'`
-          },
-          type: update ? 'redo' : 'input',
-          undo
-        });
-        forceUpdate({});
-      };
-      function undo(update: Update) {
-        props.node.value = value;
-        props.onUpdate({
-          prev: update.next,
-          next: update.prev,
-          type: 'undo',
-          undo: redo
-        });
-        forceUpdate({});
-      }
-      redo();
+      dispatch({
+        type: 'input',
+        payload: {
+          change: {
+            node: props.node,
+            prevValue: value,
+            nextValue: newValue,
+            prevString: `'${value}'`,
+            nextString: `'${newValue}'`,
+            forceUpdate
+          }
+        }
+      });
     },
     [value]
   );
@@ -483,37 +464,25 @@ export function StringLiteral(props: P<t.StringLiteral>) {
 
 export function NumericLiteral(props: P<t.NumericLiteral>) {
   const { type, value } = props.node;
+  const [, dispatch] = useSelector(props.store, () => {});
   const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
-    (newValue: string) => {
-      const { start, end, value } = props.node;
-      if (start === null || end === null) return;
-      const redo = (update?: Update) => {
-        props.node.value = parseFloat(newValue);
-        props.onUpdate({
-          prev: { start, end, value: value.toString() },
-          next: {
-            start,
-            end: start + newValue.length,
-            value: newValue
-          },
-          type: update ? 'redo' : 'input',
-          undo
-        });
-        forceUpdate({});
-      };
-      function undo(update: Update) {
-        props.node.value = value;
-        props.onUpdate({
-          prev: update.next,
-          next: update.prev,
-          type: 'undo',
-          undo: redo
-        });
-        forceUpdate({});
-      }
-      redo();
+    (input: string) => {
+      const {  value } = props.node;
+      dispatch({
+        type: 'input',
+        payload: {
+          change: {
+            node: props.node,
+            prevValue: value,
+            nextValue: parseFloat(input),
+            prevString: value.toString(),
+            nextString: input,
+            forceUpdate
+          }
+        }
+      });
     },
     [props.node]
   );
@@ -562,37 +531,25 @@ export function NullLiteral(props: P<t.NullLiteral>) {
 
 export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   const { type, value } = props.node;
+  const [, dispatch] = useSelector(props.store, () => {});
   const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
-    (newValue: string) => {
-      const { value, start, end } = props.node;
-      if (start === null || end === null) return;
-      const redo = (update?: Update) => {
-        props.node.value = newValue === 'true';
-        props.onUpdate({
-          prev: { start, end, value: value.toString() },
-          next: {
-            start,
-            end: start + newValue.length,
-            value: newValue
-          },
-          type: update ? 'redo' : 'input',
-          undo
-        });
-        forceUpdate({});
-      };
-      function undo(update: Update) {
-        props.node.value = value;
-        props.onUpdate({
-          prev: update.next,
-          next: update.prev,
-          type: 'undo',
-          undo: redo
-        });
-        forceUpdate({});
-      }
-      redo();
+    (input: string) => {
+      const { value } = props.node;
+      dispatch({
+        type: 'input',
+        payload: {
+          change: {
+            node: props.node,
+            prevValue: value,
+            nextValue: input === 'true',
+            prevString: value.toString(),
+            nextString: input,
+            forceUpdate
+          }
+        }
+      });
     },
     [value]
   );

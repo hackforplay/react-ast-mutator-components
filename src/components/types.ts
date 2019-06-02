@@ -1,4 +1,10 @@
-import { BaseNode } from '@babel/types';
+import {
+  BaseNode,
+  Node,
+  NumericLiteral,
+  BooleanLiteral,
+  StringLiteral
+} from '@babel/types';
 import { Store } from 'redux';
 import { Action, State } from '../store';
 
@@ -24,5 +30,4 @@ export interface Update {
   prev: NodeSnapshot;
   next: NodeSnapshot;
   type: 'input' | 'undo' | 'redo';
-  undo: (update: Update) => void;
 }
