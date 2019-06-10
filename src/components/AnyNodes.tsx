@@ -1,8 +1,8 @@
 import * as t from '@babel/types';
 import * as React from 'react';
 import { RootContext } from '..';
+import { useSelector } from '../hooks';
 import { ja as lang } from '../lang';
-import { useSelector } from '../store';
 import { useForceUpdate } from '../utils';
 import { Declaration, Expression, LVal, Method, ObjectMember, PatternLike, Property, Statement } from './Aliases';
 import { Comments } from './Comments';
@@ -405,7 +405,7 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
 
 export function StringLiteral(props: P<t.StringLiteral>) {
   const { type, value } = props.node;
-  const [, dispatch] = useSelector(props.store, () => {});
+  const [, dispatch] = useSelector(() => {});
   const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
@@ -464,7 +464,7 @@ export function StringLiteral(props: P<t.StringLiteral>) {
 
 export function NumericLiteral(props: P<t.NumericLiteral>) {
   const { type, value } = props.node;
-  const [, dispatch] = useSelector(props.store, () => {});
+  const [, dispatch] = useSelector(() => {});
   const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
@@ -531,7 +531,7 @@ export function NullLiteral(props: P<t.NullLiteral>) {
 
 export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   const { type, value } = props.node;
-  const [, dispatch] = useSelector(props.store, () => {});
+  const [, dispatch] = useSelector(() => {});
   const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(

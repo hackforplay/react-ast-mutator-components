@@ -1,7 +1,4 @@
 import { BooleanLiteral, NumericLiteral, StringLiteral } from '@babel/types';
-import { useCallback, useEffect, useState } from 'react';
-import { Dispatch, Store } from 'redux';
-import { Subject } from 'rxjs';
 
 type Literal = StringLiteral | NumericLiteral | BooleanLiteral;
 export interface ChangePayload<T extends Literal> {
@@ -88,53 +85,4 @@ export const reducer = (
     default:
       return prevState;
   }
-};
-
-const storeAction$Map = new WeakMap<
-  Store<State, Action>,
-  Subject<[Action, State]>
->();
-const getAction$ = (store: Store<State, Action>) => {
-  const current = storeAction$Map.get(store);
-  if (current) return current;
-  const action$ = new Subject<[Action, State]>();
-  storeAction$Map.set(store, action$);
-  return action$;
-};
-
-export const useSelector = <T>(
-  store: Store<State, Action>,
-  selector: (state: State) => T
-): [T, Dispatch<Action>] => {
-  const [state, setState] = useState(() => selector(store.getState()));
-
-  const dispatch: Dispatch<Action> = useCallback(
-    action => {
-      const state = store.getState();
-      getAction$(store).next([action, state]);
-      return store.dispatch(action);
-    },
-    [store]
-  );
-
-  useEffect(() => {
-    const unsubscribe = store.subscribe(() => {
-      setState(selector(store.getState()));
-    });
-    return () => unsubscribe();
-  }, [state]);
-
-  return [state, dispatch];
-};
-
-export const useSideEffect = (
-  store: Store<State, Action>,
-  sideEffect: (action: Action, state: State) => void
-) => {
-  useEffect(() => {
-    const subscription = getAction$(store).subscribe(([action, state]) =>
-      sideEffect(action, state)
-    );
-    return () => subscription.unsubscribe();
-  }, [store]);
 };

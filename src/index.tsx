@@ -1,10 +1,10 @@
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import * as React from 'react';
-import { createStore } from 'redux';
 import { NodeProps } from './components';
 import { File } from './components/AnyNodes';
-import { reducer, useSelector, useSideEffect } from './store';
+import { useSelector, useSideEffect } from './hooks';
+import { Provider } from './provider';
 
 interface IRootContext {
   /**
@@ -39,8 +39,19 @@ export interface RootProps extends NodeProps<t.File> {
 }
 
 export function Root(props: RootProps) {
-  const [store] = React.useState(() => createStore(reducer));
+  // Collapsing, editing, or selecting nodes (includes parents)
+  const [activeNode, setActiveNode] = React.useState<t.Node>();
 
+  return (
+    <RootContext.Provider value={{ activeNode, setActiveNode }}>
+      <Provider>
+        <RootWithoutProvider {...props} />
+      </Provider>
+    </RootContext.Provider>
+  );
+}
+
+export function RootWithoutProvider(props: RootProps) {
   const onUpdate: typeof props.onUpdate = update => {
     const increased = update.next.end - update.prev.end;
     if (increased !== 0) {
@@ -58,7 +69,7 @@ export function Root(props: RootProps) {
     props.onUpdate(update);
   };
 
-  useSideEffect(store, (action, prevState) => {
+  useSideEffect((action, prevState) => {
     if (action.type !== 'input') return;
     const { node, nextValue, prevString, nextString } = action.payload.change;
     const { start, end } = node;
@@ -75,7 +86,7 @@ export function Root(props: RootProps) {
     });
   });
 
-  useSideEffect(store, (action, prevState) => {
+  useSideEffect((action, prevState) => {
     if (action.type !== 'undo') return;
     const change = prevState.history.changes[prevState.history.current - 1];
     if (!change) return;
@@ -99,7 +110,7 @@ export function Root(props: RootProps) {
     forceUpdate();
   });
 
-  useSideEffect(store, (action, prevState) => {
+  useSideEffect((action, prevState) => {
     if (action.type !== 'redo') return;
     const change = prevState.history.changes[prevState.history.current];
     if (!change) return;
@@ -120,7 +131,7 @@ export function Root(props: RootProps) {
   });
 
   // History
-  const [history, dispatch] = useSelector(store, store => store.history);
+  const [history, dispatch] = useSelector(store => store.history);
   const undo = React.useCallback(() => dispatch({ type: 'undo' }), []);
   const redo = React.useCallback(() => dispatch({ type: 'redo' }), []);
 
@@ -132,9 +143,6 @@ export function Root(props: RootProps) {
     const parent = childParentMap.get(node);
     return parent ? getParentNodes(parent).add(parent) : new WeakSet();
   };
-
-  // Collapsing, editing, or selecting nodes (includes parents)
-  const [activeNode, setActiveNode] = React.useState<t.Node>();
 
   React.useEffect(() => {
     // Initialize map
@@ -148,24 +156,24 @@ export function Root(props: RootProps) {
   }, [props.node]);
 
   return (
-    <RootContext.Provider value={{ activeNode, setActiveNode }}>
-      <div
-        style={{
-          overflow: 'scroll',
-          fontFamily: `Menlo, "Lucida Console", monospace`,
-          fontSize: '1.25rem',
-          whiteSpace: 'pre',
-          ...(props.style || {})
-        }}
-      >
-        <button disabled={!history.canUndo} onClick={undo}>
-          undo
-        </button>
-        <button disabled={!history.canRedo} onClick={redo}>
-          redo
-        </button>
-        <File {...props} store={store} />
-      </div>
-    </RootContext.Provider>
+    <div
+      style={{
+        overflow: 'scroll',
+        fontFamily: `Menlo, "Lucida Console", monospace`,
+        fontSize: '1.25rem',
+        whiteSpace: 'pre',
+        ...(props.style || {})
+      }}
+    >
+      <button disabled={!history.canUndo} onClick={undo}>
+        undo
+      </button>
+      <button disabled={!history.canRedo} onClick={redo}>
+        redo
+      </button>
+      <File {...props} />
+    </div>
   );
 }
+
+export { Provider };
