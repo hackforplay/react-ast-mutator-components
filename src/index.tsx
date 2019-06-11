@@ -71,7 +71,7 @@ export function RootWithoutProvider(props: RootProps) {
     if (action.type !== 'undo') return;
     const change = prevState.history.changes[prevState.history.current - 1];
     if (!change) return;
-    const { node, prevValue, prevString, nextString, forceUpdate } = change;
+    const { node, prevValue, prevString, nextString } = change;
     const { start, end } = node;
     if (start === null || end === null) return;
     node.value = prevValue;
@@ -88,14 +88,13 @@ export function RootWithoutProvider(props: RootProps) {
         value: prevString
       }
     });
-    forceUpdate();
   });
 
   useSideEffect((action, prevState) => {
     if (action.type !== 'redo') return;
     const change = prevState.history.changes[prevState.history.current];
     if (!change) return;
-    const { node, nextValue, prevString, nextString, forceUpdate } = change;
+    const { node, nextValue, prevString, nextString } = change;
     const { start, end } = node;
     if (start === null || end === null) return;
     node.value = nextValue;
@@ -108,7 +107,6 @@ export function RootWithoutProvider(props: RootProps) {
         value: nextString
       }
     });
-    forceUpdate();
   });
 
   // History

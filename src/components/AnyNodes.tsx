@@ -3,7 +3,7 @@ import * as React from 'react';
 import { useSelector } from '../hooks';
 import { ja as lang } from '../lang';
 import { actions } from '../store';
-import { useForceUpdate } from '../utils';
+import { useProxy } from '../useProxy';
 import {
   Declaration,
   Expression,
@@ -421,7 +421,7 @@ export function StringLiteral(props: P<t.StringLiteral>) {
   const clearActiveNode = React.useCallback(() => {
     dispatch(actions.clearActive());
   }, []);
-  const forceUpdate = useForceUpdate();
+  const node = useProxy(props.node);
 
   const onUpdate = React.useCallback(
     (newValue: string) => {
@@ -430,12 +430,11 @@ export function StringLiteral(props: P<t.StringLiteral>) {
       dispatch(
         actions.input({
           change: {
-            node: props.node,
+            node,
             prevValue: value,
             nextValue: newValue,
             prevString: `'${value}'`,
-            nextString: `'${newValue}'`,
-            forceUpdate
+            nextString: `'${newValue}'`
           }
         })
       );
@@ -479,7 +478,7 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
   const clearActiveNode = React.useCallback(() => {
     dispatch(actions.clearActive());
   }, []);
-  const forceUpdate = useForceUpdate();
+  const node = useProxy(props.node);
 
   const onUpdate = React.useCallback(
     (input: string) => {
@@ -487,12 +486,11 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
       dispatch(
         actions.input({
           change: {
-            node: props.node,
+            node,
             prevValue: value,
             nextValue: parseFloat(input),
             prevString: value.toString(),
-            nextString: input,
-            forceUpdate
+            nextString: input
           }
         })
       );
@@ -545,7 +543,7 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   const clearActiveNode = React.useCallback(() => {
     dispatch(actions.clearActive());
   }, []);
-  const forceUpdate = useForceUpdate();
+  const node = useProxy(props.node);
 
   const onUpdate = React.useCallback(
     (input: string) => {
@@ -553,12 +551,11 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
       dispatch(
         actions.input({
           change: {
-            node: props.node,
+            node,
             prevValue: value,
             nextValue: input === 'true',
             prevString: value.toString(),
-            nextString: input,
-            forceUpdate
+            nextString: input
           }
         })
       );

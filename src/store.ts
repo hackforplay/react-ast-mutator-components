@@ -9,12 +9,14 @@ import { reducerWithImmer } from './utils';
 
 type Literal = StringLiteral | NumericLiteral | BooleanLiteral;
 export interface ChangePayload<T extends Literal> {
+  /**
+   * Proxy Node
+   */
   node: T;
   prevValue: T['value'];
   nextValue: T['value'];
   prevString: string;
   nextString: string;
-  forceUpdate: () => void;
 }
 
 type InputPayload = {
