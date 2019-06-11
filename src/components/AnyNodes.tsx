@@ -1,8 +1,8 @@
 import * as t from '@babel/types';
 import * as React from 'react';
-import { RootContext } from '..';
 import { useSelector } from '../hooks';
 import { ja as lang } from '../lang';
+import { actions } from '../store';
 import { useForceUpdate } from '../utils';
 import {
   Declaration,
@@ -18,7 +18,6 @@ import { Comments } from './Comments';
 import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
 import { NodeProps as P } from './types';
-import { actions } from '../store';
 
 export function ArrayExpression(props: P<t.ArrayExpression>) {
   const { elements } = props.node;
@@ -415,7 +414,13 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
 
 export function StringLiteral(props: P<t.StringLiteral>) {
   const { type, value } = props.node;
-  const [, dispatch] = useSelector(() => {});
+  const [activeNode, dispatch] = useSelector(state => state.activeNode);
+  const setActiveNode = React.useCallback(() => {
+    dispatch(actions.setActive({ node: props.node }));
+  }, []);
+  const clearActiveNode = React.useCallback(() => {
+    dispatch(actions.clearActive());
+  }, []);
   const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
@@ -438,42 +443,42 @@ export function StringLiteral(props: P<t.StringLiteral>) {
     [value]
   );
 
-  return (
-    <RootContext.Consumer>
-      {state =>
-        state.activeNode === props.node ? (
-          <InputMutator
-            type={type}
-            defaultValue={value}
-            onUpdate={onUpdate}
-            onEnd={state.setActiveNode}
-          />
-        ) : (
-          <>
-            <span>'</span>
-            <span
-              onClick={() => state.setActiveNode(props.node)}
-              style={{
-                backgroundColor: '#ff835d',
-                borderRadius: 2,
-                marginRight: '0.25em',
-                marginLeft: '0.25em',
-                cursor: 'pointer'
-              }}
-            >
-              {value}
-            </span>
-            <span>'</span>
-          </>
-        )
-      }
-    </RootContext.Consumer>
+  return activeNode === props.node ? (
+    <InputMutator
+      type={type}
+      defaultValue={value}
+      onUpdate={onUpdate}
+      onEnd={clearActiveNode}
+    />
+  ) : (
+    <>
+      <span>'</span>
+      <span
+        onClick={setActiveNode}
+        style={{
+          backgroundColor: '#ff835d',
+          borderRadius: 2,
+          marginRight: '0.25em',
+          marginLeft: '0.25em',
+          cursor: 'pointer'
+        }}
+      >
+        {value}
+      </span>
+      <span>'</span>
+    </>
   );
 }
 
 export function NumericLiteral(props: P<t.NumericLiteral>) {
   const { type, value } = props.node;
-  const [, dispatch] = useSelector(() => {});
+  const [activeNode, dispatch] = useSelector(state => state.activeNode);
+  const setActiveNode = React.useCallback(() => {
+    dispatch(actions.setActive({ node: props.node }));
+  }, []);
+  const clearActiveNode = React.useCallback(() => {
+    dispatch(actions.clearActive());
+  }, []);
   const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
@@ -505,25 +510,19 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     cursor: 'pointer'
   };
 
-  return (
-    <RootContext.Consumer>
-      {state =>
-        state.activeNode === props.node ? (
-          <InputMutator
-            type={type}
-            defaultValue={value.toString()}
-            onUpdate={onUpdate}
-            onEnd={state.setActiveNode}
-          />
-        ) : (
-          <>
-            <span onClick={() => state.setActiveNode(props.node)} style={style}>
-              {value}
-            </span>
-          </>
-        )
-      }
-    </RootContext.Consumer>
+  return activeNode === props.node ? (
+    <InputMutator
+      type={type}
+      defaultValue={value.toString()}
+      onUpdate={onUpdate}
+      onEnd={clearActiveNode}
+    />
+  ) : (
+    <>
+      <span onClick={setActiveNode} style={style}>
+        {value}
+      </span>
+    </>
   );
 }
 
@@ -539,7 +538,13 @@ export function NullLiteral(props: P<t.NullLiteral>) {
 
 export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   const { type, value } = props.node;
-  const [, dispatch] = useSelector(() => {});
+  const [activeNode, dispatch] = useSelector(state => state.activeNode);
+  const setActiveNode = React.useCallback(() => {
+    dispatch(actions.setActive({ node: props.node }));
+  }, []);
+  const clearActiveNode = React.useCallback(() => {
+    dispatch(actions.clearActive());
+  }, []);
   const forceUpdate = useForceUpdate();
 
   const onUpdate = React.useCallback(
@@ -561,36 +566,30 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
     [value]
   );
 
-  return (
-    <RootContext.Consumer>
-      {state =>
-        state.activeNode === props.node ? (
-          <InputMutator
-            type={type}
-            defaultValue={value.toString()}
-            onUpdate={onUpdate}
-            onEnd={state.setActiveNode}
-          />
-        ) : (
-          <>
-            <span
-              onClick={() => state.setActiveNode(props.node)}
-              style={{
-                backgroundColor: '#47ffff',
-                borderRadius: 2,
-                marginRight: '0.25em',
-                marginLeft: '0.25em',
-                cursor: 'pointer'
-              }}
-            >
-              <Ruby kana={value ? lang.true : lang.false} noKana={props.noKana}>
-                {value.toString()}
-              </Ruby>
-            </span>
-          </>
-        )
-      }
-    </RootContext.Consumer>
+  return activeNode === props.node ? (
+    <InputMutator
+      type={type}
+      defaultValue={value.toString()}
+      onUpdate={onUpdate}
+      onEnd={clearActiveNode}
+    />
+  ) : (
+    <>
+      <span
+        onClick={setActiveNode}
+        style={{
+          backgroundColor: '#47ffff',
+          borderRadius: 2,
+          marginRight: '0.25em',
+          marginLeft: '0.25em',
+          cursor: 'pointer'
+        }}
+      >
+        <Ruby kana={value ? lang.true : lang.false} noKana={props.noKana}>
+          {value.toString()}
+        </Ruby>
+      </span>
+    </>
   );
 }
 

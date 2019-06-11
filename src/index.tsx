@@ -7,21 +7,6 @@ import { useSelector, useSideEffect } from './hooks';
 import { Provider } from './provider';
 import { actions } from './store';
 
-interface IRootContext {
-  /**
-   * Only active node
-   */
-  activeNode?: t.Node;
-  /**
-   * Make specify node active or reset to undefined
-   */
-  setActiveNode: (node?: t.Node) => void;
-}
-
-export const RootContext = React.createContext<IRootContext>({
-  setActiveNode: () => {}
-});
-
 export interface NodeSnapshot {
   start: number;
   end: number;
@@ -40,15 +25,10 @@ export interface RootProps extends NodeProps<t.File> {
 }
 
 export function Root(props: RootProps) {
-  // Collapsing, editing, or selecting nodes (includes parents)
-  const [activeNode, setActiveNode] = React.useState<t.Node>();
-
   return (
-    <RootContext.Provider value={{ activeNode, setActiveNode }}>
-      <Provider>
-        <RootWithoutProvider {...props} />
-      </Provider>
-    </RootContext.Provider>
+    <Provider>
+      <RootWithoutProvider {...props} />
+    </Provider>
   );
 }
 

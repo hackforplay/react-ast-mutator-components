@@ -1,4 +1,9 @@
-import { BooleanLiteral, NumericLiteral, StringLiteral } from '@babel/types';
+import {
+  BooleanLiteral,
+  Node,
+  NumericLiteral,
+  StringLiteral
+} from '@babel/types';
 import actionCreatorFactory from 'typescript-fsa';
 import { reducerWithImmer } from './utils';
 
@@ -12,15 +17,6 @@ export interface ChangePayload<T extends Literal> {
   forceUpdate: () => void;
 }
 
-export interface State {
-  history: {
-    changes: ChangePayload<Literal>[];
-    current: number;
-    canUndo: boolean;
-    canRedo: boolean;
-  };
-}
-
 type InputPayload = {
   change: ChangePayload<Literal>;
 };
@@ -29,8 +25,20 @@ const actionCreators = actionCreatorFactory('react-ast-mutator-components');
 export const actions = {
   input: actionCreators<InputPayload>('INPUT'),
   undo: actionCreators('UNDO'),
-  redo: actionCreators('REDO')
+  redo: actionCreators('REDO'),
+  setActive: actionCreators<{ node: Node }>('SET_ACTIVE'),
+  clearActive: actionCreators('CLEAR_ACTIVE')
 };
+
+export interface State {
+  history: {
+    changes: ChangePayload<Literal>[];
+    current: number;
+    canUndo: boolean;
+    canRedo: boolean;
+  };
+  activeNode: Node | null;
+}
 
 const initialState: State = {
   history: {
@@ -38,7 +46,8 @@ const initialState: State = {
     current: 0,
     canUndo: false,
     canRedo: false
-  }
+  },
+  activeNode: null
 };
 
 export const reducer = reducerWithImmer(initialState)
@@ -60,5 +69,11 @@ export const reducer = reducerWithImmer(initialState)
     history.current++;
     history.canUndo = true;
     history.canRedo = history.current < history.changes.length;
+  })
+  .case(actions.setActive, (draft, payload) => {
+    draft.activeNode = payload.node;
+  })
+  .case(actions.clearActive, draft => {
+    draft.activeNode = null;
   })
   .toReducer();
