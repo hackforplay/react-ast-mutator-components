@@ -5,6 +5,7 @@ import { NodeProps } from './components';
 import { File } from './components/AnyNodes';
 import { useSelector, useSideEffect } from './hooks';
 import { Provider } from './provider';
+import { actions } from './store';
 
 interface IRootContext {
   /**
@@ -132,8 +133,8 @@ export function RootWithoutProvider(props: RootProps) {
 
   // History
   const [history, dispatch] = useSelector(store => store.history);
-  const undo = React.useCallback(() => dispatch({ type: 'undo' }), []);
-  const redo = React.useCallback(() => dispatch({ type: 'redo' }), []);
+  const undo = React.useCallback(() => dispatch(actions.undo()), []);
+  const redo = React.useCallback(() => dispatch(actions.redo()), []);
 
   // Inverse relation of node tree
   const [childParentMap, setChildParentMap] = React.useState(

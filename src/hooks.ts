@@ -1,8 +1,11 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Dispatch, Store } from 'redux';
 import { Subject } from 'rxjs';
+import { Action as BaseAction } from 'typescript-fsa';
 import { StoreContext } from './provider';
-import { Action, State } from './store';
+import { State } from './store';
+
+type Action = BaseAction<any>;
 
 export const useSelector = <T>(
   selector: (state: State) => T

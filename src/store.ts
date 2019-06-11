@@ -1,4 +1,6 @@
 import { BooleanLiteral, NumericLiteral, StringLiteral } from '@babel/types';
+import actionCreatorFactory from 'typescript-fsa';
+import { reducerWithImmer } from './utils';
 
 type Literal = StringLiteral | NumericLiteral | BooleanLiteral;
 export interface ChangePayload<T extends Literal> {
@@ -19,19 +21,16 @@ export interface State {
   };
 }
 
-export type Action =
-  | {
-      type: 'input';
-      payload: {
-        change: ChangePayload<Literal>;
-      };
-    }
-  | {
-      type: 'undo';
-    }
-  | {
-      type: 'redo';
-    };
+type InputPayload = {
+  change: ChangePayload<Literal>;
+};
+
+const actionCreators = actionCreatorFactory('react-ast-mutator-components');
+export const actions = {
+  input: actionCreators<InputPayload>('INPUT'),
+  undo: actionCreators('UNDO'),
+  redo: actionCreators('REDO')
+};
 
 const initialState: State = {
   history: {
@@ -42,47 +41,24 @@ const initialState: State = {
   }
 };
 
-export const reducer = (
-  prevState: State = initialState,
-  action: Action
-): State => {
-  switch (action.type) {
-    case 'input':
-      return {
-        ...prevState,
-        history: {
-          changes: prevState.history.changes
-            .slice(0, prevState.history.current)
-            .concat(action.payload.change),
-          current: prevState.history.current + 1,
-          canUndo: true,
-          canRedo: false
-        }
-      };
-    case 'undo':
-      if (!prevState.history.canUndo) return prevState;
-      return {
-        ...prevState,
-        history: {
-          changes: prevState.history.changes,
-          current: prevState.history.current - 1,
-          canUndo: prevState.history.current - 1 > 0,
-          canRedo: true
-        }
-      };
-    case 'redo':
-      if (!prevState.history.canRedo) return prevState;
-      return {
-        ...prevState,
-        history: {
-          changes: prevState.history.changes,
-          current: prevState.history.current + 1,
-          canUndo: true,
-          canRedo:
-            prevState.history.current + 1 < prevState.history.changes.length
-        }
-      };
-    default:
-      return prevState;
-  }
-};
+export const reducer = reducerWithImmer(initialState)
+  .case(actions.input, ({ history }, payload) => {
+    history.changes.splice(history.current);
+    history.changes.push(payload.change);
+    history.current++;
+    history.canUndo = true;
+    history.canRedo = false;
+  })
+  .case(actions.undo, ({ history }) => {
+    history.current--;
+    history.canUndo = history.current > 0;
+    history.canRedo = true;
+  })
+  .case(actions.redo, ({ history }) => {
+    if (!history.canRedo) return;
+
+    history.current++;
+    history.canUndo = true;
+    history.canRedo = history.current < history.changes.length;
+  })
+  .toReducer();

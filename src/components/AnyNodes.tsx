@@ -4,11 +4,21 @@ import { RootContext } from '..';
 import { useSelector } from '../hooks';
 import { ja as lang } from '../lang';
 import { useForceUpdate } from '../utils';
-import { Declaration, Expression, LVal, Method, ObjectMember, PatternLike, Property, Statement } from './Aliases';
+import {
+  Declaration,
+  Expression,
+  LVal,
+  Method,
+  ObjectMember,
+  PatternLike,
+  Property,
+  Statement
+} from './Aliases';
 import { Comments } from './Comments';
 import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
 import { NodeProps as P } from './types';
+import { actions } from '../store';
 
 export function ArrayExpression(props: P<t.ArrayExpression>) {
   const { elements } = props.node;
@@ -412,9 +422,8 @@ export function StringLiteral(props: P<t.StringLiteral>) {
     (newValue: string) => {
       const { value, start, end } = props.node;
       if (start === null || end === null) return;
-      dispatch({
-        type: 'input',
-        payload: {
+      dispatch(
+        actions.input({
           change: {
             node: props.node,
             prevValue: value,
@@ -423,8 +432,8 @@ export function StringLiteral(props: P<t.StringLiteral>) {
             nextString: `'${newValue}'`,
             forceUpdate
           }
-        }
-      });
+        })
+      );
     },
     [value]
   );
@@ -469,10 +478,9 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
 
   const onUpdate = React.useCallback(
     (input: string) => {
-      const {  value } = props.node;
-      dispatch({
-        type: 'input',
-        payload: {
+      const { value } = props.node;
+      dispatch(
+        actions.input({
           change: {
             node: props.node,
             prevValue: value,
@@ -481,8 +489,8 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
             nextString: input,
             forceUpdate
           }
-        }
-      });
+        })
+      );
     },
     [props.node]
   );
@@ -537,9 +545,8 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   const onUpdate = React.useCallback(
     (input: string) => {
       const { value } = props.node;
-      dispatch({
-        type: 'input',
-        payload: {
+      dispatch(
+        actions.input({
           change: {
             node: props.node,
             prevValue: value,
@@ -548,8 +555,8 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
             nextString: input,
             forceUpdate
           }
-        }
-      });
+        })
+      );
     },
     [value]
   );
