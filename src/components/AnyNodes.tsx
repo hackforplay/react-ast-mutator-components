@@ -454,6 +454,8 @@ export function StringLiteral(props: P<t.StringLiteral>) {
               style={{
                 backgroundColor: '#ff835d',
                 borderRadius: 2,
+                padding: '0.125em 0.5em',
+                lineHeight: '1.5em',
                 marginRight: '0.25em',
                 marginLeft: '0.25em',
                 cursor: 'pointer'
@@ -479,7 +481,8 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
 
   const style: React.CSSProperties = {
     backgroundColor: 'rgb(18, 124, 201)',
-    padding: '5px 8px',
+    padding: '0.125em 0.5em',
+    lineHeight: '1.5em',
     color: 'white',
     borderRadius: 3,
     marginRight: '0.25em',
@@ -576,6 +579,8 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
               onClick={() => state.setActiveNode(props.node)}
               style={{
                 backgroundColor: '#47ffff',
+                padding: '0.125em 0.5em',
+                lineHeight: '1.5em',
                 borderRadius: 2,
                 marginRight: '0.25em',
                 marginLeft: '0.25em',
