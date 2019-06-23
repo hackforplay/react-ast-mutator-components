@@ -418,12 +418,16 @@ export function StringLiteral(props: P<t.StringLiteral>) {
     throw new Error('start or end is null');
   }
 
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
+
   return (
     <RootContext.Consumer>
       {state =>
         state.activeNode === props.node ? (
           <InputMutator
             type={type}
+            width={Math.max(32, width)}
             defaultValue={value}
             onUpdate={newValue => {
               props.node.value = newValue;
@@ -442,6 +446,7 @@ export function StringLiteral(props: P<t.StringLiteral>) {
           <>
             <span>'</span>
             <span
+              ref={ref}
               onClick={() => state.setActiveNode(props.node)}
               style={{
                 backgroundColor: '#ff835d',
@@ -471,7 +476,7 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
 
   const style: React.CSSProperties = {
     backgroundColor: 'rgb(18, 124, 201)',
-    padding: 5,
+    padding: '5px 8px',
     color: 'white',
     borderRadius: 3,
     marginRight: '0.25em',
@@ -479,12 +484,16 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     cursor: 'pointer'
   };
 
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
+
   return (
     <RootContext.Consumer>
       {state =>
         state.activeNode === props.node ? (
           <InputMutator
             type={type}
+            width={Math.max(32, width)}
             defaultValue={value.toString()}
             onUpdate={newValue => {
               props.node.value = parseFloat(newValue);
@@ -501,7 +510,11 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
           />
         ) : (
           <>
-            <span onClick={() => state.setActiveNode(props.node)} style={style}>
+            <span
+              ref={ref}
+              onClick={() => state.setActiveNode(props.node)}
+              style={style}
+            >
               {value}
             </span>
           </>
@@ -529,12 +542,16 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
     throw new Error('start or end is null');
   }
 
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
+
   return (
     <RootContext.Consumer>
       {state =>
         state.activeNode === props.node ? (
           <InputMutator
             type={type}
+            width={Math.max(32, width)}
             defaultValue={value.toString()}
             onUpdate={newValue => {
               props.node.value = newValue === 'true';
@@ -552,6 +569,7 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
         ) : (
           <>
             <span
+              ref={ref}
               onClick={() => state.setActiveNode(props.node)}
               style={{
                 backgroundColor: '#47ffff',
