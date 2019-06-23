@@ -128,11 +128,7 @@ export function BreakStatement(props: P<t.BreakStatement>) {
 }
 
 export function CallExpression(props: P<t.CallExpression>) {
-  return (
-    <span>
-      <CallImpl {...props} />
-    </span>
-  );
+  return <CallImpl {...props} />;
 }
 
 function CallImpl(props: P<t.CallExpression | t.NewExpression>) {
@@ -237,7 +233,14 @@ export function EmptyStatement(props: P<t.EmptyStatement>) {
 export function ExpressionStatement(props: P<t.ExpressionStatement>) {
   const { expression } = props.node;
   return (
-    <div style={{ paddingTop: '1em' }}>
+    <div
+      style={{
+        paddingTop: '1em',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'baseline'
+      }}
+    >
       <Expression {...props} node={expression} />
     </div>
   );
@@ -657,10 +660,10 @@ function joinMemberNames(node: t.MemberExpression, delimiter = '.'): string {
 
 export function NewExpression(props: P<t.NewExpression>) {
   return (
-    <span>
+    <>
       <span>new </span>
       <CallImpl {...props} />
-    </span>
+    </>
   );
 }
 
