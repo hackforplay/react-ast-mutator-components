@@ -34,9 +34,8 @@ function subscribe<T extends object>(
       set(target: any, p, value) {
         if (active && target[p] !== value) {
           // setImmediate が必要なのかどうかは試していない
-          setImmediate(() => {
-            callback();
-          });
+          callback();
+          target[p] = value;
         }
         return true;
       }
