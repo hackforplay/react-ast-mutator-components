@@ -30,6 +30,7 @@ type InputMutatorProps = {
   defaultValue: string;
   onUpdate: (value: string) => void;
   onEnd: () => void;
+  width: string | number;
   style?: React.CSSProperties;
 };
 
@@ -49,17 +50,22 @@ export function InputMutator(props: InputMutatorProps) {
     fontSize: '1em',
     paddingLeft: '0.25em',
     marginLeft: '0.25em',
+    lineHeight: '1.5rem',
+    width: props.width,
+    display: 'inline-block',
+    overflow: 'hidden',
+    resize: 'horizontal',
     ...(props.style || {}),
     ...(invalid ? { backgroundColor: 'red' } : {})
   };
 
   return (
-    <input
+    <textarea
       autoFocus
       value={value}
-      type={props.type === 'NumericLiteral' ? 'number' : 'text'}
+      rows={1}
       onChange={e => {
-        const { value } = e.currentTarget;
+        const [value] = e.currentTarget.value.split('\n');
         const { escaped, invalid } =
           props.type === 'NumericLiteral'
             ? escapeNumericLiteral(value)

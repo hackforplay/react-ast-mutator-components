@@ -130,11 +130,7 @@ export function BreakStatement(props: P<t.BreakStatement>) {
 }
 
 export function CallExpression(props: P<t.CallExpression>) {
-  return (
-    <span>
-      <CallImpl {...props} />
-    </span>
-  );
+  return <CallImpl {...props} />;
 }
 
 function CallImpl(props: P<t.CallExpression | t.NewExpression>) {
@@ -239,7 +235,14 @@ export function EmptyStatement(props: P<t.EmptyStatement>) {
 export function ExpressionStatement(props: P<t.ExpressionStatement>) {
   const { expression } = props.node;
   return (
-    <div style={{ paddingTop: '1em' }}>
+    <div
+      style={{
+        paddingTop: '1em',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'baseline'
+      }}
+    >
       <Expression {...props} node={expression} />
     </div>
   );
@@ -441,10 +444,13 @@ export function StringLiteral(props: P<t.StringLiteral>) {
     },
     [value]
   );
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
 
   return activeNode === props.node ? (
     <InputMutator
       type={type}
+      width={Math.max(32, width)}
       defaultValue={value}
       onUpdate={onUpdate}
       onEnd={clearActiveNode}
@@ -453,10 +459,13 @@ export function StringLiteral(props: P<t.StringLiteral>) {
     <>
       <span>'</span>
       <span
+        ref={ref}
         onClick={setActiveNode}
         style={{
           backgroundColor: '#ff835d',
           borderRadius: 2,
+          padding: '0.125em 0.5em',
+          lineHeight: '1.5em',
           marginRight: '0.25em',
           marginLeft: '0.25em',
           cursor: 'pointer'
@@ -497,10 +506,13 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     },
     [props.node]
   );
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
 
   const style: React.CSSProperties = {
     backgroundColor: 'rgb(18, 124, 201)',
-    padding: 5,
+    padding: '0.125em 0.5em',
+    lineHeight: '1.5em',
     color: 'white',
     borderRadius: 3,
     marginRight: '0.25em',
@@ -511,13 +523,14 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
   return activeNode === props.node ? (
     <InputMutator
       type={type}
+      width={Math.max(32, width)}
       defaultValue={value.toString()}
       onUpdate={onUpdate}
       onEnd={clearActiveNode}
     />
   ) : (
     <>
-      <span onClick={setActiveNode} style={style}>
+      <span ref={ref} onClick={setActiveNode} style={style}>
         {value}
       </span>
     </>
@@ -562,10 +575,13 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
     },
     [value]
   );
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
 
   return activeNode === props.node ? (
     <InputMutator
       type={type}
+      width={Math.max(32, width)}
       defaultValue={value.toString()}
       onUpdate={onUpdate}
       onEnd={clearActiveNode}
@@ -573,9 +589,12 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   ) : (
     <>
       <span
+        ref={ref}
         onClick={setActiveNode}
         style={{
           backgroundColor: '#47ffff',
+          padding: '0.125em 0.5em',
+          lineHeight: '1.5em',
           borderRadius: 2,
           marginRight: '0.25em',
           marginLeft: '0.25em',
@@ -657,10 +676,10 @@ function joinMemberNames(node: t.MemberExpression, delimiter = '.'): string {
 
 export function NewExpression(props: P<t.NewExpression>) {
   return (
-    <span>
+    <>
       <span>new </span>
       <CallImpl {...props} />
-    </span>
+    </>
   );
 }
 
