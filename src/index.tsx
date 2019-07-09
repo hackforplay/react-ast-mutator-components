@@ -3,7 +3,7 @@ import * as t from '@babel/types';
 import * as React from 'react';
 import { NodeProps } from './components';
 import { File } from './components/AnyNodes';
-import { useSelector, useSideEffect } from './hooks';
+import { useSelector, useActionEffect } from './hooks';
 import { Provider } from './provider';
 import { actions } from './store';
 
@@ -50,8 +50,7 @@ export function RootWithoutProvider(props: RootProps) {
     props.onUpdate(update);
   };
 
-  useSideEffect((action, prevState) => {
-    if (action.type !== 'input') return;
+  useActionEffect(actions.input, (action, prevState) => {
     const { node, nextValue, prevString, nextString } = action.payload.change;
     const { start, end } = node;
     if (start === null || end === null) return;
@@ -67,8 +66,7 @@ export function RootWithoutProvider(props: RootProps) {
     });
   });
 
-  useSideEffect((action, prevState) => {
-    if (action.type !== 'undo') return;
+  useActionEffect(actions.undo, (action, prevState) => {
     const change = prevState.history.changes[prevState.history.current - 1];
     if (!change) return;
     const { node, prevValue, prevString, nextString } = change;
@@ -90,8 +88,7 @@ export function RootWithoutProvider(props: RootProps) {
     });
   });
 
-  useSideEffect((action, prevState) => {
-    if (action.type !== 'redo') return;
+  useActionEffect(actions.redo, (action, prevState) => {
     const change = prevState.history.changes[prevState.history.current];
     if (!change) return;
     const { node, nextValue, prevString, nextString } = change;

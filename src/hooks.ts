@@ -1,19 +1,19 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Dispatch, Store } from 'redux';
 import { Subject } from 'rxjs';
-import { Action as BaseAction } from 'typescript-fsa';
+import { Action, ActionCreator } from 'typescript-fsa';
 import { StoreContext } from './provider';
 import { State } from './store';
 
-type Action = BaseAction<any>;
+type AnyAction = Action<any>;
 
 export const useSelector = <T>(
   selector: (state: State) => T
-): [T, Dispatch<Action>] => {
+): [T, Dispatch<AnyAction>] => {
   const store = useContext(StoreContext);
   const [state, setState] = useState(() => selector(store.getState()));
 
-  const dispatch: Dispatch<Action> = useCallback(
+  const dispatch: Dispatch<AnyAction> = useCallback(
     action => {
       const state = store.getState();
       getAction$(store).next([action, state]);
@@ -32,27 +32,30 @@ export const useSelector = <T>(
   return [state, dispatch];
 };
 
-export const useSideEffect = (
-  sideEffect: (action: Action, state: State) => void
+export const useActionEffect = <Payload>(
+  actionCreator: ActionCreator<Payload>,
+  sideEffect: (action: Action<Payload>, state: State) => void
 ) => {
   const store = useContext(StoreContext);
   useEffect(() => {
-    const subscription = getAction$(store).subscribe(([action, state]) =>
-      sideEffect(action, state)
-    );
+    const subscription = getAction$(store).subscribe(([action, state]) => {
+      if (actionCreator.match(action)) {
+        sideEffect(action, state);
+      }
+    });
     return () => subscription.unsubscribe();
   }, [store]);
 };
 
 const storeAction$Map = new WeakMap<
-  Store<State, Action>,
-  Subject<[Action, State]>
+  Store<State, AnyAction>,
+  Subject<[AnyAction, State]>
 >();
 
-function getAction$(store: Store<State, Action>) {
+function getAction$(store: Store<State, AnyAction>) {
   const current = storeAction$Map.get(store);
   if (current) return current;
-  const action$ = new Subject<[Action, State]>();
+  const action$ = new Subject<[AnyAction, State]>();
   storeAction$Map.set(store, action$);
   return action$;
 }
