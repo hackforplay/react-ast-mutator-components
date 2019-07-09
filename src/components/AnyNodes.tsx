@@ -1,7 +1,9 @@
 import * as t from '@babel/types';
 import * as React from 'react';
-import { RootContext } from '..';
+import { useSelector } from '../hooks';
 import { ja as lang } from '../lang';
+import { actions } from '../store';
+import { useProxy } from '../useProxy';
 import {
   Declaration,
   Expression,
@@ -414,70 +416,98 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
 }
 
 export function StringLiteral(props: P<t.StringLiteral>) {
-  const { type, value, start, end } = props.node;
+  const { type, value } = props.node;
+  const [activeNode, dispatch] = useSelector(state => state.activeNode);
+  const setActiveNode = React.useCallback(() => {
+    dispatch(actions.setActive({ node: props.node }));
+  }, []);
+  const clearActiveNode = React.useCallback(() => {
+    dispatch(actions.clearActive());
+  }, []);
+  const node = useProxy(props.node);
 
-  if (start === null || end === null) {
-    console.log(props.node);
-    throw new Error('start or end is null');
-  }
-
+  const onUpdate = React.useCallback(
+    (newValue: string) => {
+      const { value, start, end } = props.node;
+      if (start === null || end === null) return;
+      dispatch(
+        actions.input({
+          change: {
+            node,
+            prevValue: value,
+            nextValue: newValue,
+            prevString: `'${value}'`,
+            nextString: `'${newValue}'`
+          }
+        })
+      );
+    },
+    [value]
+  );
   const ref = React.useRef<HTMLSpanElement>(null);
   const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
 
-  return (
-    <RootContext.Consumer>
-      {state =>
-        state.activeNode === props.node ? (
-          <InputMutator
-            type={type}
-            width={Math.max(32, width)}
-            defaultValue={value}
-            onUpdate={newValue => {
-              props.node.value = newValue;
-              props.onUpdate(
-                { start, end, value: `'${value}'` },
-                {
-                  start,
-                  end: start + newValue.length + 2,
-                  value: `'${newValue}'`
-                }
-              );
-              state.setActiveNode();
-            }}
-          />
-        ) : (
-          <>
-            <span>'</span>
-            <span
-              ref={ref}
-              onClick={() => state.setActiveNode(props.node)}
-              style={{
-                backgroundColor: '#ff835d',
-                borderRadius: 2,
-                padding: '0.125em 0.5em',
-                lineHeight: '1.5em',
-                marginRight: '0.25em',
-                marginLeft: '0.25em',
-                cursor: 'pointer'
-              }}
-            >
-              {value}
-            </span>
-            <span>'</span>
-          </>
-        )
-      }
-    </RootContext.Consumer>
+  return activeNode === props.node ? (
+    <InputMutator
+      type={type}
+      width={Math.max(32, width)}
+      defaultValue={value}
+      onUpdate={onUpdate}
+      onEnd={clearActiveNode}
+    />
+  ) : (
+    <>
+      <span>'</span>
+      <span
+        ref={ref}
+        onClick={setActiveNode}
+        style={{
+          backgroundColor: '#ff835d',
+          borderRadius: 2,
+          padding: '0.125em 0.5em',
+          lineHeight: '1.5em',
+          marginRight: '0.25em',
+          marginLeft: '0.25em',
+          cursor: 'pointer'
+        }}
+      >
+        {value}
+      </span>
+      <span>'</span>
+    </>
   );
 }
 
 export function NumericLiteral(props: P<t.NumericLiteral>) {
-  const { type, value, start, end } = props.node;
+  const { type, value } = props.node;
+  const [activeNode, dispatch] = useSelector(state => state.activeNode);
+  const setActiveNode = React.useCallback(() => {
+    dispatch(actions.setActive({ node: props.node }));
+  }, []);
+  const clearActiveNode = React.useCallback(() => {
+    dispatch(actions.clearActive());
+  }, []);
+  const node = useProxy(props.node);
 
-  if (start === null || end === null) {
-    console.log(props.node);
-    throw new Error('start or end is null');
-  }
+  const onUpdate = React.useCallback(
+    (input: string) => {
+      const { value } = props.node;
+      dispatch(
+        actions.input({
+          change: {
+            node,
+            prevValue: value,
+            nextValue: parseFloat(input),
+            prevString: value.toString(),
+            nextString: input
+          }
+        })
+      );
+    },
+    [props.node]
+  );
+  const ref = React.useRef<HTMLSpanElement>(null);
+  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
 
   const style: React.CSSProperties = {
     backgroundColor: 'rgb(18, 124, 201)',
@@ -490,43 +520,20 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     cursor: 'pointer'
   };
 
-  const ref = React.useRef<HTMLSpanElement>(null);
-  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
-
-  return (
-    <RootContext.Consumer>
-      {state =>
-        state.activeNode === props.node ? (
-          <InputMutator
-            type={type}
-            width={Math.max(32, width)}
-            defaultValue={value.toString()}
-            onUpdate={newValue => {
-              props.node.value = parseFloat(newValue);
-              props.onUpdate(
-                { start, end, value: value.toString() },
-                {
-                  start,
-                  end: start + newValue.length,
-                  value: newValue
-                }
-              );
-              state.setActiveNode();
-            }}
-          />
-        ) : (
-          <>
-            <span
-              ref={ref}
-              onClick={() => state.setActiveNode(props.node)}
-              style={style}
-            >
-              {value}
-            </span>
-          </>
-        )
-      }
-    </RootContext.Consumer>
+  return activeNode === props.node ? (
+    <InputMutator
+      type={type}
+      width={Math.max(32, width)}
+      defaultValue={value.toString()}
+      onUpdate={onUpdate}
+      onEnd={clearActiveNode}
+    />
+  ) : (
+    <>
+      <span ref={ref} onClick={setActiveNode} style={style}>
+        {value}
+      </span>
+    </>
   );
 }
 
@@ -541,60 +548,64 @@ export function NullLiteral(props: P<t.NullLiteral>) {
 }
 
 export function BooleanLiteral(props: P<t.BooleanLiteral>) {
-  const { type, value, start, end } = props.node;
+  const { type, value } = props.node;
+  const [activeNode, dispatch] = useSelector(state => state.activeNode);
+  const setActiveNode = React.useCallback(() => {
+    dispatch(actions.setActive({ node: props.node }));
+  }, []);
+  const clearActiveNode = React.useCallback(() => {
+    dispatch(actions.clearActive());
+  }, []);
+  const node = useProxy(props.node);
 
-  if (start === null || end === null) {
-    console.log(props.node);
-    throw new Error('start or end is null');
-  }
-
+  const onUpdate = React.useCallback(
+    (input: string) => {
+      const { value } = props.node;
+      dispatch(
+        actions.input({
+          change: {
+            node,
+            prevValue: value,
+            nextValue: input === 'true',
+            prevString: value.toString(),
+            nextString: input
+          }
+        })
+      );
+    },
+    [value]
+  );
   const ref = React.useRef<HTMLSpanElement>(null);
   const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
 
-  return (
-    <RootContext.Consumer>
-      {state =>
-        state.activeNode === props.node ? (
-          <InputMutator
-            type={type}
-            width={Math.max(32, width)}
-            defaultValue={value.toString()}
-            onUpdate={newValue => {
-              props.node.value = newValue === 'true';
-              props.onUpdate(
-                { start, end, value: value.toString() },
-                {
-                  start,
-                  end: start + newValue.length,
-                  value: newValue
-                }
-              );
-              state.setActiveNode();
-            }}
-          />
-        ) : (
-          <>
-            <span
-              ref={ref}
-              onClick={() => state.setActiveNode(props.node)}
-              style={{
-                backgroundColor: '#47ffff',
-                padding: '0.125em 0.5em',
-                lineHeight: '1.5em',
-                borderRadius: 2,
-                marginRight: '0.25em',
-                marginLeft: '0.25em',
-                cursor: 'pointer'
-              }}
-            >
-              <Ruby kana={value ? lang.true : lang.false} noKana={props.noKana}>
-                {value.toString()}
-              </Ruby>
-            </span>
-          </>
-        )
-      }
-    </RootContext.Consumer>
+  return activeNode === props.node ? (
+    <InputMutator
+      type={type}
+      width={Math.max(32, width)}
+      defaultValue={value.toString()}
+      onUpdate={onUpdate}
+      onEnd={clearActiveNode}
+    />
+  ) : (
+    <>
+      <span
+        ref={ref}
+        onClick={setActiveNode}
+        style={{
+          backgroundColor: '#47ffff',
+          padding: '0.125em 0.5em',
+          lineHeight: '1.5em',
+          borderRadius: 2,
+          marginRight: '0.25em',
+          marginLeft: '0.25em',
+          cursor: 'pointer'
+        }}
+      >
+        <Ruby kana={value ? lang.true : lang.false} noKana={props.noKana}>
+          {value.toString()}
+        </Ruby>
+      </span>
+    </>
   );
 }
 

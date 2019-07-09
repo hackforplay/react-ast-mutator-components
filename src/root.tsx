@@ -1,37 +1,116 @@
 import traverse from '@babel/traverse';
 import * as t from '@babel/types';
 import * as React from 'react';
-import { File } from './components/AnyNodes';
 import { NodeProps } from './components';
+import { File } from './components/AnyNodes';
+import { useActionEffect, useSelector } from './hooks';
+import { Provider } from './provider';
+import { actions } from './store';
 
-type NodeSnapshot = {
+export interface NodeSnapshot {
   start: number;
   end: number;
   value: string;
-};
-
-type OnUpdate = (prev: NodeSnapshot, next: NodeSnapshot) => void;
-
-interface IRootContext {
-  /**
-   * Only active node
-   */
-  activeNode?: t.Node;
-  /**
-   * Make specify node active or reset to undefined
-   */
-  setActiveNode: (node?: t.Node) => void;
 }
 
-export const RootContext = React.createContext<IRootContext>({
-  setActiveNode: () => {}
-});
+export interface Update {
+  prev: NodeSnapshot;
+  next: NodeSnapshot;
+  type: 'input' | 'undo' | 'redo';
+}
 
 export interface RootProps extends NodeProps<t.File> {
+  onUpdate: (update: Update) => void;
   style?: React.CSSProperties;
 }
 
 export function Root(props: RootProps) {
+  return (
+    <Provider>
+      <RootWithoutProvider {...props} />
+    </Provider>
+  );
+}
+
+export function RootWithoutProvider(props: RootProps) {
+  const onUpdate: typeof props.onUpdate = update => {
+    const increased = update.next.end - update.prev.end;
+    if (increased !== 0) {
+      // Keep start and end correctly
+      traverse(props.node, {
+        enter(path) {
+          if (path.node.end === null || path.node.end < update.prev.end) return;
+          path.node.end += increased;
+          if (path.node.start === null || path.node.start < update.prev.end)
+            return;
+          path.node.start += increased;
+        }
+      });
+    }
+    props.onUpdate(update);
+  };
+
+  useActionEffect(actions.input, (action, prevState) => {
+    const { node, nextValue, prevString, nextString } = action.payload.change;
+    const { start, end } = node;
+    if (start === null || end === null) return;
+    node.value = nextValue;
+    onUpdate({
+      type: 'input',
+      prev: { start, end, value: prevString },
+      next: {
+        start,
+        end: start + nextString.length,
+        value: nextString
+      }
+    });
+  });
+
+  useActionEffect(actions.undo, (action, prevState) => {
+    const change = prevState.history.changes[prevState.history.current - 1];
+    if (!change) return;
+    const { node, prevValue, prevString, nextString } = change;
+    const { start, end } = node;
+    if (start === null || end === null) return;
+    node.value = prevValue;
+    onUpdate({
+      type: 'undo',
+      prev: {
+        start,
+        end,
+        value: nextString
+      },
+      next: {
+        start,
+        end: start + prevString.length,
+        value: prevString
+      }
+    });
+  });
+
+  useActionEffect(actions.redo, (action, prevState) => {
+    const change = prevState.history.changes[prevState.history.current];
+    if (!change) return;
+    const { node, nextValue, prevString, nextString } = change;
+    const { start, end } = node;
+    if (start === null || end === null) return;
+    node.value = nextValue;
+    onUpdate({
+      type: 'redo',
+      prev: { start, end, value: prevString },
+      next: {
+        start,
+        end: start + nextString.length,
+        value: nextString
+      }
+    });
+  });
+
+  // History
+  const [history, dispatch] = useSelector(store => store.history);
+  const undo = React.useCallback(() => dispatch(actions.undo()), []);
+  const redo = React.useCallback(() => dispatch(actions.redo()), []);
+
   // Inverse relation of node tree
   const [childParentMap, setChildParentMap] = React.useState(
     new WeakMap<t.Node, t.Node>()
@@ -40,9 +119,6 @@ export function Root(props: RootProps) {
     const parent = childParentMap.get(node);
     return parent ? getParentNodes(parent).add(parent) : new WeakSet();
   };
-
-  // Collapsing, editing, or selecting nodes (includes parents)
-  const [activeNode, setActiveNode] = React.useState<t.Node>();
 
   React.useEffect(() => {
     // Initialize map
@@ -55,34 +131,25 @@ export function Root(props: RootProps) {
     setChildParentMap(map);
   }, [props.node]);
 
-  const onUpdate: OnUpdate = (prev, next) => {
-    const increased = next.end - prev.end;
-    if (increased !== 0) {
-      // Keep start and end correctly
-      traverse(props.node, {
-        enter(path) {
-          if (path.node.end === null || path.node.end < prev.end) return;
-          path.node.end += increased;
-          if (path.node.start === null || path.node.start < prev.end) return;
-          path.node.start += increased;
-        }
-      });
-    }
-    props.onUpdate(prev, next);
-  };
   return (
-    <RootContext.Provider value={{ activeNode, setActiveNode }}>
-      <div
-        style={{
-          overflow: 'scroll',
-          fontFamily: `Menlo, "Lucida Console", monospace`,
-          fontSize: '1.25rem',
-          whiteSpace: 'pre',
-          ...(props.style || {})
-        }}
-      >
-        <File {...props} onUpdate={onUpdate} />
-      </div>
-    </RootContext.Provider>
+    <div
+      style={{
+        overflow: 'scroll',
+        fontFamily: `Menlo, "Lucida Console", monospace`,
+        fontSize: '1.25rem',
+        whiteSpace: 'pre',
+        ...(props.style || {})
+      }}
+    >
+      <button disabled={!history.canUndo} onClick={undo}>
+        undo
+      </button>
+      <button disabled={!history.canRedo} onClick={redo}>
+        redo
+      </button>
+      <File {...props} />
+    </div>
   );
 }
+
+export { Provider };
