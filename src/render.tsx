@@ -39,7 +39,7 @@ export function RootComponent(props: RootComponentProps) {
     <Root
       node={file}
       kana={props.kana || {}}
-      onUpdate={(prev, next) => {
+      onUpdate={({ prev, next }) => {
         const code =
           props.code.slice(0, prev.start) +
           next.value +
