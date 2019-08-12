@@ -1,6 +1,9 @@
 import * as t from '@babel/types';
 import * as React from 'react';
 
+const hankakuify = (sub: string) =>
+  String.fromCharCode(sub.charCodeAt(0) - 0xfee0);
+
 export const escapeStringLiteral = (str: string) => {
   let escaped = str.replace(/\\*['"]/g, sub => {
     return sub.length % 2 === 1 ? '\\' + sub : sub;
@@ -10,7 +13,7 @@ export const escapeStringLiteral = (str: string) => {
 
 export const escapeNumericLiteral = (str: string) => {
   let escaped = str
-    .replace(/[０-９]/g, sub => String.fromCharCode(sub.charCodeAt(0) - 0xfee0))
+    .replace(/[０-９]/g, hankakuify)
     .replace(/[。．]/g, '.')
     .replace(/[ー－]/g, '-')
     .replace(/^(\-?)\./, '$10.')
