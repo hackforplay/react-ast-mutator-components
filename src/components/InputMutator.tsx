@@ -18,9 +18,10 @@ export const escapeNumericLiteral = (str: string) => {
   return { escaped, invalid: !/^-?\d*\.?\d+$/.test(escaped) };
 };
 
-  const invalid = str !== 'true' && str !== 'false';
-  return { escaped: str, invalid };
 export const escapeBooleanLiteral = (str: string) => {
+  const escaped = str.replace(/[ａ-ｚＡ-Ｚ]/g, hankakuify).toLowerCase();
+  const invalid = escaped !== 'true' && escaped !== 'false';
+  return { escaped, invalid };
 };
 
 type InputMutatorProps = {
