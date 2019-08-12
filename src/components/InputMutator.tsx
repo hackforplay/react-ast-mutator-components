@@ -14,6 +14,7 @@ export const escapeNumericLiteral = (str: string) => {
     .replace(/[。．]/g, '.')
     .replace(/[ー－]/g, '-')
     .replace(/^(\-?)\./, '$10.')
+    .replace(/^(\-?)0+(\d.*)$/, '$1$2');
   return { escaped, invalid: !/^-?\d*\.?\d+$/.test(escaped) };
 };
 
