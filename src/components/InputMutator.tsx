@@ -1,14 +1,14 @@
 import * as t from '@babel/types';
 import * as React from 'react';
 
-const escapeStringLiteral = (str: string) => {
+export const escapeStringLiteral = (str: string) => {
   let escaped = str.replace(/\\*['"]/g, sub => {
     return sub.length % 2 === 1 ? '\\' + sub : sub;
   });
   return { escaped, invalid: escaped.substr(-1) === '\\' };
 };
 
-const escapeNumericLiteral = (str: string) => {
+export const escapeNumericLiteral = (str: string) => {
   let escaped = str
     .replace(/[０-９]/g, sub => String.fromCharCode(sub.charCodeAt(0) - 0xfee0))
     .replace(/[。．]/g, '.')
@@ -17,9 +17,9 @@ const escapeNumericLiteral = (str: string) => {
   return { escaped, invalid: !/^-?\d*\.?\d+$/.test(escaped) };
 };
 
-const escapeBooleanLiteral = (str: string) => {
   const invalid = str !== 'true' && str !== 'false';
   return { escaped: str, invalid };
+export const escapeBooleanLiteral = (str: string) => {
 };
 
 type InputMutatorProps = {
