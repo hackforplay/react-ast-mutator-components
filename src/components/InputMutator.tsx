@@ -13,7 +13,7 @@ export const escapeNumericLiteral = (str: string) => {
     .replace(/[０-９]/g, sub => String.fromCharCode(sub.charCodeAt(0) - 0xfee0))
     .replace(/[。．]/g, '.')
     .replace(/[ー－]/g, '-')
-    .replace(/^\./, '0.');
+    .replace(/^(\-?)\./, '$10.')
   return { escaped, invalid: !/^-?\d*\.?\d+$/.test(escaped) };
 };
 
