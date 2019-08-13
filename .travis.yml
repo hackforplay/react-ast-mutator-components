@@ -2,6 +2,9 @@ language: node_js
 node_js: '8'
 cache:
   npm: true
+before_deploy:
+  - npm run fixtures
+  - npx parcel build public/index.html --public-url './'
 deploy:
 - provider: script
   script: npm run semantic-release
