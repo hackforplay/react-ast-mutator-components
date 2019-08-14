@@ -110,6 +110,7 @@ export function RootWithoutProvider(props: RootProps) {
   const [history, dispatch] = useSelector(store => store.history);
   const undo = React.useCallback(() => dispatch(actions.undo()), []);
   const redo = React.useCallback(() => dispatch(actions.redo()), []);
+  const clear = React.useCallback(() => dispatch(actions.clearHistory()), []);
 
   // Inverse relation of node tree
   const [childParentMap, setChildParentMap] = React.useState(
@@ -129,6 +130,7 @@ export function RootWithoutProvider(props: RootProps) {
       }
     });
     setChildParentMap(map);
+    clear();
   }, [props.node]);
 
   return (
@@ -141,12 +143,12 @@ export function RootWithoutProvider(props: RootProps) {
         ...(props.style || {})
       }}
     >
-      {/* <button disabled={!history.canUndo} onClick={undo}>
+      <button disabled={!history.canUndo} onClick={undo}>
         undo
       </button>
       <button disabled={!history.canRedo} onClick={redo}>
         redo
-      </button> */}
+      </button>
       <File {...props} />
     </div>
   );
