@@ -84,7 +84,6 @@ class Entry extends React.Component {
         node={file}
         kana={kana}
         onUpdate={({ prev, next }) => {
-          debugger;
           textarea.value =
             textarea.value.slice(0, prev.start) +
             next.value +

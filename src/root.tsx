@@ -141,12 +141,12 @@ export function RootWithoutProvider(props: RootProps) {
         ...(props.style || {})
       }}
     >
-      <button disabled={!history.canUndo} onClick={undo}>
+      {/* <button disabled={!history.canUndo} onClick={undo}>
         undo
       </button>
       <button disabled={!history.canRedo} onClick={redo}>
         redo
-      </button>
+      </button> */}
       <File {...props} />
     </div>
   );
