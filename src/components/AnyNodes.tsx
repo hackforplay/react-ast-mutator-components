@@ -445,7 +445,7 @@ export function StringLiteral(props: P<t.StringLiteral>) {
     [props.node]
   );
   const ref = React.useRef<HTMLSpanElement>(null);
-  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
+  const width = ref.current ? ref.current.getBoundingClientRect().width * 1.5 : 0;
 
   return activeNode === props.node ? (
     <InputMutator
@@ -507,7 +507,7 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
     [props.node]
   );
   const ref = React.useRef<HTMLSpanElement>(null);
-  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
+  const width = ref.current ? ref.current.getBoundingClientRect().width * 1.5 : 0;
 
   const style: React.CSSProperties = {
     backgroundColor: 'rgb(18, 124, 201)',
@@ -576,7 +576,7 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
     [props.node]
   );
   const ref = React.useRef<HTMLSpanElement>(null);
-  const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
+  const width = ref.current ? ref.current.getBoundingClientRect().width * 1.5 : 0;
 
   return activeNode === props.node ? (
     <InputMutator
