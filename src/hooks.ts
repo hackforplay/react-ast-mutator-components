@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Dispatch, Store } from 'redux';
 import { Subject } from 'rxjs';
 import { Action, ActionCreator } from 'typescript-fsa';
@@ -37,10 +37,12 @@ export const useActionEffect = <Payload>(
   sideEffect: (action: Action<Payload>, state: State) => void
 ) => {
   const store = useContext(StoreContext);
+  const sideEffectRef = useRef(sideEffect);
+  sideEffectRef.current = sideEffect;
   useEffect(() => {
     const subscription = getAction$(store).subscribe(([action, state]) => {
       if (actionCreator.match(action)) {
-        sideEffect(action, state);
+        sideEffectRef.current(action, state);
       }
     });
     return () => subscription.unsubscribe();
