@@ -420,7 +420,7 @@ export function StringLiteral(props: P<t.StringLiteral>) {
   const [activeNode, dispatch] = useSelector(state => state.activeNode);
   const setActiveNode = React.useCallback(() => {
     dispatch(actions.setActive({ node: props.node }));
-  }, []);
+  }, [props.node]);
   const clearActiveNode = React.useCallback(() => {
     dispatch(actions.clearActive());
   }, []);
@@ -442,7 +442,7 @@ export function StringLiteral(props: P<t.StringLiteral>) {
         })
       );
     },
-    [value]
+    [props.node]
   );
   const ref = React.useRef<HTMLSpanElement>(null);
   const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
@@ -483,7 +483,7 @@ export function NumericLiteral(props: P<t.NumericLiteral>) {
   const [activeNode, dispatch] = useSelector(state => state.activeNode);
   const setActiveNode = React.useCallback(() => {
     dispatch(actions.setActive({ node: props.node }));
-  }, []);
+  }, [props.node]);
   const clearActiveNode = React.useCallback(() => {
     dispatch(actions.clearActive());
   }, []);
@@ -552,7 +552,7 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
   const [activeNode, dispatch] = useSelector(state => state.activeNode);
   const setActiveNode = React.useCallback(() => {
     dispatch(actions.setActive({ node: props.node }));
-  }, []);
+  }, [props.node]);
   const clearActiveNode = React.useCallback(() => {
     dispatch(actions.clearActive());
   }, []);
@@ -573,7 +573,7 @@ export function BooleanLiteral(props: P<t.BooleanLiteral>) {
         })
       );
     },
-    [value]
+    [props.node]
   );
   const ref = React.useRef<HTMLSpanElement>(null);
   const width = ref.current ? ref.current.getBoundingClientRect().width : 0;
