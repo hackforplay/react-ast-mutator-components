@@ -64,11 +64,19 @@ export function InputMutator(props: InputMutatorProps) {
     ...(invalid ? { backgroundColor: 'red' } : {})
   };
 
+  const inputRef = React.useRef<HTMLTextAreaElement>(null);
+  React.useEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+    input.setSelectionRange(0, input.value.length);
+  }, []);
+
   return (
     <textarea
       autoFocus
       value={value}
       rows={1}
+      ref={inputRef}
       onChange={e => {
         const [value] = e.currentTarget.value.split('\n');
         const { escaped, invalid } =
