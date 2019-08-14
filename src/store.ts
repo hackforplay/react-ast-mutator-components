@@ -28,6 +28,7 @@ export const actions = {
   input: actionCreators<InputPayload>('INPUT'),
   undo: actionCreators('UNDO'),
   redo: actionCreators('REDO'),
+  clearHistory: actionCreators('CLEAR_HISTORY'),
   setActive: actionCreators<{ node: Node }>('SET_ACTIVE'),
   clearActive: actionCreators('CLEAR_ACTIVE')
 };
@@ -71,6 +72,12 @@ export const reducer = reducerWithImmer(initialState)
     history.current++;
     history.canUndo = true;
     history.canRedo = history.current < history.changes.length;
+  })
+  .case(actions.clearHistory, ({ history }) => {
+    history.changes = [];
+    history.canUndo = false;
+    history.canRedo = false;
+    history.current = 0;
   })
   .case(actions.setActive, (draft, payload) => {
     draft.activeNode = payload.node;
