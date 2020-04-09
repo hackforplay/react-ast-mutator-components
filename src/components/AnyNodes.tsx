@@ -14,7 +14,7 @@ import {
   Property,
   Statement
 } from './Aliases';
-import { Comments } from './Comments';
+import { Comments, CommentsBetween } from './Comments';
 import { InputMutator } from './InputMutator';
 import { NotImplemented } from './NotImplemented';
 import { NodeProps as P } from './types';
@@ -237,7 +237,6 @@ export function ExpressionStatement(props: P<t.ExpressionStatement>) {
   return (
     <div
       style={{
-        paddingTop: '1em',
         display: 'flex',
         flexWrap: 'wrap',
         alignItems: 'baseline'
@@ -249,8 +248,36 @@ export function ExpressionStatement(props: P<t.ExpressionStatement>) {
 }
 
 export function File(props: P<t.File>) {
-  const { program } = props.node;
-  return <Program {...props} node={program} />;
+  const { program, comments } = props.node;
+
+  let nextCommentLine = 0;
+
+  return (
+    <div>
+      {program.body.map((node, i) => (
+        <React.Fragment key={i}>
+          <div style={{ paddingTop: '1em' }}></div>
+          <CommentsBetween
+            comments={comments}
+            from={nextCommentLine}
+            to={node.loc?.end.line}
+          />
+          {
+            /* １つ前の Statement からこの Statement までのコメントを描画 */
+            ((nextCommentLine = (node.loc?.end.line || nextCommentLine) + 1),
+            null)
+          }
+          <Statement {...props} node={node} />
+        </React.Fragment>
+      ))}
+      <CommentsBetween
+        comments={comments}
+        from={nextCommentLine}
+        to={Infinity}
+      />
+      <div style={{ paddingTop: '1em' }}></div>
+    </div>
+  );
 }
 
 export function ForInStatement(props: P<t.ForInStatement>) {
@@ -690,13 +717,7 @@ export function NewExpression(props: P<t.NewExpression>) {
 }
 
 export function Program(props: P<t.Program>) {
-  return (
-    <div>
-      {props.node.body.map((node, i) => (
-        <Statement key={i} {...props} node={node} />
-      ))}
-    </div>
-  );
+  return <NotImplemented node={props.node} />;
 }
 
 export function ObjectExpression(props: P<t.ObjectExpression>) {

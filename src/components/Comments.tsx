@@ -22,7 +22,7 @@ export interface CommentLineProps {
 
 export function CommentLine(props: CommentLineProps) {
   const { value } = props.comment;
-  return <span style={{ color: 'gray' }}>// {value}</span>;
+  return <div style={{ color: 'gray' }}>//{value}</div>;
 }
 
 export interface CommentsProps {
@@ -44,4 +44,26 @@ export function Comments(props: CommentsProps) {
       )}
     </>
   );
+}
+
+export interface CommentsBetweenProps {
+  comments: ReadonlyArray<t.Comment> | null;
+  from: number;
+  to?: number;
+}
+
+export function CommentsBetween(props: CommentsBetweenProps) {
+  const { comments, from, to } = props;
+  return React.useMemo(() => {
+    if (!comments || !to) {
+      return null;
+    }
+    return (
+      <Comments
+        comments={comments.filter(
+          c => c.loc.end.line >= from && c.loc.start.line <= to
+        )}
+      />
+    );
+  }, [comments, from, to]);
 }
