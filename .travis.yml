@@ -1,24 +1,24 @@
 language: node_js
-node_js: '8'
+node_js: '10'
 cache:
   npm: true
 before_deploy:
   - npm run fixtures
   - npx parcel build public/index.html --public-url './'
 deploy:
-- provider: script
-  script: npm run semantic-release
-  skip_cleanup: true
-  on:
-    branch: master
-- provider: pages
-  skip_cleanup: true
-  github_token: $GH_TOKEN
-  keep_history: true
-  local_dir: dist
-  on:
-    branch: master
+  - provider: script
+    script: npm run semantic-release
+    skip_cleanup: true
+    on:
+      branch: master
+  - provider: pages
+    skip_cleanup: true
+    github_token: $GH_TOKEN
+    keep_history: true
+    local_dir: dist
+    on:
+      branch: master
 env:
   global:
-  - secure: BdMx35Swh+TGwMzxBfsMWunUMAQDAMUmY50PrgIVVAfbL4cA40pbIW9yoxuTknvl+/9NHBfueWX6EwvgLoOpvCGvH2Oe4E5N8K7JLF5lDKVEwNIatOFkfsbaKN6hJJD7+SFVF8VzBC8p9I2q6L3VysBhDAm35RlaOr5/xOYwkoPCQPrA06xn1jxC7uQfQGbKuB1Vg0EFG8xD5wAfjjkxxcp3PpkG142BhX9jI+hj/fDa1DjihB4tgRidXcvWmc7tE1GY/i3qcuPSMiAeeLORKe3oiQHFzOGzZFFQc05A0/qCdmlgkqHEY+fgkOVE/LkRVSdjvFlFQn0THCNe2Ome8AvDRzJGYd1hX6YZkdvCea9Z9ldzYKNbuCZDVXUAVakkKw4IBMmsetzryTh4Fmxxg7aVLt9UdY0eelKbOEhfqUw4MbR0A8Non1m/j/k4VzJndckaSM/gAVKWHwkKG/qRQUImOZSgYt0gP3Si9Ukc8kIcSdPwFGgX2FypCQ9augVgdpbMOkB5wH/29RkKl4cy6vHsr5aFsemx80RIe/c9ItuVFb2MloVbgPuYWPcJcg34WYU6BP6wiNx6/V+iVIi5m+WSAoMkw3WZtIV6bOM4Kca/00goBTPmUyPxi0/8YjyhW4ycVcZS9SD2lUOIEgvCbPbUTFwYHJifV3o+Tzzx0zM=
-  - secure: IrRIjGfp7FrjCm55bqlNUoTsHH789WYnB8md76axrQ19pF+eYEg+oQG7myt+garEcMJWvm0Ekz66gxGgQ0sVLHITn/WuTUxvyWTtISL2L0mB97VYlt2FBctG+/OM2KUpGTPKh2L61z2Kxb5e6ANNzGn9tFssDVG0bNUzIjE1BlGpit4iTMifBndIsiYvDG059muvhWy0uHQ7DOJmMIVLw28ld3BQDBq+8Rbyton8nJJ84pQWLCX0DoeqnLkdhVREeKmcHdUG0PcU8Zigae3oVaJxn8K3EU2B17NdRXprwGDTw6dpAvwnPPRDGAbvvnUPPr+m658MZSOCANVhqDxzR3SgitBuFML9/z2OEySbwJ/Pp6Rdzecbg/mWzbj8pYwboUZcNoJ6fUVNdr2RAZbGq3+vVeU1hIIKUspmhJG1ra3wDKJsfroqWqnjw48U7rxWKNND9WEYMt6e1b02nRHLv4LyRm+T/ZeDOtuX0QB31BzyhvzbeIVhOA9oIw7Z6/miDc1irY7cWnYEzOngfxuIWofiyfzkpHFbhUBHva+oETEOXH0ZNKuAHjXpvqbazMjREJHxwdqPBmpLx2Jxx0VOSx9k5CpnuxY6f/2rMXuKR7Xq871iFnceCFhfOcVsNn9bY5drJgHQ4tWgypPMJGag/6SpeLOZYwYJ8saZpr+1+bw=
+    - secure: BdMx35Swh+TGwMzxBfsMWunUMAQDAMUmY50PrgIVVAfbL4cA40pbIW9yoxuTknvl+/9NHBfueWX6EwvgLoOpvCGvH2Oe4E5N8K7JLF5lDKVEwNIatOFkfsbaKN6hJJD7+SFVF8VzBC8p9I2q6L3VysBhDAm35RlaOr5/xOYwkoPCQPrA06xn1jxC7uQfQGbKuB1Vg0EFG8xD5wAfjjkxxcp3PpkG142BhX9jI+hj/fDa1DjihB4tgRidXcvWmc7tE1GY/i3qcuPSMiAeeLORKe3oiQHFzOGzZFFQc05A0/qCdmlgkqHEY+fgkOVE/LkRVSdjvFlFQn0THCNe2Ome8AvDRzJGYd1hX6YZkdvCea9Z9ldzYKNbuCZDVXUAVakkKw4IBMmsetzryTh4Fmxxg7aVLt9UdY0eelKbOEhfqUw4MbR0A8Non1m/j/k4VzJndckaSM/gAVKWHwkKG/qRQUImOZSgYt0gP3Si9Ukc8kIcSdPwFGgX2FypCQ9augVgdpbMOkB5wH/29RkKl4cy6vHsr5aFsemx80RIe/c9ItuVFb2MloVbgPuYWPcJcg34WYU6BP6wiNx6/V+iVIi5m+WSAoMkw3WZtIV6bOM4Kca/00goBTPmUyPxi0/8YjyhW4ycVcZS9SD2lUOIEgvCbPbUTFwYHJifV3o+Tzzx0zM=
+    - secure: IrRIjGfp7FrjCm55bqlNUoTsHH789WYnB8md76axrQ19pF+eYEg+oQG7myt+garEcMJWvm0Ekz66gxGgQ0sVLHITn/WuTUxvyWTtISL2L0mB97VYlt2FBctG+/OM2KUpGTPKh2L61z2Kxb5e6ANNzGn9tFssDVG0bNUzIjE1BlGpit4iTMifBndIsiYvDG059muvhWy0uHQ7DOJmMIVLw28ld3BQDBq+8Rbyton8nJJ84pQWLCX0DoeqnLkdhVREeKmcHdUG0PcU8Zigae3oVaJxn8K3EU2B17NdRXprwGDTw6dpAvwnPPRDGAbvvnUPPr+m658MZSOCANVhqDxzR3SgitBuFML9/z2OEySbwJ/Pp6Rdzecbg/mWzbj8pYwboUZcNoJ6fUVNdr2RAZbGq3+vVeU1hIIKUspmhJG1ra3wDKJsfroqWqnjw48U7rxWKNND9WEYMt6e1b02nRHLv4LyRm+T/ZeDOtuX0QB31BzyhvzbeIVhOA9oIw7Z6/miDc1irY7cWnYEzOngfxuIWofiyfzkpHFbhUBHva+oETEOXH0ZNKuAHjXpvqbazMjREJHxwdqPBmpLx2Jxx0VOSx9k5CpnuxY6f/2rMXuKR7Xq871iFnceCFhfOcVsNn9bY5drJgHQ4tWgypPMJGag/6SpeLOZYwYJ8saZpr+1+bw=
