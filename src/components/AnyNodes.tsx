@@ -1071,7 +1071,7 @@ export function ArrowFunctionExpression(props: P<t.ArrowFunctionExpression>) {
       ) : (
         <>
           <ParamsImpl {...props} />
-          <span> => </span>
+          <span>{` => `}</span>
           {t.isBlockStatement(body) ? (
             <BlockStatement {...props} node={body} />
           ) : (
