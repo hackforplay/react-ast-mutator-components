@@ -1,7 +1,7 @@
 import * as t from '@babel/types';
 import * as React from 'react';
 import { useSelector } from '../hooks';
-import { ja as lang } from '../lang';
+import { lang } from '../lang';
 import { actions } from '../store';
 import { useProxy } from '../useProxy';
 import {
