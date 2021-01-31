@@ -172,6 +172,10 @@ export function CatchClause(props: P<t.CatchClause>) {
       <span>{`(`}</span>
       {!param ? null : t.isIdentifier(param) ? (
         <Identifier {...props} node={param} />
+      ) : t.isObjectPattern(param) ? (
+        <ObjectPattern {...props} node={param} />
+      ) : t.isArrayPattern(param) ? (
+        <ArrayPattern {...props} node={param} />
       ) : (
         <NotImplemented node={param} />
       )}
@@ -221,6 +225,10 @@ export function DebuggerStatement(props: P<t.DebuggerStatement>) {
       <Comments comments={trailingComments} />
     </div>
   );
+}
+
+export function DecimalLiteral(props: P<t.DecimalLiteral>) {
+  return <NotImplemented node={props.node} />;
 }
 
 export function DoWhileStatement(props: P<t.DoWhileStatement>) {
@@ -453,6 +461,10 @@ export function LabeledStatement(props: P<t.LabeledStatement>) {
       <Statement {...props} node={body} />
     </div>
   );
+}
+
+export function StaticBlock(props: P<t.StaticBlock>) {
+  return <NotImplemented node={props.node} />;
 }
 
 export function StringLiteral(props: P<t.StringLiteral>) {
@@ -912,6 +924,22 @@ export function SwitchStatement(props: P<t.SwitchStatement>) {
   );
 }
 
+export function SymbolTypeAnnotation(props: P<t.SymbolTypeAnnotation>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function TSIntrinsicKeyword(props: P<t.TSIntrinsicKeyword>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function TSBigIntKeyword(props: P<t.TSBigIntKeyword>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function Terminatorless(props: P<t.Terminatorless>) {
+  return <NotImplemented node={props.node} />;
+}
+
 export function ThisExpression(props: P<t.ThisExpression>) {
   return <span>this</span>;
 }
@@ -944,6 +972,10 @@ export function TryStatement(props: P<t.TryStatement>) {
       ) : null}
     </div>
   );
+}
+
+export function TupleExpression(props: P<t.TupleExpression>) {
+  return <NotImplemented node={props.node} />;
 }
 
 export function UnaryExpression(props: P<t.UnaryExpression>) {
@@ -1577,6 +1609,50 @@ export function EmptyTypeAnnotation(props: P<t.EmptyTypeAnnotation>) {
   return <NotImplemented node={props.node} />;
 }
 
+export function EnumBody(props: P<t.EnumBody>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function EnumBooleanBody(props: P<t.EnumBooleanBody>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function EnumBooleanMember(props: P<t.EnumBooleanMember>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function EnumDeclaration(props: P<t.EnumDeclaration>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function EnumDefaultedMember(props: P<t.EnumDefaultedMember>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function EnumMember(props: P<t.EnumMember>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function EnumNumberBody(props: P<t.EnumNumberBody>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function EnumNumberMember(props: P<t.EnumNumberMember>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function EnumStringBody(props: P<t.EnumStringBody>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function EnumStringMember(props: P<t.EnumStringMember>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function EnumSymbolBody(props: P<t.EnumSymbolBody>) {
+  return <NotImplemented node={props.node} />;
+}
+
 export function NullableTypeAnnotation(props: P<t.NullableTypeAnnotation>) {
   return <NotImplemented node={props.node} />;
 }
@@ -1620,6 +1696,10 @@ export function OpaqueType(props: P<t.OpaqueType>) {
 }
 
 export function QualifiedTypeIdentifier(props: P<t.QualifiedTypeIdentifier>) {
+  return <NotImplemented node={props.node} />;
+}
+
+export function RecordExpression(props: P<t.RecordExpression>) {
   return <NotImplemented node={props.node} />;
 }
 
