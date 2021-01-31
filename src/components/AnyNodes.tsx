@@ -12,7 +12,8 @@ import {
   ObjectMember,
   PatternLike,
   Property,
-  Statement
+  Statement,
+  TSType
 } from './Aliases';
 import { Comments, CommentsBetween } from './Comments';
 import { InputMutator } from './InputMutator';
@@ -68,7 +69,11 @@ export function BinaryExpression(props: P<t.BinaryExpression>) {
   const { operator, left, right } = props.node;
   return (
     <span>
-      <Expression {...props} node={left} />
+      {t.isExpression(left) ? (
+        <Expression {...props} node={left} />
+      ) : (
+        <NotImplemented node={left} />
+      )}
       <span>{` ${operator} `}</span>
       <Expression {...props} node={right} />
     </span>
@@ -137,7 +142,11 @@ function CallImpl(props: P<t.CallExpression | t.NewExpression>) {
   const { callee, arguments: args } = props.node;
   return (
     <>
-      <Expression {...props} node={callee} />
+      {t.isExpression(callee) ? (
+        <Expression {...props} node={callee} />
+      ) : (
+        <NotImplemented node={callee} />
+      )}
       <span>{`(`}</span>
       <Join>
         {args.map((argument, i) =>
@@ -161,7 +170,11 @@ export function CatchClause(props: P<t.CatchClause>) {
     <>
       <span>catch </span>
       <span>{`(`}</span>
-      {param ? <Identifier {...props} node={param} /> : null}
+      {!param ? null : t.isIdentifier(param) ? (
+        <Identifier {...props} node={param} />
+      ) : (
+        <NotImplemented node={param} />
+      )}
       <span>{`)`}</span>
       <BlockStatement {...props} node={body} />
     </>
@@ -1205,17 +1218,18 @@ export function ExportNamedDeclaration(props: P<t.ExportNamedDeclaration>) {
 
 export function ExportSpecifier(props: P<t.ExportSpecifier>) {
   const { local, exported } = props.node;
-  const shorthand = local.name === exported.name;
   return (
     <span>
       <Identifier {...props} node={local} />
-      {shorthand ? null : (
-        <>
+      {t.isIdentifier(exported) ? (
+        local.name === exported.name ? null : (
           <Ruby kana={lang.idStart + exported.name + lang.idEnd + lang.as}>
             <span> as </span>
             <Identifier {...props} noKana node={exported} />
           </Ruby>
-        </>
+        )
+      ) : (
+        <NotImplemented node={props.node} />
       )}
     </span>
   );
@@ -1319,12 +1333,19 @@ export function ImportNamespaceSpecifier(props: P<t.ImportNamespaceSpecifier>) {
 
 export function ImportSpecifier(props: P<t.ImportSpecifier>) {
   const { local, imported } = props.node;
-  const shorthand = local.name === imported.name;
   return (
     <span>
-      <Identifier {...props} node={imported} />
-      {shorthand ? null : <span> as </span>}
-      {shorthand ? null : <Identifier {...props} node={local} />}
+      {t.isIdentifier(imported) ? (
+        <>
+          <Identifier {...props} node={imported} />
+          {local.name === imported.name ? null : <span> as </span>}
+          {local.name === imported.name ? null : (
+            <Identifier {...props} node={local} />
+          )}
+        </>
+      ) : (
+        <NotImplemented node={imported} />
+      )}
     </span>
   );
 }
@@ -1404,6 +1425,15 @@ export function TemplateLiteral(props: P<t.TemplateLiteral>) {
   const { quasis, expressions } = props.node;
   const slots = Array.from({ length: quasis.length + expressions.length });
 
+  function Expressions(p: { index: number }) {
+    const node = expressions[p.index];
+    return t.isExpression(node) ? (
+      <Expression {...props} node={node} />
+    ) : (
+      <NotImplemented node={node} />
+    );
+  }
+
   return (
     <span>
       <span>`</span>
@@ -1413,7 +1443,7 @@ export function TemplateLiteral(props: P<t.TemplateLiteral>) {
         ) : (
           <span key={i}>
             <span>{'${'}</span>
-            <Expression {...props} node={expressions[(i / 2) >> 0]} />
+            <Expressions index={(i / 2) >> 0} />
             <span>{'}'}</span>
           </span>
         )

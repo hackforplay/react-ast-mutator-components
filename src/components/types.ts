@@ -1,6 +1,6 @@
-import { BaseNode } from '@babel/types';
+import { Node } from '@babel/types';
 
-export interface NodeProps<NodeType extends BaseNode> {
+export interface NodeProps<NodeType extends Node> {
   node: NodeType;
   kana: { [index: string]: string };
   noKana?: boolean;

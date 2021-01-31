@@ -47,7 +47,7 @@ export function Comments(props: CommentsProps) {
 }
 
 export interface CommentsBetweenProps {
-  comments: ReadonlyArray<t.Comment> | null;
+  comments?: ReadonlyArray<t.Comment> | null;
   from: number;
   to?: number;
 }
